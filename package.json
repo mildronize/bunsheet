@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@azure/identity": "^4.0.1",
+    "@azure/storage-queue": "^12.16.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fontsource/roboto": "^5.0.12",
@@ -23,7 +25,9 @@
     "react-dom": "^18",
     "react-number-format": "^5.3.4",
     "sonner": "^1.4.41",
-    "vaul": "^0.9.0"
+    "vaul": "^0.9.0",
+    "zod": "^3.22.4",
+    "zod-validation-error": "^3.1.0"
   },
   "devDependencies": {
     "@types/node": "^20",
