@@ -53,7 +53,6 @@ export function CurrencyTextField(props: CurrencyTextFieldProps) {
 
   return (
     <TextField
-      // className={value < 0 ? classes.negativeInput : ""}
       label={props.label || "Amount"}
       fullWidth
       value={values.numberformat}
