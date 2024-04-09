@@ -4,6 +4,9 @@ import { DatePicker } from "./components/DatePicker";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import { CurrencyTextField } from "./components/CurrencyTextField";
+import { GroupSelect } from "./components/GroupSelect";
+import { Select } from "./components/Select";
+import { Button } from "@mui/material";
 
 /**
  * UI from https://flowbite.com/docs/components/forms/
@@ -17,9 +20,17 @@ export default function Home() {
       </div>
       <div className="form-input">
         {/* <TextField fullWidth id="outlined-basic" label="Amount" variant="outlined" /> */}
-        <CurrencyTextField />
+        <CurrencyTextField label="Amount " />
       </div>
-      
+      <div className="form-input">
+        <GroupSelect label="Category" />
+      </div>
+      <div className="form-input">
+        <Select label="Account" />
+      </div>
+      <div className="form-input">
+        <Button variant="contained" size="large" fullWidth>Save</Button>
+      </div>
     </Container>
 
     // <div className="m-10">
