@@ -16,25 +16,26 @@
 // }>) {
 //   return (
 //     <html lang="en">
-//       <meta
-//         name="viewport"
-//         content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-//       />
 
 //       <body>{children}</body>
 //     </html>
 //   );
 // }
 
-import * as React from 'react';
-import { AppRouterCacheProvider } from '@mui/material-nextjs/v14-appRouter';
-import { ThemeProvider } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import theme from '@/theme';
+import * as React from "react";
+import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import theme from "@/theme";
+import "./globals.css";
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+      />
       <body>
         <AppRouterCacheProvider options={{ enableCssLayer: true }}>
           <ThemeProvider theme={theme}>

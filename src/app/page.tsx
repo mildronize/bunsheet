@@ -1,6 +1,9 @@
 import Image from "next/image";
 import * as React from "react";
 import { DatePicker } from "./components/DatePicker";
+import Container from "@mui/material/Container";
+import TextField from "@mui/material/TextField";
+import { CurrencyTextField } from "./components/CurrencyTextField";
 
 /**
  * UI from https://flowbite.com/docs/components/forms/
@@ -8,7 +11,17 @@ import { DatePicker } from "./components/DatePicker";
 
 export default function Home() {
   return (
-    <DatePicker />
+    <Container maxWidth="sm">
+      <div className="form-input">
+        <DatePicker />
+      </div>
+      <div className="form-input">
+        {/* <TextField fullWidth id="outlined-basic" label="Amount" variant="outlined" /> */}
+        <CurrencyTextField />
+      </div>
+      
+    </Container>
+
     // <div className="m-10">
     //   <h1 className="mb-4 text-2xl font-bold text-center text-gray-900 dark:text-white">
     //     Add Expense

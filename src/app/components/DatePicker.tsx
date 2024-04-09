@@ -12,7 +12,8 @@ export function DatePicker() {
     <LocalizationProvider dateAdapter={AdapterDayjs}>
       <DemoContainer components={["DatePicker"]}>
         <MuiDatePicker
-          label="Uncontrolled picker"
+          slotProps={{ textField: { fullWidth: true } }}
+          label="Date"
           defaultValue={dayjs()}
         />
       </DemoContainer>
