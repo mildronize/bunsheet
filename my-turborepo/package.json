@@ -2,10 +2,6 @@
   "name": "with-docker",
   "version": "0.0.0",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
   "scripts": {
     "build": "turbo run build",
     "clean": "turbo run clean",
@@ -16,13 +12,13 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@repo/eslint-config": "*",
+    "@repo/eslint-config": "workspace:*",
     "prettier": "^3.2.5",
     "turbo": "latest"
   },
-  "packageManager": "yarn@1.22.19",
   "engines": {
     "node": ">=14.0.0",
     "npm": ">=7.0.0"
-  }
+  },
+  "packageManager": "pnpm@8.10.4"
 }

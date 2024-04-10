@@ -20,10 +20,10 @@
   "devDependencies": {
     "@types/jest": "^29.5.12",
     "eslint": "^8.57.0",
-    "@repo/eslint-config": "*",
+    "@repo/eslint-config": "workspace:*",
     "jest": "^29.7.0",
-    "@repo/jest-presets": "*",
-    "@repo/typescript-config": "*",
+    "@repo/jest-presets": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
     "typescript": "^5.3.3"
   }
 }
