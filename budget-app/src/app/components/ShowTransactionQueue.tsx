@@ -5,7 +5,7 @@ import type * as TransactionQueue from "@/app/api/transaction/queue/route";
 import { InferRouteResponse } from "@/types";
 import { Alert, Container, Skeleton } from "@mui/material";
 import axios from "axios";
-import { BaseResponse } from "@/global/response";
+import { catchResponseMessage } from "@/global/catchResponse";
 
 export type TransactionQueueGetResponse = InferRouteResponse<
   typeof TransactionQueue.GET
@@ -18,13 +18,7 @@ export function ShowTransactionQueue() {
       axios
         .get("/api/transaction/queue")
         .then((res) => res.data)
-        .catch((error) => {
-          if (axios.isAxiosError(error) && error.response){
-            const data = error.response.data as BaseResponse;
-            throw new Error(data.message);
-          }
-          throw error;
-        }),
+        .catch(catchResponseMessage),
   });
 
   if (transactionQueue.error) {

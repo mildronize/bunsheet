@@ -4,19 +4,45 @@ import { DatePicker } from "./DatePicker";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import { CurrencyTextField } from "./CurrencyTextField";
-import { Button, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  LinearProgress,
+  Typography,
+} from "@mui/material";
 import { GroupAutocompleteTextField } from "./GroupAutocompleteTextField";
 import { AutocompleteTextField } from "./AutocompleteTextField";
+import SendIcon from "@mui/icons-material/Send";
 import { Toaster, toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { BaseResponse } from "@/global/response";
 
 export function AddTransaction() {
-  const handleSave = async () => {
-    const result = await fetch("/api/transaction", {
-      method: "POST",
-    });
-    console.log('result', result);
-    toast.success("Save Successfully");
-  };
+  const saveMutation = useMutation({
+    mutationKey: ["saveTransaction"],
+    mutationFn: async (data) => {
+      return axios.post("/api/transaction", data)
+      .catch((error: unknown) => {
+        if (axios.isAxiosError(error) && error.response) {
+          const data = error.response.data as BaseResponse;
+          // TODO: Hotfix for the error message not being displayed.
+          toast.error('Save Failed: ' + data.message);
+          throw new Error(data.message);
+        }
+        throw error;
+      })
+    },
+    onSuccess: () => {
+      toast.success("Save Successfully");
+    },
+    onError: (error) => {
+      // TODO: Somehow the error message is not displayed.
+      // toast.error(
+      //   "Save Failed: " + JSON.stringify(error)
+      // );
+    },
+  });
 
   return (
     <Container maxWidth="sm">
@@ -55,9 +81,18 @@ export function AddTransaction() {
         position="bottom-center"
       />
       <div className="form-input">
-        <Button variant="contained" size="large" fullWidth onClick={handleSave}>
-          Save
+        <Button
+          variant="contained"
+          size="large"
+          fullWidth
+          disabled={saveMutation.isPending}
+          onClick={() => saveMutation.mutate()}
+          endIcon={<SendIcon />}
+        >
+          Add Transaction
         </Button>
+
+        {saveMutation.isPending ? <LinearProgress /> : null}
       </div>
     </Container>
   );
