@@ -1,0 +1,6 @@
+.azurite
+.git*
+.vscode
+local.settings.json
+test
+src

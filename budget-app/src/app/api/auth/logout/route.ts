@@ -4,6 +4,7 @@ import { env } from "@/env";
 
 export async function GET(req: NextRequest) {
   if (env.ENABLE_MICROSOFT_ENTRA_IDENTITY === false) {
+    console.log("Microsoft Entra Identity is disabled");
     return NextResponse.json({
       message: "No Auth is enabled",
     });

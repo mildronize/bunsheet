@@ -1,4 +1,3 @@
-
 "use client";
 import * as React from "react";
 import { DatePicker } from "./DatePicker";
@@ -8,14 +7,21 @@ import { CurrencyTextField } from "./CurrencyTextField";
 import { Button, Typography } from "@mui/material";
 import { GroupAutocompleteTextField } from "./GroupAutocompleteTextField";
 import { AutocompleteTextField } from "./AutocompleteTextField";
-import { Toaster, toast } from 'sonner'
+import { Toaster, toast } from "sonner";
 
 export function AddTransaction() {
+  const handleSave = async () => {
+    const result = await fetch("/api/transaction", {
+      method: "POST",
+    });
+    console.log('result', result);
+    toast.success("Save Successfully");
+  };
+
   return (
     <Container maxWidth="sm">
-
       <div className="form-input">
-        <Typography variant="h6" gutterBottom style={{ textAlign: 'center'}}>
+        <Typography variant="h6" gutterBottom style={{ textAlign: "center" }}>
           Add Transaction
         </Typography>
       </div>
@@ -35,11 +41,21 @@ export function AddTransaction() {
         <DatePicker />
       </div>
       <div className="form-input">
-      <TextField id="outlined-basic" label="Memo" variant="outlined" fullWidth/>
+        <TextField
+          id="outlined-basic"
+          label="Memo"
+          variant="outlined"
+          fullWidth
+        />
       </div>
-      <Toaster closeButton richColors duration={2000} position="bottom-center" />
+      <Toaster
+        closeButton
+        richColors
+        duration={2000}
+        position="bottom-center"
+      />
       <div className="form-input mb-160">
-        <Button variant="contained" size="large" fullWidth onClick={() => toast.success('Save Successfully')}>
+        <Button variant="contained" size="large" fullWidth onClick={handleSave}>
           Save
         </Button>
       </div>

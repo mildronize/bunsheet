@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "azurite": "pnpx azurite --silent --location ./.azurite --debug ./.azurite/debug.log"
   },
   "dependencies": {
     "@azure/identity": "^4.0.1",

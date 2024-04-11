@@ -33,6 +33,16 @@ export const envSchema = z.object({
       "Invalid ALLOW_WHITELIST_PRINCIPAL_NAMES, example: 'aaa@gmail.com,bbb@gmail.com'"
     );
   }, z.array(z.string())),
+
+  /**
+   * Azure Storage Connection String
+   */
+  AZURE_STORAGE_CONNECTION_STRING: z.string(),
+
+  /**
+   * Azure Storage Queue Name
+   */
+  AZURE_STORAGE_QUEUE_NAME: z.string(),
 });
 
 function parseZodPrettyError(env: Record<string, unknown>) {
