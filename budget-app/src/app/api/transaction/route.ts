@@ -1,13 +1,17 @@
 import { customError } from "@/global/errorHandler";
 import { globalHandler } from "@/global/globalHandler";
 import { queue } from "@/libs/azure-storage-queue";
-import { Infer } from "next/dist/compiled/superstruct";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { z } from "zod";
 
-// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-export const transactionPostSchema = z.object({
+//
+/**
+ *  NOTE: Cannot be export in `route.ts` file 
+ *  src/app/api/transaction/route.ts
+    Type error: Route "src/app/api/transaction/route.ts" does not match the required types of a Next.js Route.
+    "transactionPostSchema" is not a valid Route export field.
+ */
+const transactionPostSchema = z.object({
   type: z.enum(["add_transaction_queue"]),
   amount: z.number(),
   payee: z.string().nullable(),
