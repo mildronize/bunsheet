@@ -18,6 +18,8 @@
     "@mui/material": "^5.15.15",
     "@mui/material-nextjs": "^5.15.11",
     "@mui/x-date-pickers": "^7.1.1",
+    "@tanstack/react-query": "^5.29.2",
+    "axios": "^1.6.8",
     "dayjs": "^1.11.10",
     "google-auth-library": "^9.4.1",
     "google-spreadsheet": "^4.1.1",

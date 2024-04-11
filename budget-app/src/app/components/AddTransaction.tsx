@@ -54,7 +54,7 @@ export function AddTransaction() {
         duration={2000}
         position="bottom-center"
       />
-      <div className="form-input mb-160">
+      <div className="form-input">
         <Button variant="contained" size="large" fullWidth onClick={handleSave}>
           Save
         </Button>
