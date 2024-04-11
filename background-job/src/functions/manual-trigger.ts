@@ -4,8 +4,6 @@ export default func
   .httpGet('manual', {
     authLevel: 'function',
   })
-  .handler(async ({}) => {
-    return {
-      body: 'result',
-    };
+  .handler(async c => {
+    return c.text('Triggered');
   });
