@@ -20,6 +20,7 @@ import { BaseResponse } from "@/global/response";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { ControlledAutocompleteTextField } from "./ControlledAutocompleteTextField";
 import dayjs, { Dayjs } from "dayjs";
+import { TrasactionPost } from "../api/transaction/route";
 
 const options = [
   {
@@ -52,7 +53,7 @@ type Inputs = {
 export function AddTransactionForm() {
   const saveMutation = useMutation({
     mutationKey: ["saveTransaction"],
-    mutationFn: async (data) => {
+    mutationFn: async (data: TrasactionPost) => {
       return axios.post("/api/transaction", data).catch((error: unknown) => {
         if (axios.isAxiosError(error) && error.response) {
           const data = error.response.data as BaseResponse;
@@ -91,10 +92,17 @@ export function AddTransactionForm() {
   });
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
-    // saveMutation.mutate(data);
-    console.log(data);
-    console.log(data.date?.format("YYYY-MM-DD"))
-    toast.success("Save Successfully");
+    const parsedData: TrasactionPost = {
+      amount: parseFloat(data.amount),
+      payee: data.payee,
+      category: data.category,
+      account: data.account,
+      date: data.date?.toISOString() ?? null,
+      memo: data.memo,
+      type: "add_transaction_queue",
+    };
+    console.log("Submit data: ", parsedData);
+    saveMutation.mutate(parsedData);
   };
 
   return (
@@ -106,13 +114,6 @@ export function AddTransactionForm() {
           </Typography>
         </div>
         <div className="form-input">
-          {/* <Controller
-            name="amount"
-            control={control}
-            render={({ field }) => (
-              <CurrencyTextField {...field} label="Amount" />
-            )}
-          /> */}
           <CurrencyTextField control={control} name="amount" label="Amount" />
         </div>
         <div className="form-input">

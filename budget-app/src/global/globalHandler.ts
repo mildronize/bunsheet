@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ApiError } from "next/dist/server/api-utils";
 import { BaseResponse } from "./response";
 
