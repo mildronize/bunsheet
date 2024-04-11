@@ -37,12 +37,14 @@ export const envSchema = z.object({
   /**
    * Azure Storage Connection String
    */
-  AZURE_STORAGE_CONNECTION_STRING: z.string(),
+  AZURE_STORAGE_CONNECTION_STRING: z
+    .string()
+    .default("UseDevelopmentStorage=true"),
 
   /**
    * Azure Storage Queue Name
    */
-  AZURE_STORAGE_QUEUE_NAME: z.string(),
+  AZURE_STORAGE_QUEUE_NAME: z.string().default("devqueue"),
 });
 
 function parseZodPrettyError(env: Record<string, unknown>) {
