@@ -14,9 +14,10 @@ export function Select(props: SelectProps) {
     <FormControl fullWidth>
       {props.label ?? "Select"}
       <MuiSelect
+        {...props}
         native
         variant="outlined"
-        defaultValue={''}
+        defaultValue={""}
         inputProps={{
           name: "age",
           id: "uncontrolled-native",

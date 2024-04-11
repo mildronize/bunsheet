@@ -28,7 +28,7 @@ export function GroupAutocompleteTextField(
       getOptionLabel={(option) => option.title}
     //   sx={{ width: 300 }}
       renderInput={(params) => (
-        <TextField {...params} label={props.label ?? "Grouping"} fullWidth />
+        <TextField {...props} {...params} label={props.label ?? "Grouping"} fullWidth />
       )}
     />
   );

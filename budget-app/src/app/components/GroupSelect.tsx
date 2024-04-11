@@ -3,14 +3,15 @@ import InputLabel from "@mui/material/InputLabel";
 import Select from "@mui/material/Select";
 
 interface GroupSelectProps {
-    label?: string;
+  label?: string;
 }
 
 export function GroupSelect(props: GroupSelectProps) {
   return (
     <div>
-      <InputLabel >{props.label ?? "Grouping"}</InputLabel>
+      <InputLabel>{props.label ?? "Grouping"}</InputLabel>
       <Select
+        {...props}
         native
         defaultValue=""
         id="grouped-native-select"
