@@ -3,6 +3,8 @@
 import * as React from "react";
 import { NumericFormat, NumericFormatProps } from "react-number-format";
 import TextField from "@mui/material/TextField";
+import { Controller, FieldValues } from "react-hook-form";
+import { ReactHookFormControl } from "@/types";
 
 interface CustomProps {
   onChange: (event: { target: { name: string; value: string } }) => void;
@@ -39,32 +41,42 @@ interface CurrencyTextFieldProps {
   label?: string;
 }
 
-export function CurrencyTextField(props: CurrencyTextFieldProps) {
-  const [values, setValues] = React.useState({
-    numberformat: "-0",
-  });
-
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setValues({
-      ...values,
-      [event.target.name]: event.target.value,
-    });
-  };
+export function CurrencyTextField<TField extends FieldValues>(
+  props: CurrencyTextFieldProps & ReactHookFormControl<TField>
+) {
 
   return (
-    <TextField
-      label={props.label || "Amount"}
-      fullWidth
-      value={values.numberformat}
-      onChange={handleChange}
-      size="medium"
-      name="numberformat"
-      id="formatted-numberformat-input"
-      InputProps={{
-        style: { fontSize: 40, color: `${parseInt(values.numberformat) <= 0 ? 'red': 'green'}` },
-        inputComponent: NumericFormatCustom as any,
+    <Controller
+      control={props.control}
+      name={props.name}
+      rules={{ required: true }}
+      render={({ field }) => {
+        return (
+          <TextField
+            {...props}
+            label={props.label || "Amount"}
+            fullWidth
+            value={field.value}
+            onChange={(value) => {
+              field.onChange(value);
+            }}
+            inputRef={field.ref}
+            size="medium"
+            name="numberformat"
+            id="formatted-numberformat-input"
+            InputProps={{
+              style: {
+                fontSize: 40,
+                color: `${
+                  parseInt(field.value) <= 0 ? "red" : "green"
+                }`,
+              },
+              inputComponent: NumericFormatCustom as any,
+            }}
+            variant="standard"
+          />
+        );
       }}
-      variant="standard"
     />
   );
 }

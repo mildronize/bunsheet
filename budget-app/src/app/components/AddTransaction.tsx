@@ -1,64 +1,179 @@
 "use client";
 import * as React from "react";
-import { DatePicker } from "./DatePicker";
+import { ControlledDatePicker, DatePicker } from "./DatePicker";
 import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import { CurrencyTextField } from "./CurrencyTextField";
-import { Button, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  LinearProgress,
+  Typography,
+} from "@mui/material";
 import { GroupAutocompleteTextField } from "./GroupAutocompleteTextField";
 import { AutocompleteTextField } from "./AutocompleteTextField";
+import SendIcon from "@mui/icons-material/Send";
 import { Toaster, toast } from "sonner";
+import { useMutation } from "@tanstack/react-query";
+import axios from "axios";
+import { BaseResponse } from "@/global/response";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import { ControlledAutocompleteTextField } from "./ControlledAutocompleteTextField";
+import dayjs, { Dayjs } from "dayjs";
+import { TrasactionPost } from "../api/transaction/route";
 
-export function AddTransaction() {
-  const handleSave = async () => {
-    const result = await fetch("/api/transaction", {
-      method: "POST",
-    });
-    console.log('result', result);
-    toast.success("Save Successfully");
+const options = [
+  {
+    id: "1",
+    label: "Option 1",
+  },
+  {
+    id: "2",
+    label: "Option 2",
+  },
+  {
+    id: "3",
+    label: "Option 3",
+  },
+  {
+    id: "4",
+    label: "Option 4",
+  },
+];
+
+type Inputs = {
+  amount: string;
+  payee: string;
+  category: string;
+  account: string;
+  date: Dayjs | null;
+  memo: string;
+};
+
+export function AddTransactionForm() {
+  const saveMutation = useMutation({
+    mutationKey: ["saveTransaction"],
+    mutationFn: async (data: TrasactionPost) => {
+      return axios.post("/api/transaction", data).catch((error: unknown) => {
+        if (axios.isAxiosError(error) && error.response) {
+          const data = error.response.data as BaseResponse;
+          // TODO: Hotfix for the error message not being displayed.
+          toast.error("Save Failed: " + data.message);
+          throw new Error(data.message);
+        }
+        throw error;
+      });
+    },
+    onSuccess: () => {
+      toast.success("Save Successfully");
+    },
+    onError: (error) => {
+      // TODO: Somehow the error message is not displayed.
+      // toast.error(
+      //   "Save Failed: " + JSON.stringify(error)
+      // );
+    },
+  });
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>({
+    defaultValues: {
+      amount: "-0",
+      payee: "",
+      category: "",
+      account: "",
+      date: dayjs(),
+      memo: "",
+    },
+  });
+
+  const onSubmit: SubmitHandler<Inputs> = (data) => {
+    const parsedData: TrasactionPost = {
+      amount: parseFloat(data.amount),
+      payee: data.payee,
+      category: data.category,
+      account: data.account,
+      date: data.date?.toISOString() ?? null,
+      memo: data.memo,
+      type: "add_transaction_queue",
+    };
+    console.log("Submit data: ", parsedData);
+    saveMutation.mutate(parsedData);
   };
 
   return (
     <Container maxWidth="sm">
-      <div className="form-input">
-        <Typography variant="h6" gutterBottom style={{ textAlign: "center" }}>
-          Add Transaction
-        </Typography>
-      </div>
-      <div className="form-input">
-        <CurrencyTextField label="Amount " />
-      </div>
-      <div className="form-input">
-        <AutocompleteTextField label="Payee" freeSolo />
-      </div>
-      <div className="form-input">
-        <GroupAutocompleteTextField label="Category" />
-      </div>
-      <div className="form-input">
-        <AutocompleteTextField label="Account" />
-      </div>
-      <div className="form-input">
-        <DatePicker />
-      </div>
-      <div className="form-input">
-        <TextField
-          id="outlined-basic"
-          label="Memo"
-          variant="outlined"
-          fullWidth
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="form-input">
+          <Typography variant="h6" gutterBottom style={{ textAlign: "center" }}>
+            Add Transaction
+          </Typography>
+        </div>
+        <div className="form-input">
+          <CurrencyTextField control={control} name="amount" label="Amount" />
+        </div>
+        <div className="form-input">
+          <ControlledAutocompleteTextField
+            options={options}
+            control={control}
+            name="payee"
+            placeholder="Payee"
+          />
+        </div>
+        <div className="form-input">
+          <ControlledAutocompleteTextField
+            options={options}
+            control={control}
+            name="category"
+            placeholder="Category"
+          />
+        </div>
+        <div className="form-input">
+          <ControlledAutocompleteTextField
+            options={options}
+            control={control}
+            name="account"
+            placeholder="Account"
+          />
+        </div>
+        <div className="form-input">
+          {/* https://github.com/orgs/react-hook-form/discussions/10135 */}
+          <ControlledDatePicker control={control} name="date" />
+        </div>
+        <div className="form-input">
+          <TextField
+            {...register("memo")}
+            id="outlined-basic"
+            label="Memo"
+            variant="outlined"
+            fullWidth
+          />
+        </div>
+        <Toaster
+          closeButton
+          richColors
+          duration={2000}
+          position="bottom-center"
         />
-      </div>
-      <Toaster
-        closeButton
-        richColors
-        duration={2000}
-        position="bottom-center"
-      />
-      <div className="form-input mb-160">
-        <Button variant="contained" size="large" fullWidth onClick={handleSave}>
-          Save
-        </Button>
-      </div>
+        <div className="form-input">
+          <Button
+            variant="contained"
+            size="large"
+            fullWidth
+            type="submit"
+            disabled={saveMutation.isPending}
+            endIcon={<SendIcon />}
+          >
+            Add Transaction
+          </Button>
+
+          {saveMutation.isPending ? <LinearProgress /> : null}
+        </div>
+      </form>
     </Container>
   );
 }
