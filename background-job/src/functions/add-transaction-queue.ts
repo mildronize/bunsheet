@@ -1,8 +1,7 @@
 import { z } from 'zod';
 import { func } from '../nammatham';
 import { dateStringTimezone, dateTimeStringTimezone } from '../libs/dayjs';
-import { updateExistingSheet } from '../libs/google-sheet';
-import { sheetDoc } from '../bootstrap';
+import { sheetClient, sheetDoc } from '../bootstrap';
 import { env } from '../env';
 
 const transactionPostSchema = z.object({
@@ -47,14 +46,14 @@ export default func
     queueName: 'budgetqueue',
   })
   .handler(async c => {
-    const contex = c.context;
-    contex.log('Storage queue function processed work item:', c.trigger);
+    const context = c.context;
+    context.log('Storage queue function processed work item:', c.trigger);
     const triggerMetadata = c.context.triggerMetadata;
-    contex.log('Queue metadata (dequeueCount):', triggerMetadata?.dequeueCount);
-    contex.log('Queue metadata (insertionTime):', triggerMetadata?.insertionTime);
-    contex.log('Queue metadata (expirationTime):', triggerMetadata?.expirationTime);
+    context.log('Queue metadata (dequeueCount):', triggerMetadata?.dequeueCount);
+    context.log('Queue metadata (insertionTime):', triggerMetadata?.insertionTime);
+    context.log('Queue metadata (expirationTime):', triggerMetadata?.expirationTime);
     const data = transactionPostSchema.parse(c.trigger);
     const googleSheetData = parseTransactionToGoogleSheet(data);
-    contex.log('Parsed data:', googleSheetData);
-    await updateExistingSheet(sheetDoc, env.GSHEET_SHEET_TRANSACTION_SHEET_ID, googleSheetData as any);
+    context.log('Parsed data:', googleSheetData);
+    await sheetClient.transaction.append(googleSheetData);
   });
