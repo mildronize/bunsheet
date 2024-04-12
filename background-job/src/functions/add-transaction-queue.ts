@@ -44,7 +44,7 @@ function parseTransactionToGoogleSheet(data: z.infer<typeof transactionPostSchem
 export default func
   .storageQueue('addTransactionQueue', {
     connection: 'AzureWebJobsStorage',
-    queueName: 'devqueue',
+    queueName: 'budgetqueue',
   })
   .handler(async c => {
     console.log('Storage queue function processed work item:', c.trigger);
