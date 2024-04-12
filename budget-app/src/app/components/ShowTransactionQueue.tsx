@@ -23,9 +23,7 @@ export function ShowTransactionQueue() {
 
   if (transactionQueue.error) {
     return (
-      <Alert severity="error">
-        Error: {transactionQueue.error?.message}
-      </Alert>
+      <Alert severity="error">Error: {transactionQueue.error?.message}</Alert>
     );
   }
 
@@ -33,14 +31,26 @@ export function ShowTransactionQueue() {
     return <Skeleton variant="text" sx={{ fontSize: "2rem" }} />;
   }
 
-  if(transactionQueue.data?.data?.numberOfMessages === 0){
-    return <></>;
-  }
+  // if (transactionQueue.data?.data?.numberOfMessages === 0) {
+  //   return <></>;
+  // }
 
   return (
-    <Alert severity="warning">
-      Number of messages in queue:{" "}
-      {String(transactionQueue.data?.data.numberOfMessages)}
-    </Alert>
+    <>
+      {transactionQueue.data?.data?.numberOfMessages &&
+      transactionQueue.data?.data?.numberOfMessages > 0 ? (
+        <Alert severity="warning">
+          Number of messages in queue:{" "}
+          {String(transactionQueue.data?.data.numberOfMessages)}
+        </Alert>
+      ) : null}
+      {transactionQueue.data?.data?.poisonQueue?.numberOfMessages &&
+      transactionQueue.data?.data?.poisonQueue?.numberOfMessages > 0 ? (
+        <Alert severity="error">
+          Number of messages in poison queue:{" "}
+          {String(transactionQueue.data?.data.poisonQueue.numberOfMessages)}
+        </Alert>
+      ) : null}
+    </>
   );
 }

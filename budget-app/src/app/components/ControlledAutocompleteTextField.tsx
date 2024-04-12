@@ -40,6 +40,7 @@ export const ControlledAutocompleteTextField = <
         return (
           <>
             <Autocomplete
+              disabled={options.length === 0}
               value={
                 value
                   ? options.find((option) => {

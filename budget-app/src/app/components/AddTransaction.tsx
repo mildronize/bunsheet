@@ -5,6 +5,7 @@ import Container from "@mui/material/Container";
 import TextField from "@mui/material/TextField";
 import { CurrencyTextField } from "./CurrencyTextField";
 import {
+  Alert,
   Button,
   CircularProgress,
   LinearProgress,
@@ -14,32 +15,16 @@ import { GroupAutocompleteTextField } from "./GroupAutocompleteTextField";
 import { AutocompleteTextField } from "./AutocompleteTextField";
 import SendIcon from "@mui/icons-material/Send";
 import { Toaster, toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { BaseResponse } from "@/global/response";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import { ControlledAutocompleteTextField } from "./ControlledAutocompleteTextField";
 import dayjs, { Dayjs } from "dayjs";
 import { TrasactionPost } from "../api/transaction/route";
-
-const options = [
-  {
-    id: "1",
-    label: "Option 1",
-  },
-  {
-    id: "2",
-    label: "Option 2",
-  },
-  {
-    id: "3",
-    label: "Option 3",
-  },
-  {
-    id: "4",
-    label: "Option 4",
-  },
-];
+import { InferRouteResponse } from "@/types";
+import type * as SelectAccount from "@/app/api/select/account/route";
+import { catchResponseMessage } from "@/global/catchResponse";
 
 type Inputs = {
   amount: string;
@@ -50,7 +35,29 @@ type Inputs = {
   memo: string;
 };
 
+export type SelectGetResponse = InferRouteResponse<
+typeof SelectAccount.GET
+>;
+
 export function AddTransactionForm() {
+  const selectAccountGet = useQuery<SelectGetResponse>({
+    queryKey: ["selectAccountGet"],
+    queryFn: () =>
+      axios
+        .get("/api/select/account")
+        .then((res) => res.data)
+        .catch(catchResponseMessage),
+  });
+
+  const selectCategoryGet = useQuery<SelectGetResponse>({
+    queryKey: ["selectCategoryGet"],
+    queryFn: () =>
+      axios
+        .get("/api/select/category")
+        .then((res) => res.data)
+        .catch(catchResponseMessage),
+  });
+
   const saveMutation = useMutation({
     mutationKey: ["saveTransaction"],
     mutationFn: async (data: TrasactionPost) => {
@@ -78,6 +85,7 @@ export function AddTransactionForm() {
   const {
     control,
     register,
+    reset,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>({
@@ -90,6 +98,22 @@ export function AddTransactionForm() {
       memo: "",
     },
   });
+  
+  if (selectAccountGet.error) {
+    return (
+      <Alert severity="error">
+        Select Account Error: {selectAccountGet.error?.message}
+      </Alert>
+    );
+  }
+
+  if(selectCategoryGet.error) {
+    return (
+      <Alert severity="error">
+        Select Category Error: {selectCategoryGet.error?.message}
+      </Alert>
+    );
+  }
 
   const onSubmit: SubmitHandler<Inputs> = (data) => {
     const parsedData: TrasactionPost = {
@@ -103,38 +127,43 @@ export function AddTransactionForm() {
     };
     console.log("Submit data: ", parsedData);
     saveMutation.mutate(parsedData);
+    reset();
   };
 
   return (
-    <Container maxWidth="sm">
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-input">
-          <Typography variant="h6" gutterBottom style={{ textAlign: "center" }}>
-            Add Transaction
-          </Typography>
         </div>
         <div className="form-input">
           <CurrencyTextField control={control} name="amount" label="Amount" />
         </div>
         <div className="form-input">
-          <ControlledAutocompleteTextField
+          {/* TODO: Add Autocomplete with freeSolo Mode later */}
+          {/* <ControlledAutocompleteTextField
             options={options}
             control={control}
             name="payee"
             placeholder="Payee"
+          /> */}
+          <TextField
+            {...register("payee")}
+            label="Payee"
+            variant="outlined"
+            fullWidth
           />
         </div>
         <div className="form-input">
           <ControlledAutocompleteTextField
-            options={options}
+            options={selectCategoryGet.data?.data ?? []}
             control={control}
+            
             name="category"
             placeholder="Category"
           />
         </div>
         <div className="form-input">
           <ControlledAutocompleteTextField
-            options={options}
+            options={selectAccountGet.data?.data ?? []}
             control={control}
             name="account"
             placeholder="Account"
@@ -174,6 +203,5 @@ export function AddTransactionForm() {
           {saveMutation.isPending ? <LinearProgress /> : null}
         </div>
       </form>
-    </Container>
   );
 }

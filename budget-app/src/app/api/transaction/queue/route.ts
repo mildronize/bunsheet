@@ -1,15 +1,17 @@
 import { customError } from "@/global/errorHandler";
 import { globalHandler } from "@/global/globalHandler";
-import { queue } from "@/libs/azure-storage-queue";
+import { poisonQueue, queue } from "@/bootstrap";
 import { NextResponse } from "next/server";
 
 export const GET = globalHandler(async () => {
   try {
-    const numberOfMessages = await queue.length();
     return NextResponse.json({
       success: true,
       data: {
-        numberOfMessages,
+        numberOfMessages: await queue.length(),
+        poisonQueue: {
+          numberOfMessages: await poisonQueue.length(),
+        },
       },
     });
   } catch (error) {
