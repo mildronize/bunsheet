@@ -1,8 +1,7 @@
 import { z } from 'zod';
 import { func } from '../nammatham';
-import { dateStringTimezone, dateTimeStringTimezone } from '../libs/dayjs';
-import { sheetClient, sheetDoc } from '../bootstrap';
-import { env } from '../env';
+import { dateString, dateStringTimezone, dateTimeString, dateTimeStringTimezone } from '../libs/dayjs';
+import { sheetClient } from '../bootstrap';
 
 const transactionPostSchema = z.object({
   type: z.enum(['add_transaction_queue']),
@@ -34,9 +33,9 @@ function parseTransactionToGoogleSheet(data: z.infer<typeof transactionPostSchem
     Payee: data.payee ?? '',
     Category: data.category ?? '',
     Account: data.account ?? '',
-    Date: data.date ? dateStringTimezone(data.date) : '',
+    Date: data.date ? dateString(data.date) : '',
     Memo: data.memo ?? '',
-    CreatedAt: dateTimeStringTimezone(new Date()),
+    CreatedAt: dateTimeString(new Date()),
   };
 }
 
@@ -50,8 +49,6 @@ export default func
     context.log('Storage queue function processed work item:', c.trigger);
     const triggerMetadata = c.context.triggerMetadata;
     context.log('Queue metadata (dequeueCount):', triggerMetadata?.dequeueCount);
-    context.log('Queue metadata (insertionTime):', triggerMetadata?.insertionTime);
-    context.log('Queue metadata (expirationTime):', triggerMetadata?.expirationTime);
     const data = transactionPostSchema.parse(c.trigger);
     const googleSheetData = parseTransactionToGoogleSheet(data);
     context.log('Parsed data:', googleSheetData);

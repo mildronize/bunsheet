@@ -2,6 +2,7 @@ import { env } from './env';
 import { JWT } from 'google-auth-library';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { GoogleSheetRowClient } from './libs/google-sheet';
+import { z } from 'zod';
 
 /**
  * Google Sheet Service
@@ -26,6 +27,14 @@ const commonOptions = {
 export const sheetClient = {
   transaction: new GoogleSheetRowClient(sheetDoc, env.GSHEET_SHEET_TRANSACTION_SHEET_ID, {
     ...commonOptions,
-    headers: ['Date', 'Amount', 'Account', 'Category', 'Payee', 'Memo', 'CreatedAt'],
+    headers: {
+      Amount: 'number',
+      Payee: 'string',
+      Category: 'string',
+      Account: 'string',
+      Date: 'date',
+      Memo: 'string',
+      CreatedAt: 'date',
+    },
   }),
 };

@@ -1,36 +1,35 @@
-import { GoogleSpreadsheet, GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
+import { GoogleSpreadsheet, GoogleSpreadsheetRow, GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
+import { dayjsUTC } from './dayjs';
 
 /**
  * Type from google-spreadsheet package
  */
 type RowCellData = string | number | boolean | Date;
 type RawRowData = RowCellData[] | Record<string, RowCellData>;
+export type HeaderType = 'string' | 'number' | 'date';
 
-// export async function updateExistingSheet(doc: GoogleSpreadsheet, sheetId: number, row: RawRowData) {
-//   await doc.loadInfo();
-//   const sheet = doc.sheetsById[sheetId];
-//   doc.resetLocalCache();
-//   const rows = await sheet.getRows();
-//   await sheet.addRow(row);
-//   return {
-//     rowCount: rows.length,
-//   };
-// }
+type MapType<T> = T extends 'string' ? string : T extends 'number' ? number : T extends 'date' ? Date : never;
+type MapObject<T, NullType = null> = {
+  [K in keyof T]: MapType<T[K]> | NullType;
+};
 
-export interface GoogleSheetRowClientOptions<Headers extends string> {
+export interface GoogleSheetRowClientOptions<Headers extends Record<string, HeaderType>> {
   pageSize: number;
-  headers: Headers[];
+  headers: Headers;
   skipRowKeyword?: string;
 }
 
 /**
  * Google Sheet Row Client
  *
- * TODO: Type-safe Later
  */
-export class GoogleSheetRowClient<Headers extends string> {
+export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
   private sheet!: GoogleSpreadsheetWorksheet;
-  constructor(private doc: GoogleSpreadsheet, private sheetId: number, private options: GoogleSheetRowClientOptions<Headers>) {}
+  constructor(
+    private doc: GoogleSpreadsheet,
+    private sheetId: number,
+    private options: GoogleSheetRowClientOptions<Headers>
+  ) {}
 
   async prepare() {
     await this.doc.loadInfo();
@@ -41,13 +40,61 @@ export class GoogleSheetRowClient<Headers extends string> {
     this.doc.resetLocalCache();
   }
 
-  async append(row: Record<Headers, unknown>) {
+  async append(row: Record<keyof Headers, unknown>) {
     await this.prepare();
     const rows = await this.sheet.getRows();
     await this.sheet.addRow(row as RawRowData);
     return {
       rowCount: rows.length,
     };
+  }
+
+  private processCell(
+    row: GoogleSpreadsheetRow<Record<string, any>>,
+    header: string,
+    headerType: HeaderType
+  ): {
+    isSkip: boolean;
+    value?: string | number | Date | null;
+  } {
+    const cellValue = row.get(header);
+    if (cellValue === this.options.skipRowKeyword) {
+      return {
+        isSkip: true,
+      };
+    }
+    if (headerType === 'date') {
+      return {
+        isSkip: false,
+        value: cellValue ? dayjsUTC(cellValue).toDate() : null,
+      };
+    }
+    if (headerType === 'number') {
+      return {
+        isSkip: false,
+        value: cellValue ? Number(cellValue) : null,
+      };
+    }
+
+    return {
+      isSkip: false,
+      value: cellValue,
+    };
+  }
+
+  private async processRow(row: GoogleSpreadsheetRow<Record<string, any>>) {
+    const obj: Record<string, unknown> = {};
+    let isSkip = false;
+    for (const header of Object.keys(this.options.headers)) {
+      const cellValue = this.processCell(row, header, this.options.headers[header]);
+      if (cellValue.isSkip) {
+        isSkip = true;
+        break;
+      }
+      obj[header] = cellValue.value;
+    }
+    if (isSkip) return undefined;
+    return obj;
   }
 
   // TODO: Refactor to AsyncGenerator later
@@ -63,26 +110,14 @@ export class GoogleSheetRowClient<Headers extends string> {
         limit: this.options.pageSize,
       });
       for (const row of rows) {
-        const obj: Record<string, unknown> = {};
-        let isSkip = false;
-        for (const header of this.options.headers) {
-          const cellValue = row.get(header);
-          if (cellValue === this.options.skipRowKeyword) {
-            isSkip = true;
-            break;
-          }
-          obj[header] = cellValue;
-        }
-        if (isSkip) {
-          continue;
-        }
-        data.push(obj);
+        const obj = await this.processRow(row);
+        if (obj) data.push(obj);
       }
       offset += this.options.pageSize;
       if (rows.length < this.options.pageSize) {
         isLoop = false;
       }
     }
-    return data as Record<Headers, string>[];
+    return data as MapObject<Headers>[];
   }
 }
