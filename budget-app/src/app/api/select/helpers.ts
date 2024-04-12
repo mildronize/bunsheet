@@ -12,7 +12,10 @@ export async function getSelectFromAzureTableByType(type: string) {
   const data = [];
   for await (const entity of tableResult) {
     data.push({
-      id: entity.id,
+      /**
+       * It will use the ID later, currently use label as value for setting into google sheet
+       */
+      id: entity.label,
       label: entity.label,
       order: entity.order,
     });
