@@ -21,6 +21,17 @@ export const queue = new AzureStorageQueue(
 );
 
 /**
+ * Azure Storage Queue Poison Client
+ * 
+ * This queue is used to store the failed messages
+ * Automatically created by the Azure Function
+ */
+export const poisonQueue = new AzureStorageQueue(
+  queueServiceClient,
+  `${env.AZURE_STORAGE_QUEUE_NAME}-poison`
+);
+
+/**
  * Azure Table Client
  */
 const selectTableClient = TableClient.fromConnectionString(env.AZURE_STORAGE_CONNECTION_STRING, env.AZURE_STORAGE_TABLE_BUDGET_TABLE_NAME);

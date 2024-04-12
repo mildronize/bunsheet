@@ -156,6 +156,7 @@ export function AddTransactionForm() {
           <ControlledAutocompleteTextField
             options={selectCategoryGet.data?.data ?? []}
             control={control}
+            
             name="category"
             placeholder="Category"
           />
