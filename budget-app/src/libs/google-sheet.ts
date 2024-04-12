@@ -1,3 +1,5 @@
+import { env } from "@/env";
+import { JWT } from "google-auth-library";
 import type { GoogleSpreadsheet } from "google-spreadsheet";
 
 export interface GoogleSheetDatabaseOption {

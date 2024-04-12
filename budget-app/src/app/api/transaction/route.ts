@@ -1,10 +1,11 @@
 import { customError } from "@/global/errorHandler";
 import { globalHandler } from "@/global/globalHandler";
-import { queue } from "@/libs/azure-storage-queue";
+import { queue, sheetDoc } from "@/bootstrap";
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { updateExistingSheet } from "@/libs/google-sheet";
+import { env } from "@/env";
 
-//
 /**
  *  NOTE: Cannot be export in `route.ts` file 
  *  src/app/api/transaction/route.ts
@@ -32,4 +33,12 @@ export const POST = globalHandler(async (req) => {
   } catch (error) {
     throw customError(error, "Failed to send message to the queue");
   }
+});
+
+export const GET = globalHandler(async (req) => {
+  const result = await updateExistingSheet(sheetDoc, env.GSHEET_SHEET_TRANSACTION_SHEET_ID);
+  return NextResponse.json({
+    message: "OK",
+    result,
+  });
 });

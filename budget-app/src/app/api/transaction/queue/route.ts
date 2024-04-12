@@ -1,6 +1,6 @@
 import { customError } from "@/global/errorHandler";
 import { globalHandler } from "@/global/globalHandler";
-import { queue } from "@/libs/azure-storage-queue";
+import { queue } from "@/bootstrap";
 import { NextResponse } from "next/server";
 
 export const GET = globalHandler(async () => {

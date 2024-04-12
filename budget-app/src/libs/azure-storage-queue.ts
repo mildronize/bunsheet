@@ -66,11 +66,3 @@ export class AzureStorageQueue {
   }
 }
 
-const queueServiceClient = QueueServiceClient.fromConnectionString(
-  env.AZURE_STORAGE_CONNECTION_STRING
-);
-
-export const queue = new AzureStorageQueue(
-  queueServiceClient,
-  env.AZURE_STORAGE_QUEUE_NAME
-);
