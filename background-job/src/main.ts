@@ -9,6 +9,7 @@ app.addFunctions(addTransactionQueue, cacheCategory);
 const dev = process.env.NODE_ENV === 'development';
 app.register(
   expressPlugin({
+    port: 4000,
     dev,
     allowAllFunctionsAccessByHttp: true,
   })

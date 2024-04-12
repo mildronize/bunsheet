@@ -17,6 +17,14 @@ function parseGSheetId(value: unknown, name?: string): number {
 
 export const envSchema = z.object({
   /**
+   * Azure Storage Account Connection String or Azure WebJobs Storage
+   */
+  AzureWebJobsStorage: z.string().default('UseDevelopmentStorage=true'),
+  /**
+   * Azure Storage Table Name, Transaction Cache Table
+   */
+  AZURE_STORAGE_TABLE_TRANSACTION_CACHE_TABLE_NAME: z.string().default('BudgetTransactionCache'),
+  /**
    *  Google Sheet Private Key
    *
    *  NOTE:

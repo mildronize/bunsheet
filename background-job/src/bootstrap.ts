@@ -2,7 +2,6 @@ import { env } from './env';
 import { JWT } from 'google-auth-library';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { GoogleSheetRowClient } from './libs/google-sheet';
-import { z } from 'zod';
 
 /**
  * Google Sheet Service
@@ -34,7 +33,7 @@ export const sheetClient = {
       Account: 'string',
       Date: 'date',
       Memo: 'string',
-      CreatedAt: 'date',
+      UpdatedAt: 'date',
     },
   }),
 };

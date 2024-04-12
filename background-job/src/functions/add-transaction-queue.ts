@@ -2,25 +2,28 @@ import { z } from 'zod';
 import { func } from '../nammatham';
 import { dateString, dateStringTimezone, dateTimeString, dateTimeStringTimezone } from '../libs/dayjs';
 import { sheetClient } from '../bootstrap';
+import { v4 as uuid } from 'uuid';
 
 const transactionPostSchema = z.object({
   type: z.enum(['add_transaction_queue']),
-  amount: z.number(),
-  payee: z.string().nullable(),
-  category: z.string().nullable(),
-  account: z.string().nullable(),
-  date: z.string().datetime().nullable(),
-  memo: z.string().nullable(),
+  id: z.string().optional().nullable(),
+  amount: z.number().optional().nullable(),
+  payee: z.string().optional().nullable(),
+  category: z.string().optional().nullable(),
+  account: z.string().optional().nullable(),
+  date: z.string().datetime().optional().nullable(),
+  memo: z.string().optional().nullable(),
 });
 
 export interface GsheetTransactionModel {
+  Id: string;
   Amount: number;
   Payee: string;
   Category: string;
   Account: string;
   Date: string;
   Memo: string;
-  CreatedAt: string;
+  UpdatedAt: string;
 }
 
 function parseTransactionToGoogleSheet(data: z.infer<typeof transactionPostSchema>): GsheetTransactionModel {
@@ -29,13 +32,14 @@ function parseTransactionToGoogleSheet(data: z.infer<typeof transactionPostSchem
      * Transaction amount is negative, however,
      * we need to store it as positive for better experience while using only google sheet
      */
-    Amount: parseFloat(data.amount.toFixed(2)) * -1,
+    Id: data.id ? data.id : uuid(),
+    Amount: data.amount ? parseFloat(data.amount.toFixed(2)) * -1 : 0,
     Payee: data.payee ?? '',
     Category: data.category ?? '',
     Account: data.account ?? '',
     Date: data.date ? dateString(data.date) : '',
     Memo: data.memo ?? '',
-    CreatedAt: dateTimeString(new Date()),
+    UpdatedAt: dateTimeString(new Date()),
   };
 }
 
