@@ -82,7 +82,7 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
     };
   }
 
-  private async processRow(row: GoogleSpreadsheetRow<Record<string, any>>) {
+  private processRow(row: GoogleSpreadsheetRow<Record<string, any>>) {
     const obj: Record<string, unknown> = {};
     let isSkip = false;
     for (const header of Object.keys(this.options.headers)) {
@@ -97,11 +97,8 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
     return obj;
   }
 
-  // TODO: Refactor to AsyncGenerator later
-
-  async readAll() {
+  async *readAll(): AsyncGenerator<MapObject<Headers>, void, unknown> {
     await this.prepare();
-    const data = [];
     let isLoop = true;
     let offset = 0;
     while (isLoop) {
@@ -110,14 +107,13 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
         limit: this.options.pageSize,
       });
       for (const row of rows) {
-        const obj = await this.processRow(row);
-        if (obj) data.push(obj);
+        const obj = this.processRow(row);
+        if (obj) yield obj as MapObject<Headers>;
       }
       offset += this.options.pageSize;
       if (rows.length < this.options.pageSize) {
         isLoop = false;
       }
     }
-    return data as MapObject<Headers>[];
   }
 }

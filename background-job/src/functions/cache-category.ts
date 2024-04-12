@@ -5,10 +5,11 @@ import { sheetClient, sheetDoc } from '../bootstrap';
 export default func.httpGet('cacheCategory').handler(async c => {
   const context = c.context;
 
-  const data = await sheetClient.transaction.readAll();
+  const asyncData = sheetClient.transaction.readAll();
 
-  for(const item of data) {
-    console.log(item);
+  const data = [];
+  for await (const item of asyncData) {
+    data.push(item);
   }
   // const data = await readRows(sheetDoc, 681580727);
   return c.json({
