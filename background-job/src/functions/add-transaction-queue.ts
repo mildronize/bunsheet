@@ -47,13 +47,14 @@ export default func
     queueName: 'budgetqueue',
   })
   .handler(async c => {
-    console.log('Storage queue function processed work item:', c.trigger);
+    const contex = c.context;
+    contex.log('Storage queue function processed work item:', c.trigger);
     const triggerMetadata = c.context.triggerMetadata;
-    console.log('Queue metadata (dequeueCount):', triggerMetadata?.dequeueCount);
-    console.log('Queue metadata (insertionTime):', triggerMetadata?.insertionTime);
-    console.log('Queue metadata (expirationTime):', triggerMetadata?.expirationTime);
+    contex.log('Queue metadata (dequeueCount):', triggerMetadata?.dequeueCount);
+    contex.log('Queue metadata (insertionTime):', triggerMetadata?.insertionTime);
+    contex.log('Queue metadata (expirationTime):', triggerMetadata?.expirationTime);
     const data = transactionPostSchema.parse(c.trigger);
     const googleSheetData = parseTransactionToGoogleSheet(data);
-    console.log('Parsed data:', googleSheetData);
+    contex.log('Parsed data:', googleSheetData);
     await updateExistingSheet(sheetDoc, env.GSHEET_SHEET_TRANSACTION_SHEET_ID, googleSheetData as any);
   });
