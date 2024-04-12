@@ -47,6 +47,11 @@ export const envSchema = z.object({
   AZURE_STORAGE_QUEUE_NAME: z.string().default("budgetqueue"),
 
   /**
+   * Azure Storage Table Name
+   */
+  AZURE_STORAGE_TABLE_BUDGET_TABLE_NAME: z.string().default("BudgetSelect"),
+
+  /**
    *  Google Sheet Private Key
    *
    *  NOTE:

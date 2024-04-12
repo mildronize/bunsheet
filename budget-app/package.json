@@ -10,6 +10,7 @@
     "azurite": "npx azurite --silent --location ./.azurite --debug ./.azurite/debug.log"
   },
   "dependencies": {
+    "@azure/data-tables": "^13.2.2",
     "@azure/identity": "^4.0.1",
     "@azure/storage-queue": "^12.16.0",
     "@emotion/react": "^11.11.4",
@@ -30,6 +31,7 @@
     "react-hook-form": "^7.51.2",
     "react-number-format": "^5.3.4",
     "sonner": "^1.4.41",
+    "ts-odata-client": "^2.0.2",
     "vaul": "^0.9.0",
     "zod": "^3.22.4",
     "zod-validation-error": "^3.1.0"

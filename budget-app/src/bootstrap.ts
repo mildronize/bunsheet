@@ -3,6 +3,9 @@ import { env } from "./env";
 import { AzureStorageQueue } from "./libs/azure-storage-queue";
 import { JWT } from "google-auth-library";
 import { GoogleSpreadsheet } from "google-spreadsheet";
+import { TableClient } from "@azure/data-tables";
+import { AzureTable } from "./libs/azure-table";
+import { SelectEntity } from "./entites/select.entity";
 
 /**
  * Azure Storage Queue Client
@@ -17,6 +20,11 @@ export const queue = new AzureStorageQueue(
   env.AZURE_STORAGE_QUEUE_NAME
 );
 
+/**
+ * Azure Table Client
+ */
+const selectTableClient = TableClient.fromConnectionString(env.AZURE_STORAGE_CONNECTION_STRING, env.AZURE_STORAGE_TABLE_BUDGET_TABLE_NAME);
+export const selectTable = new AzureTable<SelectEntity>(selectTableClient);
 /**
  * Google Sheet Service
  */

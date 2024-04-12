@@ -117,11 +117,18 @@ export function AddTransactionForm() {
           <CurrencyTextField control={control} name="amount" label="Amount" />
         </div>
         <div className="form-input">
-          <ControlledAutocompleteTextField
+          {/* TODO: Add Autocomplete with freeSolo Mode later */}
+          {/* <ControlledAutocompleteTextField
             options={options}
             control={control}
             name="payee"
             placeholder="Payee"
+          /> */}
+          <TextField
+            {...register("payee")}
+            label="Payee"
+            variant="outlined"
+            fullWidth
           />
         </div>
         <div className="form-input">
