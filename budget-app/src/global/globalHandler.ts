@@ -32,6 +32,8 @@ export function globalHandler<TResponse extends BaseResponse>(
           ? err.stack
           : undefined;
 
+      console.error('Error:', err);
+
       return NextResponse.json(
         {
           message: message,
