@@ -37,9 +37,9 @@ function parseTransactionToGoogleSheet(data: z.infer<typeof transactionPostSchem
     Payee: data.payee ?? '',
     Category: data.category ?? '',
     Account: data.account ?? '',
-    Date: data.date ? dateString(data.date) : '',
+    Date: data.date ? dateStringTimezone(data.date) : '',
     Memo: data.memo ?? '',
-    UpdatedAt: dateTimeString(new Date()),
+    UpdatedAt: dateTimeStringTimezone(new Date()),
   };
 }
 
