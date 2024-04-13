@@ -14,6 +14,7 @@
   "author": "Thada Wangthammang",
   "license": "MIT",
   "dependencies": {
+    "@azure/data-tables": "^13.2.2",
     "@azure/functions": "^4.1.0",
     "dayjs": "^1.11.10",
     "google-auth-library": "^9.4.1",
