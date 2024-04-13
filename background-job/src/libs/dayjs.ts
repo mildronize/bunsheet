@@ -21,10 +21,10 @@ export function dateString(date?: dayjs.ConfigType) {
 }
 
 export function dateStringTimezone(date?: dayjs.ConfigType) {
-  return dayjs(date).tz(defaultTimezone, true).format('MM/DD/YYYY');
+  return dayjsUTC(date).tz(defaultTimezone).format('MM/DD/YYYY');
 }
 
 export function dateTimeStringTimezone(date?: dayjs.ConfigType) {
-  return dayjs(date).tz(defaultTimezone, true).format('MM/DD/YYYY HH:mm:ss');
+  return dayjsUTC(date).tz(defaultTimezone).format('MM/DD/YYYY HH:mm:ss');
 }
 
