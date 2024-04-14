@@ -5,7 +5,7 @@ import { GoogleSheetRowClient } from './libs/google-sheet';
 import { TableClient } from '@azure/data-tables';
 import { AzureTable } from './libs/azure-table';
 import { TransactionCacheEntity } from './entities/transaction.entity';
-import { TableCache } from './libs/table-cache';
+// import { TableCache } from './libs/table-cache';
 import { AzureTableCache } from './libs/azure-table-cache';
 
 /**
@@ -47,10 +47,13 @@ export const sheetClient = {
 /**
  * Azure Table Service
  */
-const transactionCacheTableClient = TableClient.fromConnectionString(env.AzureWebJobsStorage, env.AZURE_STORAGE_TABLE_TRANSACTION_CACHE_TABLE_NAME);
+const transactionCacheTableClient = TableClient.fromConnectionString(
+  env.AzureWebJobsStorage,
+  env.AZURE_STORAGE_TABLE_TRANSACTION_CACHE_TABLE_NAME
+);
 export const transactionCacheTable = new AzureTable<TransactionCacheEntity>(transactionCacheTableClient);
 
-export const transactionTableCache = new TableCache(new AzureTableCache(transactionCacheTable), {
+export const transactionTableCache = new AzureTableCache(transactionCacheTable, {
   /**
    * Default field in Azure Table
    */
