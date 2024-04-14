@@ -1,5 +1,11 @@
 // Duplicate code from `budget-app` project, use monorepo later
-import { ListTableEntitiesOptions, TableClient, TableServiceClientOptions, TableTransaction } from '@azure/data-tables';
+import {
+  ListTableEntitiesOptions,
+  TableClient,
+  TableServiceClientOptions,
+  TableTransaction,
+  UpdateMode,
+} from '@azure/data-tables';
 
 export interface AzureTableEntityBase {
   partitionKey: string;
@@ -53,6 +59,10 @@ export class AzureTable<TEntity extends AzureTableEntityBase> {
     return this.client.createEntity<TEntity>(entity);
   }
 
+  async update(entity: TEntity, mode: UpdateMode = 'Replace') {
+    return this.client.updateEntity<TEntity>(entity, mode);
+  }
+
   /**
    * All operations in a transaction must target the same partitionKey
    */
@@ -74,15 +84,12 @@ export class AzureTable<TEntity extends AzureTableEntityBase> {
    * @returns
    */
   groupPartitionKey(entities: TEntity[]) {
-    return entities.reduce(
-      (acc, cur) => {
-        if (!acc[cur.partitionKey]) {
-          acc[cur.partitionKey] = [];
-        }
-        acc[cur.partitionKey].push(cur);
-        return acc;
-      },
-      {} as Record<string, TEntity[]>
-    );
+    return entities.reduce((acc, cur) => {
+      if (!acc[cur.partitionKey]) {
+        acc[cur.partitionKey] = [];
+      }
+      acc[cur.partitionKey].push(cur);
+      return acc;
+    }, {} as Record<string, TEntity[]>);
   }
 }

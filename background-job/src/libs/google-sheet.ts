@@ -1,4 +1,5 @@
 import { GoogleSpreadsheet, GoogleSpreadsheetRow, GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
+import numbro from 'numbro';
 import { dayjsUTC } from './dayjs';
 
 /**
@@ -72,7 +73,7 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
     if (headerType === 'number') {
       return {
         isSkip: false,
-        value: cellValue ? Number(cellValue) : null,
+        value: cellValue ? numbro(cellValue).value() : null,
       };
     }
 

@@ -2,6 +2,11 @@ import { env } from './env';
 import { JWT } from 'google-auth-library';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { GoogleSheetRowClient } from './libs/google-sheet';
+import { TableClient } from '@azure/data-tables';
+import { AzureTable } from './libs/azure-table';
+import { TransactionCacheEntity } from './entities/transaction.entity';
+import { TableCache } from './libs/table-cache';
+import { AzureTableCache } from './libs/azure-table-cache';
 
 /**
  * Google Sheet Service
@@ -27,6 +32,7 @@ export const sheetClient = {
   transaction: new GoogleSheetRowClient(sheetDoc, env.GSHEET_SHEET_TRANSACTION_SHEET_ID, {
     ...commonOptions,
     headers: {
+      Id: 'string',
       Amount: 'number',
       Payee: 'string',
       Category: 'string',
@@ -37,3 +43,16 @@ export const sheetClient = {
     },
   }),
 };
+
+/**
+ * Azure Table Service
+ */
+const transactionCacheTableClient = TableClient.fromConnectionString(env.AzureWebJobsStorage, env.AZURE_STORAGE_TABLE_TRANSACTION_CACHE_TABLE_NAME);
+export const transactionCacheTable = new AzureTable<TransactionCacheEntity>(transactionCacheTableClient);
+
+export const transactionTableCache = new TableCache(new AzureTableCache(transactionCacheTable), {
+  /**
+   * Default field in Azure Table
+   */
+  lastUpdatedField: 'timestamp',
+});
