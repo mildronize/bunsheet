@@ -3,11 +3,11 @@ import { sheetClient, transactionCacheTable, transactionTableCache } from '../bo
 import dayjs from 'dayjs';
 
 export default func
-  .timer('cacheTransaction', {
+  .timer('cache', {
     /**
-     * Every day at midnight UTC+0
+     * Every hour
      */
-    schedule: '0 0 * * *'
+    schedule: '0 * * * *'
   })
   .handler(async c => {
     const context = c.context;
