@@ -1,10 +1,13 @@
 import { customError } from "@/global/errorHandler";
 import { globalHandler } from "@/global/globalHandler";
-import { queue, sheetDoc } from "@/bootstrap";
+import { queue, sheetDoc, transactionCacheTable } from "@/bootstrap";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { updateExistingSheet } from "@/libs/google-sheet";
 import { env } from "@/env";
+import { ODataExpression } from "ts-odata-client";
+import { TransactionCacheEntity } from "@/entites/transaction.entity";
+import dayjs from "dayjs";
 
 /**
  *  NOTE: Cannot be export in `route.ts` file 
@@ -36,9 +39,27 @@ export const POST = globalHandler(async (req) => {
 });
 
 export const GET = globalHandler(async (req) => {
-  const result = await updateExistingSheet(sheetDoc, env.GSHEET_SHEET_TRANSACTION_SHEET_ID);
+  /**
+   * List last 7 days transactions
+   */
+  const rows: Partial<TransactionCacheEntity>[] = [];
+  for await (const row of transactionCacheTable.list({
+    filter: `date ge datetime'${dayjs().subtract(7, "day").toISOString()}'`,
+  })) {
+    rows.push({
+      account: row.account,
+      amount: row.amount,
+      category: row.category,
+      date: row.date,
+      memo: row.memo,
+      payee: row.payee,
+    });
+  }
+
+  const sorted = rows.toSorted((a, b) => dayjs(b.date).unix() - dayjs(a.date).unix()).slice(0, 20);
   return NextResponse.json({
     message: "OK",
-    result,
+    count: sorted.length,
+    data: sorted,
   });
 });
