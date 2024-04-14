@@ -7,6 +7,7 @@ export interface UpdatedStats {
   inserted: number;
   updated: number;
   skipped: number;
+  deleted: number;
 }
 
 export abstract class TableCacheDataStore implements Required<TableCacheOptions> {

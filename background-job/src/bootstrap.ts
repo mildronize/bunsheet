@@ -7,6 +7,7 @@ import { AzureTable } from './libs/azure-table';
 import { TransactionCacheEntity } from './entities/transaction.entity';
 // import { TableCache } from './libs/table-cache';
 import { AzureTableCache } from './libs/azure-table-cache';
+import { CacheService } from './services/cache.service';
 
 /**
  * Google Sheet Service

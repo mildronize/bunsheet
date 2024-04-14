@@ -117,4 +117,19 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
       }
     }
   }
+
+  /**
+   * Note: This function is not optimized for large data
+   *
+   */
+
+  async getRowIds(): Promise<Set<string>> {
+    await this.prepare();
+    const ids = new Set<string>();
+    for await (const row of this.readAll()) {
+      const cellValue = String(row.Id);
+      ids.add(cellValue);
+    }
+    return ids;
+  }
 }

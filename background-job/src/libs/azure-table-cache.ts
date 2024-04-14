@@ -3,12 +3,17 @@ import { AzureTable, AzureTableEntityBase } from './azure-table';
 import { TableCacheDataStore, TableCacheOptions, UpdatedStats } from './table-cache';
 import dayjs from 'dayjs';
 
+export type UpdateMode = 'normal' | 'insertOnly';
 /**
  * Generic Azure Table Cache class
  */
 export class AzureTableCache<TEntity extends AzureTableEntityBase> extends TableCacheDataStore {
   constructor(private table: AzureTable<TEntity>, options?: TableCacheOptions) {
     super(options);
+  }
+
+  async init() {
+    await this.table.createTable();
   }
 /**
  * Update the row in the cache store, if the row is not exists then it will create a new row
@@ -18,12 +23,13 @@ export class AzureTableCache<TEntity extends AzureTableEntityBase> extends Table
  * @param data
  * @returns
  */
-  async updateWhenExpired(id: string | AzureTableEntityBase, data: Record<string, unknown>): Promise<UpdatedStats> {
+  async updateWhenExpired(id: string | AzureTableEntityBase, data: Record<string, unknown>, mode: UpdateMode = 'normal'): Promise<UpdatedStats> {
     if (typeof id === 'string') throw new Error('AzureTableCache: id must be an object of AzureTableEntityBase');
     const stats: UpdatedStats = {
       inserted: 0,
       updated: 0,
       skipped: 0,
+      deleted: 0,
     };
     const rowTable = await this.getRow(id);
     if (!rowTable) {
@@ -32,7 +38,7 @@ export class AzureTableCache<TEntity extends AzureTableEntityBase> extends Table
         ...id,
       });
       stats.inserted++;
-    } else {
+    } else if (mode === 'normal') {
       const cacheDuration = this.cacheDuration;
       const lastUpdatedField = this.lastUpdatedField;
       let isExipred = false;
@@ -56,6 +62,11 @@ export class AzureTableCache<TEntity extends AzureTableEntityBase> extends Table
       }
     }
     return stats;
+  }
+
+  async delete(id: string | AzureTableEntityBase) {
+    if (typeof id === 'string') throw new Error('AzureTableCache: id must be an object of AzureTableEntityBase');
+    await this.table.client.deleteEntity(id.partitionKey, id.rowKey);
   }
 
   async update(id: string | AzureTableEntityBase, data: Record<string, unknown>) {
