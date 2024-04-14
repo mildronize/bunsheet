@@ -1,11 +1,13 @@
-import { GoogleSpreadsheet } from 'google-spreadsheet';
 import { func } from '../nammatham';
-import { sheetClient, sheetDoc, transactionCacheTable, transactionTableCache } from '../bootstrap';
+import { sheetClient, transactionCacheTable, transactionTableCache } from '../bootstrap';
 import dayjs from 'dayjs';
 
 export default func
-  .httpGet('cacheCategory', {
-    authLevel: 'function',
+  .timer('cacheTransaction', {
+    /**
+     * Every day at midnight UTC+0
+     */
+    schedule: '0 0 * * *'
   })
   .handler(async c => {
     const context = c.context;
@@ -20,12 +22,18 @@ export default func
 
     for await (const rowSheet of sheetGenerator) {
       const partitionKey = dayjs(rowSheet.Date).format('YYYY');
+      if(!rowSheet.Id) {
+        stats.skipped++;
+        context.log('Skipping row without Id: ' + JSON.stringify(rowSheet));
+        continue;
+      }
       const tempStats = await transactionTableCache.updateWhenExpired(
         {
           partitionKey,
-          rowKey: rowSheet.Id ?? '',
+          rowKey: rowSheet.Id,
         },
         {
+          id: rowSheet.Id,
           amount: rowSheet.Amount,
           payee: rowSheet.Payee,
           category: rowSheet.Category,
@@ -40,8 +48,5 @@ export default func
       stats.skipped += tempStats.skipped;
     }
 
-    return c.json({
-      stats,
-      message: 'OK',
-    });
+    context.log('Stats: ' + JSON.stringify(stats));
   });
