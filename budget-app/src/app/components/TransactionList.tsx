@@ -10,12 +10,13 @@ import dayjs from "dayjs";
 
 /**
  * Hotfix for uuid gen
- * @param length 
- * @returns 
+ * @param length
+ * @returns
  */
 function generateRandomString(length: number) {
-  let result = '';
-  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = "";
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   const charactersLength = characters.length;
   for (let i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * charactersLength));
@@ -49,7 +50,11 @@ export function TransactionList(props: TransactionListProps) {
               </Avatar>
             </ListItemAvatar>
             <ListItemText
-              primary={item.category}
+              primary={
+                item.category || item.category !== ""
+                  ? item.category
+                  : "No Category Needed"
+              }
               secondary={
                 <React.Fragment>
                   <Typography
@@ -60,9 +65,11 @@ export function TransactionList(props: TransactionListProps) {
                   >
                     {item.payee}
                   </Typography>
-                  {` — ${item.amount} on ${dayjs(item.date).format(
-                    "YYYY-MM-DD"
-                  )}`}
+                  {` — ${item.amount} on ${dayjs(item.date).format("MMM DD")}`}
+                  {dayjs().year().toString() !==
+                  dayjs(item.date).year().toString()
+                    ? `, ${dayjs(item.date).year()}`
+                    : ""}
                 </React.Fragment>
               }
             />
@@ -70,28 +77,6 @@ export function TransactionList(props: TransactionListProps) {
           <Divider variant="inset" component="li" />
         </div>
       ))}
-      {/* <ListItem alignItems="flex-start">
-        <ListItemAvatar>
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-        </ListItemAvatar>
-        <ListItemText
-          primary="Brunch this weekend?"
-          secondary={
-            <React.Fragment>
-              <Typography
-                sx={{ display: 'inline' }}
-                component="span"
-                variant="body2"
-                color="text.primary"
-              >
-                Ali Connors
-              </Typography>
-              {" — I'll be in your neighborhood doing errands this…"}
-            </React.Fragment>
-          }
-        />
-      </ListItem>
-      <Divider variant="inset" component="li" /> */}
     </List>
   );
 }

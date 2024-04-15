@@ -56,7 +56,9 @@ export const GET = globalHandler(async (req) => {
     });
   }
 
-  const sorted = rows.toSorted((a, b) => dayjs(b.date).unix() - dayjs(a.date).unix()).slice(0, 20);
+  const sorted = rows
+    .toSorted((a, b) => dayjs(b.date).unix() - dayjs(a.date).unix())
+    .slice(0, 30);
   return NextResponse.json({
     message: "OK",
     count: sorted.length,
