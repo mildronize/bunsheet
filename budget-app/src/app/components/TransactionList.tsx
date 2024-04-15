@@ -53,7 +53,7 @@ export function TransactionList(props: TransactionListProps) {
               primary={
                 item.category || item.category !== ""
                   ? item.category
-                  : "No Category Needed"
+                  : "No Category"
               }
               secondary={
                 <React.Fragment>

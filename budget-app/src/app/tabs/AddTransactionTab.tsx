@@ -198,7 +198,7 @@ export function AddTransactionTab() {
           >
             Add Transaction
           </Button> */}
-          <Box sx={{ position: "fixed", bottom: 80, right: 25, zIndex: 100 }}>
+          <Box sx={{ position: "fixed", bottom: 100, right: 25, zIndex: 100 }}>
             <Fab
               variant="extended"
               color="primary"
