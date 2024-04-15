@@ -2,13 +2,14 @@
 import { catchResponseMessage } from "@/global/catchResponse";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
-import { TransactionList } from "./TransactionList";
+import { TransactionList } from "../components/TransactionList";
 import { InferRouteResponse } from "@/types";
 import * as Transaction from "@/app/api/transaction/route";
+import { Typography } from "@mui/material";
 
 export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
 
-export function TransactionListSection() {
+export function RecentTransactionTab() {
   const transactionList = useQuery<TransactionGetResponse>({
     queryKey: ["transactionList"],
     queryFn: () =>
@@ -20,7 +21,9 @@ export function TransactionListSection() {
 
   return (
     <div>
-      <h1>Transaction List Section</h1>
+      <Typography variant="h6" gutterBottom>
+        Recent Transactions
+      </Typography>
       <TransactionList data={transactionList.data?.data ?? []} />
     </div>
   );

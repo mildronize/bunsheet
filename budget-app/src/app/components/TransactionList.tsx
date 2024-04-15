@@ -16,17 +16,18 @@ export interface TransactionListProps {
     amount?: number;
     payee?: string;
     account?: string;
+    memo?: string;
   }[];
 }
 
 export function TransactionList(props: TransactionListProps) {
   return (
-    <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+    <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
       {props.data.map((item) => (
         <div key={item.id}>
           <ListItem alignItems="flex-start">
             <ListItemAvatar>
-              <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
+              <Avatar >{item.category ? item.category?.slice(0,2): item.payee?.slice(0,2)}</Avatar>
             </ListItemAvatar>
             <ListItemText
               primary={item.category}
