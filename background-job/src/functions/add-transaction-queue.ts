@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import { func } from '../nammatham';
 import { dateString, dateStringTimezone, dateTimeString, dateTimeStringTimezone } from '../libs/dayjs';
-import { sheetClient } from '../bootstrap';
+import { sheetClient, transactionTableCache } from '../bootstrap';
 import { v4 as uuid } from 'uuid';
+import { CacheService } from '../services/cache.service';
 
 const transactionPostSchema = z.object({
   type: z.enum(['add_transaction_queue']),
@@ -57,4 +58,7 @@ export default func
     const googleSheetData = parseTransactionToGoogleSheet(data);
     context.log('Parsed data:', googleSheetData);
     await sheetClient.transaction.append(googleSheetData);
+    context.log('Transaction added to google sheet');
+    await new CacheService(c.context, sheetClient, transactionTableCache).updateWhenExpired('insertOnly');
+    context.log('Cache updated');
   });

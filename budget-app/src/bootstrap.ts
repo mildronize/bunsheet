@@ -6,6 +6,7 @@ import { GoogleSpreadsheet } from "google-spreadsheet";
 import { TableClient } from "@azure/data-tables";
 import { AzureTable } from "./libs/azure-table";
 import { SelectEntity } from "./entites/select.entity";
+import { TransactionCacheEntity } from "./entites/transaction.entity";
 
 /**
  * Azure Storage Queue Client
@@ -22,7 +23,7 @@ export const queue = new AzureStorageQueue(
 
 /**
  * Azure Storage Queue Poison Client
- * 
+ *
  * This queue is used to store the failed messages
  * Automatically created by the Azure Function
  */
@@ -34,8 +35,19 @@ export const poisonQueue = new AzureStorageQueue(
 /**
  * Azure Table Client
  */
-const selectTableClient = TableClient.fromConnectionString(env.AZURE_STORAGE_CONNECTION_STRING, env.AZURE_STORAGE_TABLE_BUDGET_TABLE_NAME);
-export const selectTable = new AzureTable<SelectEntity>(selectTableClient);
+
+export const selectTable = new AzureTable<SelectEntity>(
+  TableClient.fromConnectionString(
+    env.AZURE_STORAGE_CONNECTION_STRING,
+    env.AZURE_STORAGE_TABLE_BUDGET_TABLE_NAME
+  )
+);
+export const transactionCacheTable = new AzureTable<TransactionCacheEntity>(
+  TableClient.fromConnectionString(
+    env.AZURE_STORAGE_CONNECTION_STRING,
+    env.AZURE_STORAGE_TABLE_TRANSACTION_CACHE_TABLE_NAME
+  )
+);
 /**
  * Google Sheet Service
  */
@@ -56,8 +68,3 @@ export const sheetDoc = new GoogleSpreadsheet(
   env.GSHEET_SPREADSHEET_ID,
   serviceAccountAuth
 );
-
-// container
-//   .bind<GoogleSpreadsheet>(Tokens.GoogleSpreadsheet)
-//     .toConstantValue(new GoogleSpreadsheet(env.GSHEET_ID, jwt));
-//   container.bind(GoogleSheetService).toSelf().inSingletonScope();

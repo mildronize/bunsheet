@@ -1,25 +1,24 @@
 "use client";
 import * as React from "react";
-import { ControlledDatePicker, DatePicker } from "./DatePicker";
-import Container from "@mui/material/Container";
+import { ControlledDatePicker } from "../components/DatePicker";
 import TextField from "@mui/material/TextField";
-import { CurrencyTextField } from "./CurrencyTextField";
+import { CurrencyTextField } from "../components/CurrencyTextField";
 import {
   Alert,
+  Box,
   Button,
   CircularProgress,
+  Fab,
   LinearProgress,
   Typography,
 } from "@mui/material";
-import { GroupAutocompleteTextField } from "./GroupAutocompleteTextField";
-import { AutocompleteTextField } from "./AutocompleteTextField";
 import SendIcon from "@mui/icons-material/Send";
 import { Toaster, toast } from "sonner";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { BaseResponse } from "@/global/response";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
-import { ControlledAutocompleteTextField } from "./ControlledAutocompleteTextField";
+import { useForm, SubmitHandler } from "react-hook-form";
+import { ControlledAutocompleteTextField } from "../components/ControlledAutocompleteTextField";
 import dayjs, { Dayjs } from "dayjs";
 import { TrasactionPost } from "../api/transaction/route";
 import { InferRouteResponse } from "@/types";
@@ -35,11 +34,9 @@ type Inputs = {
   memo: string;
 };
 
-export type SelectGetResponse = InferRouteResponse<
-typeof SelectAccount.GET
->;
+export type SelectGetResponse = InferRouteResponse<typeof SelectAccount.GET>;
 
-export function AddTransactionForm() {
+export function AddTransactionTab() {
   const selectAccountGet = useQuery<SelectGetResponse>({
     queryKey: ["selectAccountGet"],
     queryFn: () =>
@@ -98,7 +95,7 @@ export function AddTransactionForm() {
       memo: "",
     },
   });
-  
+
   if (selectAccountGet.error) {
     return (
       <Alert severity="error">
@@ -107,7 +104,7 @@ export function AddTransactionForm() {
     );
   }
 
-  if(selectCategoryGet.error) {
+  if (selectCategoryGet.error) {
     return (
       <Alert severity="error">
         Select Category Error: {selectCategoryGet.error?.message}
@@ -115,7 +112,7 @@ export function AddTransactionForm() {
     );
   }
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
     const parsedData: TrasactionPost = {
       amount: parseFloat(data.amount),
       payee: data.payee,
@@ -131,9 +128,17 @@ export function AddTransactionForm() {
   };
 
   return (
+    <>
+      {saveMutation.isPending ? (
+        <Box sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 100 }}>
+          <LinearProgress />
+        </Box>
+      ) : null}
+      <Typography variant="h6" gutterBottom>
+        Add Transaction
+      </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="form-input">
-        </div>
+        <div className="form-input"></div>
         <div className="form-input">
           <CurrencyTextField control={control} name="amount" label="Amount" />
         </div>
@@ -156,7 +161,6 @@ export function AddTransactionForm() {
           <ControlledAutocompleteTextField
             options={selectCategoryGet.data?.data ?? []}
             control={control}
-            
             name="category"
             placeholder="Category"
           />
@@ -182,14 +186,9 @@ export function AddTransactionForm() {
             fullWidth
           />
         </div>
-        <Toaster
-          closeButton
-          richColors
-          duration={2000}
-          position="bottom-center"
-        />
+        <Toaster closeButton richColors duration={2000} position="top-center" />
         <div className="form-input">
-          <Button
+          {/* <Button
             variant="contained"
             size="large"
             fullWidth
@@ -198,10 +197,20 @@ export function AddTransactionForm() {
             endIcon={<SendIcon />}
           >
             Add Transaction
-          </Button>
-
-          {saveMutation.isPending ? <LinearProgress /> : null}
+          </Button> */}
+          <Box sx={{ position: "fixed", bottom: 80, right: 25, zIndex: 100 }}>
+            <Fab
+              variant="extended"
+              color="primary"
+              type="submit"
+              disabled={saveMutation.isPending}
+            >
+              <SendIcon sx={{ mr: 1 }} />
+              Add Transaction
+            </Fab>
+          </Box>
         </div>
       </form>
+    </>
   );
 }
