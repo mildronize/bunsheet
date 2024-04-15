@@ -1,3 +1,9 @@
+// import withOffline from "next-offline";
+import nextPWA from '@ducanh2912/next-pwa';
+const withPWA = nextPWA({
+  dest: "public",
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   /**
@@ -8,6 +14,36 @@ const nextConfig = {
     serverMinification: false,
   },
   output: "standalone",
+  /**
+   * Next.js Offline
+   * https://github.com/vercel/next.js/blob/canary/examples/next-offline/next.config.js
+   */
+  // workboxOpts: {
+  //   swDest: process.env.NEXT_EXPORT
+  //     ? "service-worker.js"
+  //     : "static/service-worker.js",
+  //   runtimeCaching: [
+  //     {
+  //       urlPattern: /^https?.*/,
+  //       handler: "NetworkFirst",
+  //       options: {
+  //         cacheName: "offlineCache",
+  //         expiration: {
+  //           maxEntries: 200,
+  //         },
+  //       },
+  //     },
+  //   ],
+  // },
+  // async rewrites() {
+  //   return [
+  //     {
+  //       source: "/service-worker.js",
+  //       destination: "/_next/static/service-worker.js",
+  //     },
+  //   ];
+  // },
 };
 
-export default nextConfig;
+// export default withOffline(nextConfig);
+export default withPWA(nextConfig);

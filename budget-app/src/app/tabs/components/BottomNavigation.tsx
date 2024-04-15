@@ -23,14 +23,14 @@ export function BottomNavigation(props: BottomNavigationProps) {
       >
         <MuiBottomNavigation
           showLabels
+          /**
+           * Fix Height for PWA on iOS
+           */
+          sx={{ height: 80, paddingBottom: "20px" }}
           value={props.currentIndex}
           onChange={(event, newValue) => {
             props.onTap(newValue);
           }}
-          // value={value}
-          // onChange={(event, newValue) => {
-          //   setValue(newValue);
-          // }}
         >
           <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
           <BottomNavigationAction

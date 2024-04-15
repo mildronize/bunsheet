@@ -1,0 +1,16 @@
+{
+    "name": "my-budget-app",
+    "short_name": "My Budget",
+    "description": "My Budget App",
+    "icons": [
+      {
+        "src": "/static/icon.png",
+        "sizes": "500x500",
+        "type": "image/png"
+      }
+    ],
+    "theme_color": "#ffffff",
+    "background_color": "#ffffff",
+    "start_url": "/",
+    "display": "standalone"
+  }

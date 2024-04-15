@@ -13,6 +13,7 @@
     "@azure/data-tables": "^13.2.2",
     "@azure/identity": "^4.0.1",
     "@azure/storage-queue": "^12.16.0",
+    "@ducanh2912/next-pwa": "^10.2.6",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
     "@fontsource/roboto": "^5.0.12",
