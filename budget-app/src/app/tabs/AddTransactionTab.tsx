@@ -25,7 +25,7 @@ import { InferRouteResponse } from "@/types";
 import type * as SelectAccount from "@/app/api/select/account/route";
 import { catchResponseMessage } from "@/global/catchResponse";
 
-type Inputs = {
+export type TransactionInputs = {
   amount: string;
   payee: string;
   category: string;
@@ -39,6 +39,8 @@ export type SelectGetResponse = InferRouteResponse<typeof SelectAccount.GET>;
 export type ValidAction = "add" | "edit";
 export interface AddTransactionTabProps {
   action: ValidAction | (string & {});
+  id?: string;
+  defaultValue?: TransactionInputs;
 }
 
 function isValidAction(action: string): action is ValidAction {
@@ -59,6 +61,15 @@ function capitalize(str: string) {
 }
 
 export function AddTransactionTab(props: AddTransactionTabProps) {
+  const defaultValues = props.defaultValue ?? {
+    amount: "-0",
+    payee: "",
+    category: "",
+    account: "",
+    date: dayjs(),
+    memo: "",
+  };
+
   const selectAccountGet = useQuery<SelectGetResponse>({
     queryKey: ["selectAccountGet"],
     queryFn: () =>
@@ -107,15 +118,8 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>({
-    defaultValues: {
-      amount: "-0",
-      payee: "",
-      category: "",
-      account: "",
-      date: dayjs(),
-      memo: "",
-    },
+  } = useForm<TransactionInputs>({
+    defaultValues,
   });
 
   if (!isValidAction(props.action)) {
@@ -138,7 +142,7 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
     );
   }
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+  const onSubmit: SubmitHandler<TransactionInputs> = async (data) => {
     const parsedData: TrasactionPost = {
       amount: parseFloat(data.amount),
       payee: data.payee,
