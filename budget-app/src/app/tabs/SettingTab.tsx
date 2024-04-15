@@ -19,21 +19,39 @@ export function SettingTab() {
     toast.success("Clean Cache Successfully");
   };
 
+  const reloadPage = () => {
+    if (typeof window !== "undefined") window.location.reload();
+  };
+
   return (
     <Box sx={{ paddingLeft: "15px", paddingRight: "15px" }}>
       <Toaster closeButton richColors duration={2000} position="top-center" />
       <Typography variant="h6" gutterBottom sx={{ marginBottom: "40px" }}>
         Settings
       </Typography>
-      <Button
-        variant="contained"
-        size="large"
-        fullWidth
-        endIcon={<CleaningServicesRoundedIcon />}
-        onClick={clearCache}
-      >
-        Clear Cache
-      </Button>
+      <div className="form-input">
+        <Button
+          variant="contained"
+          // size="large"
+          fullWidth
+          endIcon={<CleaningServicesRoundedIcon />}
+          onClick={clearCache}
+        >
+          Clear Cache
+        </Button>
+      </div>
+      <div className="form-input">
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: "#dfdfdf", color: "#000000" }}
+          // size="large"
+          fullWidth
+          // endIcon={<CleaningServicesRoundedIcon />}
+          onClick={reloadPage}
+        >
+          Reload App
+        </Button>
+      </div>
       <Box sx={{ paddingTop: "25px" }}>
         <ShowTransactionQueue />
       </Box>
