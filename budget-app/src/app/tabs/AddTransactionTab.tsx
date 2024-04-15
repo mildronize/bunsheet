@@ -36,7 +36,29 @@ type Inputs = {
 
 export type SelectGetResponse = InferRouteResponse<typeof SelectAccount.GET>;
 
-export function AddTransactionTab() {
+export type ValidAction = "add" | "edit";
+export interface AddTransactionTabProps {
+  action: ValidAction | (string & {});
+}
+
+function isValidAction(action: string): action is ValidAction {
+  if (action.toLowerCase() === "add") {
+    return true;
+  }
+  if (action.toLowerCase() === "edit") {
+    return true;
+  }
+  return false;
+}
+
+function capitalize(str: string) {
+  if (str && typeof str === "string") {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
+  return str;
+}
+
+export function AddTransactionTab(props: AddTransactionTabProps) {
   const selectAccountGet = useQuery<SelectGetResponse>({
     queryKey: ["selectAccountGet"],
     queryFn: () =>
@@ -96,6 +118,10 @@ export function AddTransactionTab() {
     },
   });
 
+  if (!isValidAction(props.action)) {
+    return <Alert severity="error">Invalid Action: {props.action}</Alert>;
+  }
+
   if (selectAccountGet.error) {
     return (
       <Alert severity="error">
@@ -128,14 +154,14 @@ export function AddTransactionTab() {
   };
 
   return (
-    <Box sx={{ paddingLeft: '15px', paddingRight: '15px' }} >
+    <Box sx={{ paddingLeft: "15px", paddingRight: "15px" }}>
       {saveMutation.isPending ? (
         <Box sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 100 }}>
           <LinearProgress />
         </Box>
       ) : null}
       <Typography variant="h6" gutterBottom>
-        Add Transaction
+        {capitalize(props.action)} Transaction
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-input"></div>
@@ -188,16 +214,6 @@ export function AddTransactionTab() {
         </div>
         <Toaster closeButton richColors duration={2000} position="top-center" />
         <div className="form-input">
-          {/* <Button
-            variant="contained"
-            size="large"
-            fullWidth
-            type="submit"
-            disabled={saveMutation.isPending}
-            endIcon={<SendIcon />}
-          >
-            Add Transaction
-          </Button> */}
           <Box sx={{ position: "fixed", bottom: 100, right: 25, zIndex: 100 }}>
             <Fab
               variant="extended"
@@ -206,7 +222,7 @@ export function AddTransactionTab() {
               disabled={saveMutation.isPending}
             >
               <SendIcon sx={{ mr: 1 }} />
-              Add Transaction
+              {capitalize(props.action)} Transaction
             </Fab>
           </Box>
         </div>
