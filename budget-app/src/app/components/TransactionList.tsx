@@ -7,6 +7,8 @@ import ListItemAvatar from "@mui/material/ListItemAvatar";
 import Avatar from "@mui/material/Avatar";
 import Typography from "@mui/material/Typography";
 import dayjs from "dayjs";
+import { ListItemButton } from "@mui/material";
+import numbro from 'numbro';
 
 /**
  * Hotfix for uuid gen
@@ -37,11 +39,22 @@ export interface TransactionListProps {
 }
 
 export function TransactionList(props: TransactionListProps) {
+  const handleListClick = (item: any) => {
+    console.log(item);
+  };
+
   return (
     <List sx={{ width: "100%", bgcolor: "background.paper" }}>
       {props.data.map((item) => (
-        <div key={item.id ?? generateRandomString(8)}>
-          <ListItem alignItems="flex-start">
+        <ListItem
+          key={item.id ?? generateRandomString(8)}
+          alignItems="flex-start"
+        >
+          <ListItemButton
+            role={undefined}
+            onClick={() => handleListClick(item)}
+            dense
+          >
             <ListItemAvatar>
               <Avatar>
                 {item.category
@@ -49,6 +62,7 @@ export function TransactionList(props: TransactionListProps) {
                   : item.payee?.slice(0, 2)}
               </Avatar>
             </ListItemAvatar>
+
             <ListItemText
               primary={
                 item.category || item.category !== ""
@@ -65,7 +79,7 @@ export function TransactionList(props: TransactionListProps) {
                   >
                     {item.payee}
                   </Typography>
-                  {` — ${item.amount} on ${dayjs(item.date).format("MMM DD")}`}
+                  {` — ${numbro(item.amount).format('0,0')} on ${dayjs(item.date).format("MMM DD")}`}
                   {dayjs().year().toString() !==
                   dayjs(item.date).year().toString()
                     ? `, ${dayjs(item.date).year()}`
@@ -73,9 +87,8 @@ export function TransactionList(props: TransactionListProps) {
                 </React.Fragment>
               }
             />
-          </ListItem>
-          <Divider variant="inset" component="li" />
-        </div>
+          </ListItemButton>
+        </ListItem>
       ))}
     </List>
   );

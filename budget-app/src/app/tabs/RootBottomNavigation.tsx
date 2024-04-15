@@ -8,13 +8,20 @@ import { RecentTransactionTab } from "./RecentTransactionTab";
 import { AddTransactionTab } from "./AddTransactionTab";
 import { SettingTab } from "./SettingTab";
 
-export function RootBottomNavigation() {
-  const [currentTab, setCurrentTab] = useState(0);
-  const tabStorage = new LocalStorage("currentTab", "0");
+export interface RootBottomNavigationProps {
+  initialTab?: number;
+}
+
+export function RootBottomNavigation(props: RootBottomNavigationProps) {
+  const initialTab = props.initialTab ?? 0;
+  const [currentTab, setCurrentTab] = useState(initialTab);
+  const tabStorage = new LocalStorage("currentTab", String(initialTab));
 
   useEffect(() => {
-    setCurrentTab(Number(tabStorage.get()) || 0);
-    console.log(tabStorage.get());
+    setCurrentTab(
+      props.initialTab ? props.initialTab : Number(props.initialTab) || 0
+    );
+    console.log(`Starting with tab index: ${tabStorage.get()}`);
   }, []);
 
   function handleBottomNavigation(value: number) {
