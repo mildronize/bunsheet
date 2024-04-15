@@ -65,7 +65,7 @@ export class CacheService {
     await this.tableCache.init();
     const generator = this.tableCache.listAllExpiredRows();
     for await (const row of generator) {
-      this.context.log('Invalidating row: ' + JSON.stringify(row));
+      // this.context.log('Invalidating row: ' + JSON.stringify(row));
       if (!row.partitionKey || !row.rowKey) {
         stats.skipped++;
         this.context.log('Skipping row without PartitionKey or RowKey: ' + JSON.stringify(row));
@@ -98,8 +98,6 @@ export class CacheService {
         continue;
       }
       const sheetRow = sheetRowIds.has(String(row.rowKey));
-      console.log('Sheet row: ' + sheetRow);
-      console.log('Sheet row id: ' + String(row.rowKey));
       if (sheetRow === false) {
         await this.tableCache.delete({
           partitionKey: String(row.partitionKey),
