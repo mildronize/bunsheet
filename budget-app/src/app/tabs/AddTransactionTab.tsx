@@ -143,6 +143,10 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
   }
 
   const onSubmit: SubmitHandler<TransactionInputs> = async (data) => {
+    if(props.action === "edit") {
+      toast.error("Edit Transaction is not implemented yet.");
+      return;
+    }
     const parsedData: TrasactionPost = {
       amount: parseFloat(data.amount),
       payee: data.payee,
