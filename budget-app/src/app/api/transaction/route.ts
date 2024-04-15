@@ -54,12 +54,26 @@ export const GET = globalHandler(async (req) => {
       date: row.date,
       memo: row.memo,
       payee: row.payee,
+      updatedAt: row.updatedAt,
     });
   }
 
   const sorted = rows
-    .toSorted((a, b) => dayjs(b.date).unix() - dayjs(a.date).unix())
+    /**
+     * Sorted by date then, updatedAt in descending order
+     */
+    .toSorted((a, b) => {
+      // First, compare by date
+      const dateComparison = dayjs(b.date).unix() - dayjs(a.date).unix();
+      if (dateComparison !== 0) {
+        return dateComparison;
+      }
+
+      // If dates are equal, compare by updatedAt
+      return dayjs(b.updatedAt).unix() - dayjs(a.updatedAt).unix();
+    })
     .slice(0, 30);
+
   return NextResponse.json({
     message: "OK",
     count: sorted.length,
