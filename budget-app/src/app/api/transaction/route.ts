@@ -8,7 +8,8 @@ import { env } from "@/env";
 import { ODataExpression } from "ts-odata-client";
 import { TransactionCacheEntity } from "@/entites/transaction.entity";
 import dayjs from "dayjs";
-
+// https://github.com/vercel/next.js/issues/58242
+import "core-js/features/array/to-sorted";
 /**
  *  NOTE: Cannot be export in `route.ts` file 
  *  src/app/api/transaction/route.ts

@@ -24,6 +24,7 @@
     "@tanstack/react-query": "^5.29.2",
     "@tanstack/react-query-persist-client": "^5.29.2",
     "axios": "^1.6.8",
+    "core-js": "^3.36.1",
     "dayjs": "^1.11.10",
     "google-auth-library": "^9.4.1",
     "google-spreadsheet": "^4.1.1",
@@ -40,6 +41,7 @@
     "zod-validation-error": "^3.1.0"
   },
   "devDependencies": {
+    "@types/core-js": "^2.5.8",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
