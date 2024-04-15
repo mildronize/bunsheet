@@ -18,7 +18,7 @@ export function BottomNavigation(props: BottomNavigationProps) {
     <>
       {props.children}
       <Paper
-        sx={{ position: "fixed", bottom: 0, left: 0, right: 0 }}
+        sx={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 80 }}
         elevation={3}
       >
         <MuiBottomNavigation

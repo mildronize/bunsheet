@@ -1,10 +1,11 @@
 "use client";
 import { InferRouteResponse } from "@/types";
 import * as Transaction from "@/app/api/transaction/route";
-import { Button, Typography } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { queryClient } from "../components/ReactQueryClientProvider";
 import CleaningServicesRoundedIcon from "@mui/icons-material/CleaningServicesRounded";
 import { toast, Toaster } from "sonner";
+import { ShowTransactionQueue } from "../components/ShowTransactionQueue";
 
 export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
 
@@ -19,7 +20,7 @@ export function SettingTab() {
   };
 
   return (
-    <div>
+    <Box sx={{ paddingLeft: "15px", paddingRight: "15px" }}>
       <Toaster closeButton richColors duration={2000} position="top-center" />
       <Typography variant="h6" gutterBottom sx={{ marginBottom: "40px" }}>
         Settings
@@ -33,6 +34,9 @@ export function SettingTab() {
       >
         Clear Cache
       </Button>
-    </div>
+      <Box sx={{ paddingTop: "25px" }}>
+        <ShowTransactionQueue />
+      </Box>
+    </Box>
   );
 }

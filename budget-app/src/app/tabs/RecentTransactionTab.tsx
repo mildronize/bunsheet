@@ -21,7 +21,7 @@ export function RecentTransactionTab() {
 
   return (
     <div>
-      <Typography variant="h6" gutterBottom>
+      <Typography variant="h6" gutterBottom sx={{ paddingLeft: '15px'}}>
         Recent Transactions
       </Typography>
       <TransactionList data={transactionList.data?.data ?? []} />

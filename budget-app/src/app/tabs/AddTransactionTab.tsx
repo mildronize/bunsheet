@@ -128,7 +128,7 @@ export function AddTransactionTab() {
   };
 
   return (
-    <>
+    <Box sx={{ paddingLeft: '15px', paddingRight: '15px' }} >
       {saveMutation.isPending ? (
         <Box sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 100 }}>
           <LinearProgress />
@@ -211,6 +211,6 @@ export function AddTransactionTab() {
           </Box>
         </div>
       </form>
-    </>
+    </Box>
   );
 }
