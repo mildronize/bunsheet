@@ -1,3 +1,4 @@
+'use client';
 import * as React from "react";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
@@ -9,6 +10,7 @@ import Typography from "@mui/material/Typography";
 import dayjs from "dayjs";
 import { ListItemButton } from "@mui/material";
 import numbro from 'numbro';
+import { useRouter } from 'next/navigation'
 
 /**
  * Hotfix for uuid gen
@@ -39,8 +41,10 @@ export interface TransactionListProps {
 }
 
 export function TransactionList(props: TransactionListProps) {
-  const handleListClick = (item: any) => {
-    console.log(item);
+  const router = useRouter()
+  const handleListClick = (item: TransactionListProps['data'][number]) => {
+    console.log(`Redirecting to /transaction/edit/${item.id}`);
+    router.push(`/transaction/edit/${item.id}`);
   };
 
   return (
@@ -53,7 +57,7 @@ export function TransactionList(props: TransactionListProps) {
           <ListItemButton
             role={undefined}
             onClick={() => handleListClick(item)}
-            dense
+            // dense
           >
             <ListItemAvatar>
               <Avatar>

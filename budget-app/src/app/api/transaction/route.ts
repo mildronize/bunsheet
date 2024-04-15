@@ -48,6 +48,7 @@ export const GET = globalHandler(async (req) => {
     filter: `date ge datetime'${dayjs().subtract(7, "day").toISOString()}'`,
   })) {
     rows.push({
+      id: row.id,
       account: row.account,
       amount: row.amount,
       category: row.category,
