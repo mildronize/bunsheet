@@ -16,16 +16,18 @@ import "core-js/features/array/to-sorted";
     Type error: Route "src/app/api/transaction/route.ts" does not match the required types of a Next.js Route.
     "transactionPostSchema" is not a valid Route export field.
  */
+
 const transactionPostSchema = z.object({
-  type: z.enum(["add_transaction_queue"]),
-  amount: z.number(),
-  payee: z.string().nullable(),
-  category: z.string().nullable(),
-  account: z.string().nullable(),
-  date: z.string().datetime().nullable(),
-  memo: z.string().nullable(),
+  type: z.enum(["add_transaction_queue", "edit_transaction_queue"]),
+  id: z.string().optional().nullable(),
+  amount: z.number().optional().nullable(),
+  payee: z.string().optional().nullable(),
+  category: z.string().optional().nullable(),
+  account: z.string().optional().nullable(),
+  date: z.string().datetime().optional().nullable(),
+  memo: z.string().optional().nullable(),
 });
-export type TrasactionPost = z.infer<typeof transactionPostSchema>;
+export type TransactionPost = z.infer<typeof transactionPostSchema>;
 
 export const POST = globalHandler(async (req) => {
   try {

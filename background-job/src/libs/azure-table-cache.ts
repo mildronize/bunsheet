@@ -15,15 +15,22 @@ export class AzureTableCache<TEntity extends AzureTableEntityBase> extends Table
   async init() {
     await this.table.createTable();
   }
-/**
- * Update the row in the cache store, if the row is not exists then it will create a new row
- * Otherwise it will update the row when the cache is expired.
- *
- * @param id
- * @param data
- * @returns
- */
-  async updateWhenExpired(id: string | AzureTableEntityBase, data: Record<string, unknown>, mode: UpdateMode = 'normal'): Promise<UpdatedStats> {
+  /**
+   * Update the row in the cache store, if the row is not exists then it will create a new row
+   * Otherwise it will update the row when the cache is expired.
+   *
+   * @param id
+   * @param data
+   * @param mode
+   * @param originalLastUpdated Use the original last updated date to check if the cache is expired
+   * @returns
+   */
+  async updateWhenExpired(
+    id: string | AzureTableEntityBase,
+    data: Record<string, unknown>,
+    mode: UpdateMode = 'normal',
+    originalLastUpdated?: Date | null
+  ): Promise<UpdatedStats> {
     if (typeof id === 'string') throw new Error('AzureTableCache: id must be an object of AzureTableEntityBase');
     const stats: UpdatedStats = {
       inserted: 0,
@@ -39,21 +46,18 @@ export class AzureTableCache<TEntity extends AzureTableEntityBase> extends Table
       });
       stats.inserted++;
     } else if (mode === 'normal') {
-      const cacheDuration = this.cacheDuration;
-      const lastUpdatedField = this.lastUpdatedField;
       let isExipred = false;
-      if (rowTable[lastUpdatedField] === undefined) {
+      if (rowTable[this.lastUpdatedField] === undefined) {
         isExipred = true;
       } else {
-        isExipred = dayjs(String(rowTable[lastUpdatedField])).isBefore(dayjs().subtract(cacheDuration, 'second'));
+        isExipred = dayjs(String(rowTable[this.lastUpdatedField])).isBefore(
+          dayjs().subtract(this.cacheDuration, 'second')
+        );
       }
-      // else if (rowSheet.UpdatedAt === undefined || rowSheet.UpdatedAt === null) {
-      //   isExipred = dayjs(String(rowTable[lastUpdatedField])).isBefore(dayjs().subtract(cacheDuration, 'second'));
-      // } else {
-      //   isExipred = dayjs(String(rowTable[lastUpdatedField])).isBefore(
-      //     dayjs(rowSheet.UpdatedAt).subtract(cacheDuration, 'second')
-      //   );
-      // }
+      if (originalLastUpdated) {
+        isExipred = dayjs(String(rowTable[this.lastUpdatedField])).isBefore(dayjs(originalLastUpdated));
+      }
+
       if (isExipred) {
         await this.update(id, data);
         stats.updated++;

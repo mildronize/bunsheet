@@ -50,6 +50,23 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
     };
   }
 
+  /**
+   * Note: This function is not optimized for large data, it might be block by rate limit
+   *
+   * TODO: Use binary search for large data
+   */
+
+  async update(rowId: string, newRow: Record<keyof Headers, unknown>) {
+    await this.prepare();
+    for await (const row of this.getRowsGenerator()) {
+      if (String(row.get('Id')) === rowId) {
+        row.assign(newRow);
+        await row.save();
+        break;
+      }
+    }
+  }
+
   private processCell(
     row: GoogleSpreadsheetRow<Record<string, any>>,
     header: string,
@@ -98,7 +115,13 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
     return obj;
   }
 
-  async *readAll(): AsyncGenerator<MapObject<Headers>, void, unknown> {
+  /**
+   * Use this function to get all rows from google sheet
+   *
+   * Support pagination and async generator
+   */
+
+  async *getRowsGenerator(): AsyncGenerator<GoogleSpreadsheetRow<Record<string, any>>, void, unknown> {
     await this.prepare();
     let isLoop = true;
     let offset = 0;
@@ -108,13 +131,19 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
         limit: this.options.pageSize,
       });
       for (const row of rows) {
-        const obj = this.processRow(row);
-        if (obj) yield obj as MapObject<Headers>;
+        yield row;
       }
       offset += this.options.pageSize;
       if (rows.length < this.options.pageSize) {
         isLoop = false;
       }
+    }
+  }
+
+  async *readAll(): AsyncGenerator<MapObject<Headers>, void, unknown> {
+    for await (const row of this.getRowsGenerator()) {
+      const obj = this.processRow(row);
+      if (obj) yield obj as MapObject<Headers>;
     }
   }
 

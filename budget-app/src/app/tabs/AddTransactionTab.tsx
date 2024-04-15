@@ -20,7 +20,7 @@ import { BaseResponse } from "@/global/response";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ControlledAutocompleteTextField } from "../components/ControlledAutocompleteTextField";
 import dayjs, { Dayjs } from "dayjs";
-import { TrasactionPost } from "../api/transaction/route";
+import { TransactionPost } from "../api/transaction/route";
 import { InferRouteResponse } from "@/types";
 import type * as SelectAccount from "@/app/api/select/account/route";
 import { catchResponseMessage } from "@/global/catchResponse";
@@ -90,7 +90,7 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
 
   const saveMutation = useMutation({
     mutationKey: ["saveTransaction"],
-    mutationFn: async (data: TrasactionPost) => {
+    mutationFn: async (data: TransactionPost) => {
       return axios.post("/api/transaction", data).catch((error: unknown) => {
         if (axios.isAxiosError(error) && error.response) {
           const data = error.response.data as BaseResponse;
@@ -101,8 +101,13 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
         throw error;
       });
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Save Successfully");
+      await delay(1000);
+      if (props.action === "edit") {
+        console.log("Go back to previous page");
+        window.history.back();
+      }
     },
     onError: (error) => {
       // TODO: Somehow the error message is not displayed.
@@ -143,18 +148,19 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
   }
 
   const onSubmit: SubmitHandler<TransactionInputs> = async (data) => {
-    if(props.action === "edit") {
-      toast.error("Edit Transaction is not implemented yet.");
-      return;
-    }
-    const parsedData: TrasactionPost = {
+    const type =
+      props.action.toLowerCase() === "add"
+        ? "add_transaction_queue"
+        : "edit_transaction_queue";
+    const parsedData: TransactionPost = {
+      id: props.id,
       amount: parseFloat(data.amount),
       payee: data.payee,
       category: data.category,
       account: data.account,
       date: data.date?.toISOString() ?? null,
       memo: data.memo,
-      type: "add_transaction_queue",
+      type,
     };
     console.log("Submit data: ", parsedData);
     saveMutation.mutate(parsedData);
