@@ -39,7 +39,7 @@ function parseTransactionInputs(
 
 export function TransactionDataContainer(props: TransactionDataContainerProps) {
   const transaction = useQuery<TransactionGetResponse>({
-    queryKey: ["transactionSingleGet"],
+    queryKey: ["transactionSingleGet-" + props.id],
     queryFn: () =>
       axios
         .get("/api/transaction/" + props.id)
