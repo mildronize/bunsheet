@@ -1,4 +1,5 @@
 import { GoogleSpreadsheet, GoogleSpreadsheetRow, GoogleSpreadsheetWorksheet } from 'google-spreadsheet';
+import numbro from 'numbro';
 import { dayjsUTC } from './dayjs';
 
 /**
@@ -72,7 +73,7 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
     if (headerType === 'number') {
       return {
         isSkip: false,
-        value: cellValue ? Number(cellValue) : null,
+        value: cellValue ? numbro(cellValue).value() : null,
       };
     }
 
@@ -115,5 +116,20 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
         isLoop = false;
       }
     }
+  }
+
+  /**
+   * Note: This function is not optimized for large data
+   *
+   */
+
+  async getRowIds(): Promise<Set<string>> {
+    await this.prepare();
+    const ids = new Set<string>();
+    for await (const row of this.readAll()) {
+      const cellValue = String(row.Id);
+      ids.add(cellValue);
+    }
+    return ids;
   }
 }
