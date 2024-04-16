@@ -102,12 +102,8 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
       });
     },
     onSuccess: async () => {
-      toast.success("Save Successfully");
-      await delay(1000);
-      if (props.action === "edit") {
-        console.log("Go back to previous page");
-        window.history.back();
-      }
+      console.log("Go back to previous page");
+      if(typeof window !== "undefined") window.history.back();
     },
     onError: (error) => {
       // TODO: Somehow the error message is not displayed.
@@ -164,7 +160,7 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
     };
     console.log("Submit data: ", parsedData);
     saveMutation.mutate(parsedData);
-    reset();
+    if (props.action === "add") reset();
   };
 
   return (
