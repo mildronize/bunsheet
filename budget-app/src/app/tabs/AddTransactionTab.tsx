@@ -108,9 +108,8 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
     },
     onSuccess: async (res: AxiosResponse<TransactionPostResponse>) => {
       queryClient.setQueryData(['transactionSingleGet', { id: res.data.data[0].id }], res.data)
-      console.log("Save Success: ", res.data.data[0].id);
       console.log("Go back to previous page");
-      // if(typeof window !== "undefined") window.history.back();
+      if(typeof window !== "undefined") window.history.back();
     },
     onError: (error) => {
       // TODO: Somehow the error message is not displayed.
