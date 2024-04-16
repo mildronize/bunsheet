@@ -14,16 +14,17 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { Toaster, toast } from "sonner";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios, { AxiosResponse } from "axios";
 import { BaseResponse } from "@/global/response";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ControlledAutocompleteTextField } from "../components/ControlledAutocompleteTextField";
 import dayjs, { Dayjs } from "dayjs";
-import { TransactionPost } from "../api/transaction/route";
+import { TransactionPost as TransactionPostBody } from "../api/transaction/route";
 import { InferRouteResponse } from "@/types";
 import type * as SelectAccount from "@/app/api/select/account/route";
 import { catchResponseMessage } from "@/global/catchResponse";
+import type * as TransactionPost from "@/app/api/transaction/route";
 
 export type TransactionInputs = {
   amount: string;
@@ -35,6 +36,9 @@ export type TransactionInputs = {
 };
 
 export type SelectGetResponse = InferRouteResponse<typeof SelectAccount.GET>;
+export type TransactionPostResponse = InferRouteResponse<
+  typeof TransactionPost.POST
+>;
 
 export type ValidAction = "add" | "edit";
 export interface AddTransactionTabProps {
@@ -61,6 +65,7 @@ function capitalize(str: string) {
 }
 
 export function AddTransactionTab(props: AddTransactionTabProps) {
+  const queryClient = useQueryClient();
   const defaultValues = props.defaultValue ?? {
     amount: "-0",
     payee: "",
@@ -90,7 +95,7 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
 
   const saveMutation = useMutation({
     mutationKey: ["saveTransaction"],
-    mutationFn: async (data: TransactionPost) => {
+    mutationFn: async (data: TransactionPostBody) => {
       return axios.post("/api/transaction", data).catch((error: unknown) => {
         if (axios.isAxiosError(error) && error.response) {
           const data = error.response.data as BaseResponse;
@@ -101,9 +106,11 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
         throw error;
       });
     },
-    onSuccess: async () => {
+    onSuccess: async (res: AxiosResponse<TransactionPostResponse>) => {
+      queryClient.setQueryData(['transactionSingleGet', { id: res.data.data[0].id }], res.data)
+      console.log("Save Success: ", res.data.data[0].id);
       console.log("Go back to previous page");
-      if(typeof window !== "undefined") window.history.back();
+      // if(typeof window !== "undefined") window.history.back();
     },
     onError: (error) => {
       // TODO: Somehow the error message is not displayed.
@@ -148,7 +155,7 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
       props.action.toLowerCase() === "add"
         ? "add_transaction_queue"
         : "edit_transaction_queue";
-    const parsedData: TransactionPost = {
+    const parsedData: TransactionPostBody = {
       id: props.id,
       amount: parseFloat(data.amount),
       payee: data.payee,

@@ -34,7 +34,17 @@ export const POST = globalHandler(async (req) => {
     const body = transactionPostSchema.parse(await req.json());
     await queue.sendMessage(JSON.stringify(body));
     return NextResponse.json({
-      message: "OK",
+      message: "Success",
+      count: 1,
+      data: [
+        {
+          ...body,
+          /**
+           * Convert before returning to the client
+           */
+          amount: body.amount ? Number(body.amount) * -1 : 0,
+        },
+      ],
     });
   } catch (error) {
     throw customError(error, "Failed to send message to the queue");
