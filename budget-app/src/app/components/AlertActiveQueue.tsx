@@ -11,7 +11,7 @@ export type TransactionQueueGetResponse = InferRouteResponse<
   typeof TransactionQueue.GET
 >;
 
-export function ShowTransactionQueue() {
+export function AlertActiveQueue() {
   const transactionQueue = useQuery<TransactionQueueGetResponse>({
     queryKey: ["transactionQueue"],
     queryFn: () =>
