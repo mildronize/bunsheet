@@ -24,7 +24,12 @@ import { TransactionPost as TransactionPostBody } from "../api/transaction/route
 import { InferRouteResponse } from "@/types";
 import type * as SelectAccount from "@/app/api/select/account/route";
 import { catchResponseMessage } from "@/global/catchResponse";
-import type * as TransactionPost from "@/app/api/transaction/route";
+import type * as Transaction from "@/app/api/transaction/route";
+import { useRouter } from "next/navigation";
+
+export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
+
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 export type TransactionInputs = {
   amount: string;
@@ -37,7 +42,7 @@ export type TransactionInputs = {
 
 export type SelectGetResponse = InferRouteResponse<typeof SelectAccount.GET>;
 export type TransactionPostResponse = InferRouteResponse<
-  typeof TransactionPost.POST
+  typeof Transaction.POST
 >;
 
 export type ValidAction = "add" | "edit";
@@ -65,6 +70,7 @@ function capitalize(str: string) {
 }
 
 export function AddTransactionTab(props: AddTransactionTabProps) {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const defaultValues = props.defaultValue ?? {
     amount: "-0",
@@ -107,9 +113,45 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
       });
     },
     onSuccess: async (res: AxiosResponse<TransactionPostResponse>) => {
-      queryClient.setQueryData(['transactionSingleGet', { id: res.data.data[0].id }], res.data)
-      console.log("Go back to previous page");
-      if(typeof window !== "undefined") window.history.back();
+      const firstResponseData = res.data.data[0];
+      /**
+       * Update the cache with the new transaction data on the transaction form
+       */
+      queryClient.setQueryData(
+        ["transactionSingleGet", { id: firstResponseData.id }],
+        res.data
+      );
+      queryClient.invalidateQueries({
+        queryKey: ["transactionList"],
+      });
+      /**
+       * Update the cache with the new transaction data on the transaction list
+       */
+
+      queryClient.setQueryData(
+        ["transactionList"],
+        (oldData: TransactionGetResponse) => {
+          const newData = oldData.data.map((item) => {
+            if (item.id === firstResponseData.id) {
+              return firstResponseData;
+            }
+            return item;
+          });
+          return newData;
+        }
+      );
+      /**
+       * Workaround for updating the cache:
+       * https://github.com/TanStack/query/issues/6310#issuecomment-1912323506
+       */
+      // await queryClient.ensureQueryData({
+      //   queryKey: ["transactionList"],
+      // });
+      // await delay(500);
+      /**
+       * Redirect to the transaction detail page
+       */
+      router.push(`/`);
     },
     onError: (error) => {
       // TODO: Somehow the error message is not displayed.
