@@ -4,7 +4,9 @@ import { BaseResponse } from "./response";
 
 export type ApiRoute<TResponse> = (
   req: Request,
-  params: Record<string, string>
+  others: {
+    params: Record<string, string>;
+  }
 ) => NextResponse<TResponse> | Promise<NextResponse<TResponse>>;
 /**
  * Global error handler for API routes.

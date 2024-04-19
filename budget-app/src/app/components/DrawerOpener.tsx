@@ -12,7 +12,7 @@ export function DrawerOpener() {
           <Drawer.Overlay className="fixed inset-0 bg-black/40" />
           <Drawer.Content className="bg-white flex flex-col fixed bottom-0 left-0 right-0 max-h-[96%] rounded-t-[16px]">
             <div className="max-w-md w-full mx-auto flex flex-col overflow-auto p-4 rounded-t-[16px]">
-              <AddTransactionTab />
+              {/* <AddTransactionTab /> */}
             </div>
           </Drawer.Content>
         </Drawer.Portal>

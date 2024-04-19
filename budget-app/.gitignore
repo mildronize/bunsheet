@@ -37,4 +37,7 @@ next-env.d.ts
 
 .azurite
 
+# next.js offline (PWA Plugin)
 public/*.js.map
+public/sw.js
+public/workbox-*.js

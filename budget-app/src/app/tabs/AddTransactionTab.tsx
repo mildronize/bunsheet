@@ -14,18 +14,19 @@ import {
 } from "@mui/material";
 import SendIcon from "@mui/icons-material/Send";
 import { Toaster, toast } from "sonner";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import axios from "axios";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import axios, { AxiosResponse } from "axios";
 import { BaseResponse } from "@/global/response";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { ControlledAutocompleteTextField } from "../components/ControlledAutocompleteTextField";
 import dayjs, { Dayjs } from "dayjs";
-import { TrasactionPost } from "../api/transaction/route";
+import { TransactionPost as TransactionPostBody } from "../api/transaction/route";
 import { InferRouteResponse } from "@/types";
 import type * as SelectAccount from "@/app/api/select/account/route";
 import { catchResponseMessage } from "@/global/catchResponse";
+import type * as TransactionPost from "@/app/api/transaction/route";
 
-type Inputs = {
+export type TransactionInputs = {
   amount: string;
   payee: string;
   category: string;
@@ -35,8 +36,45 @@ type Inputs = {
 };
 
 export type SelectGetResponse = InferRouteResponse<typeof SelectAccount.GET>;
+export type TransactionPostResponse = InferRouteResponse<
+  typeof TransactionPost.POST
+>;
 
-export function AddTransactionTab() {
+export type ValidAction = "add" | "edit";
+export interface AddTransactionTabProps {
+  action: ValidAction | (string & {});
+  id?: string;
+  defaultValue?: TransactionInputs;
+}
+
+function isValidAction(action: string): action is ValidAction {
+  if (action.toLowerCase() === "add") {
+    return true;
+  }
+  if (action.toLowerCase() === "edit") {
+    return true;
+  }
+  return false;
+}
+
+function capitalize(str: string) {
+  if (str && typeof str === "string") {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  }
+  return str;
+}
+
+export function AddTransactionTab(props: AddTransactionTabProps) {
+  const queryClient = useQueryClient();
+  const defaultValues = props.defaultValue ?? {
+    amount: "-0",
+    payee: "",
+    category: "",
+    account: "",
+    date: dayjs(),
+    memo: "",
+  };
+
   const selectAccountGet = useQuery<SelectGetResponse>({
     queryKey: ["selectAccountGet"],
     queryFn: () =>
@@ -57,7 +95,7 @@ export function AddTransactionTab() {
 
   const saveMutation = useMutation({
     mutationKey: ["saveTransaction"],
-    mutationFn: async (data: TrasactionPost) => {
+    mutationFn: async (data: TransactionPostBody) => {
       return axios.post("/api/transaction", data).catch((error: unknown) => {
         if (axios.isAxiosError(error) && error.response) {
           const data = error.response.data as BaseResponse;
@@ -68,8 +106,10 @@ export function AddTransactionTab() {
         throw error;
       });
     },
-    onSuccess: () => {
-      toast.success("Save Successfully");
+    onSuccess: async (res: AxiosResponse<TransactionPostResponse>) => {
+      queryClient.setQueryData(['transactionSingleGet', { id: res.data.data[0].id }], res.data)
+      console.log("Go back to previous page");
+      if(typeof window !== "undefined") window.history.back();
     },
     onError: (error) => {
       // TODO: Somehow the error message is not displayed.
@@ -85,16 +125,13 @@ export function AddTransactionTab() {
     reset,
     handleSubmit,
     formState: { errors },
-  } = useForm<Inputs>({
-    defaultValues: {
-      amount: "-0",
-      payee: "",
-      category: "",
-      account: "",
-      date: dayjs(),
-      memo: "",
-    },
+  } = useForm<TransactionInputs>({
+    defaultValues,
   });
+
+  if (!isValidAction(props.action)) {
+    return <Alert severity="error">Invalid Action: {props.action}</Alert>;
+  }
 
   if (selectAccountGet.error) {
     return (
@@ -112,30 +149,35 @@ export function AddTransactionTab() {
     );
   }
 
-  const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    const parsedData: TrasactionPost = {
+  const onSubmit: SubmitHandler<TransactionInputs> = async (data) => {
+    const type =
+      props.action.toLowerCase() === "add"
+        ? "add_transaction_queue"
+        : "edit_transaction_queue";
+    const parsedData: TransactionPostBody = {
+      id: props.id,
       amount: parseFloat(data.amount),
       payee: data.payee,
       category: data.category,
       account: data.account,
       date: data.date?.toISOString() ?? null,
       memo: data.memo,
-      type: "add_transaction_queue",
+      type,
     };
     console.log("Submit data: ", parsedData);
     saveMutation.mutate(parsedData);
-    reset();
+    if (props.action === "add") reset();
   };
 
   return (
-    <Box sx={{ paddingLeft: '15px', paddingRight: '15px' }} >
+    <Box sx={{ paddingLeft: "15px", paddingRight: "15px" }}>
       {saveMutation.isPending ? (
         <Box sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 100 }}>
           <LinearProgress />
         </Box>
       ) : null}
       <Typography variant="h6" gutterBottom>
-        Add Transaction
+        {capitalize(props.action)} Transaction
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-input"></div>
@@ -188,16 +230,6 @@ export function AddTransactionTab() {
         </div>
         <Toaster closeButton richColors duration={2000} position="top-center" />
         <div className="form-input">
-          {/* <Button
-            variant="contained"
-            size="large"
-            fullWidth
-            type="submit"
-            disabled={saveMutation.isPending}
-            endIcon={<SendIcon />}
-          >
-            Add Transaction
-          </Button> */}
           <Box sx={{ position: "fixed", bottom: 100, right: 25, zIndex: 100 }}>
             <Fab
               variant="extended"
@@ -206,7 +238,7 @@ export function AddTransactionTab() {
               disabled={saveMutation.isPending}
             >
               <SendIcon sx={{ mr: 1 }} />
-              Add Transaction
+              {capitalize(props.action)} Transaction
             </Fab>
           </Box>
         </div>

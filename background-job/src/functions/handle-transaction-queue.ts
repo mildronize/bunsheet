@@ -6,7 +6,7 @@ import { v4 as uuid } from 'uuid';
 import { CacheService } from '../services/cache.service';
 
 const transactionPostSchema = z.object({
-  type: z.enum(['add_transaction_queue']),
+  type: z.enum(['add_transaction_queue', 'edit_transaction_queue']),
   id: z.string().optional().nullable(),
   amount: z.number().optional().nullable(),
   payee: z.string().optional().nullable(),
@@ -45,7 +45,7 @@ function parseTransactionToGoogleSheet(data: z.infer<typeof transactionPostSchem
 }
 
 export default func
-  .storageQueue('addTransactionQueue', {
+  .storageQueue('handleTransactionQueue', {
     connection: 'AzureWebJobsStorage',
     queueName: 'budgetqueue',
   })
@@ -57,8 +57,20 @@ export default func
     const data = transactionPostSchema.parse(c.trigger);
     const googleSheetData = parseTransactionToGoogleSheet(data);
     context.log('Parsed data:', googleSheetData);
-    await sheetClient.transaction.append(googleSheetData);
-    context.log('Transaction added to google sheet');
-    await new CacheService(c.context, sheetClient, transactionTableCache).updateWhenExpired('insertOnly');
-    context.log('Cache updated');
+
+    if (data.type === 'edit_transaction_queue') {
+      if (data.id === null || data.id === undefined) {
+        throw new Error('edit_transaction_queue mode, Transaction id is required');
+      }
+      await sheetClient.transaction.update(data.id, googleSheetData);
+      context.log('Transaction updated to google sheet');
+      await new CacheService(c.context, sheetClient, transactionTableCache).updateWhenExpired('normal');
+    } else if (data.type === 'add_transaction_queue') {
+      await sheetClient.transaction.append(googleSheetData);
+      context.log('Transaction added to google sheet');
+      await new CacheService(c.context, sheetClient, transactionTableCache).updateWhenExpired('insertOnly');
+      context.log('Cache updated');
+    } else {
+      throw new Error('Invalid transaction type');
+    }
   });

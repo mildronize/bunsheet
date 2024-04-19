@@ -5,7 +5,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { queryClient } from "../components/ReactQueryClientProvider";
 import CleaningServicesRoundedIcon from "@mui/icons-material/CleaningServicesRounded";
 import { toast, Toaster } from "sonner";
-import { ShowTransactionQueue } from "../components/ShowTransactionQueue";
+import { AlertActiveQueue } from "../components/AlertActiveQueue";
 
 export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
 
@@ -53,7 +53,7 @@ export function SettingTab() {
         </Button>
       </div>
       <Box sx={{ paddingTop: "25px" }}>
-        <ShowTransactionQueue />
+        <AlertActiveQueue />
       </Box>
     </Box>
   );

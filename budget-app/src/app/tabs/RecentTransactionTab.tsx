@@ -5,7 +5,8 @@ import axios from "axios";
 import { TransactionList } from "../components/TransactionList";
 import { InferRouteResponse } from "@/types";
 import * as Transaction from "@/app/api/transaction/route";
-import { Typography } from "@mui/material";
+import { Box, Chip, LinearProgress, Typography } from "@mui/material";
+import { CountQueueChip } from "../components/CountQueueChip";
 
 export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
 
@@ -21,8 +22,13 @@ export function RecentTransactionTab() {
 
   return (
     <div>
+      {transactionList.isPending ? (
+        <Box sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 100 }}>
+          <LinearProgress />
+        </Box>
+      ) : null}
       <Typography variant="h6" gutterBottom sx={{ paddingLeft: '15px'}}>
-        Recent Transactions
+        Recent Transactions <CountQueueChip />
       </Typography>
       <TransactionList data={transactionList.data?.data ?? []} />
     </div>

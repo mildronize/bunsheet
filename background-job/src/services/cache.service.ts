@@ -44,7 +44,8 @@ export class CacheService {
           memo: rowSheet.Memo,
           updatedAt: rowSheet.UpdatedAt,
         },
-        mode
+        mode,
+        rowSheet.UpdatedAt
       );
       stats.inserted += tempStats.inserted;
       stats.updated += tempStats.updated;
