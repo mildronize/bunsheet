@@ -15,6 +15,9 @@ export function FullPageLoading() {
       setIsLoading(false);
       router.push(nextRoutePath);
     },
+    onError: () => {
+      setIsLoading(true);
+    }
   });
 
   if (!isLoading) return null;

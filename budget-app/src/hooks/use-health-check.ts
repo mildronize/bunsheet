@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useEffect } from "react";
 import { useInterval } from "usehooks-ts";
 
 export interface HealthCheckOptions {
@@ -42,7 +43,7 @@ export function useHealthCheck(options: HealthCheckOptions) {
     }
   };
 
-  useInterval(async () => {
+  const startHealthCheck = async () => {
     const isHealthy = await checkHealth();
     console.log("Checking health, isHealthy:", isHealthy);
     if (isHealthy) {
@@ -55,7 +56,13 @@ export function useHealthCheck(options: HealthCheckOptions) {
         options.onError();
       }
     }
-  }, interval);
+  };
+
+  useInterval(startHealthCheck, interval);
+
+  useEffect(() => {
+    startHealthCheck();
+  }, []);
 
   return;
 }
