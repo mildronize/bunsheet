@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import dayjs from "dayjs";
 import { ListItemButton } from "@mui/material";
 import numbro from 'numbro';
-import { useRouter } from 'next/navigation'
+import { useSafeRouter } from "@/hooks/use-safe-router";
 
 /**
  * Hotfix for uuid gen
@@ -41,7 +41,7 @@ export interface TransactionListProps {
 }
 
 export function TransactionList(props: TransactionListProps) {
-  const router = useRouter()
+  const router = useSafeRouter()
   const handleListClick = (item: TransactionListProps['data'][number]) => {
     console.log(`Redirecting to /transaction/edit/${item.id}`);
     router.push(`/transaction/edit/${item.id}`);

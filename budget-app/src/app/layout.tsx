@@ -52,6 +52,7 @@ import CssBaseline from "@mui/material/CssBaseline";
 import theme from "@/theme";
 import "./globals.css";
 import { ReactQueryClientProvider } from "./components/ReactQueryClientProvider";
+import { GlobalStateProvider } from "./components/GlobalStateProvider";
 
 export default function RootLayout(props: { children: React.ReactNode }) {
   return (
@@ -69,7 +70,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
             {/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
             <CssBaseline />
             <ReactQueryClientProvider>
-              {props.children}
+              <GlobalStateProvider>{props.children}</GlobalStateProvider>
             </ReactQueryClientProvider>
           </ThemeProvider>
         </AppRouterCacheProvider>
