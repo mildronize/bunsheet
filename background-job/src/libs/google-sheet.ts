@@ -18,6 +18,14 @@ export interface GoogleSheetRowClientOptions<Headers extends Record<string, Head
   pageSize: number;
   headers: Headers;
   skipRowKeyword?: string;
+  /**
+   * Loads the header row (usually first) of the sheet
+   *
+   * @ref https://theoephraim.github.io/node-google-spreadsheet/#/classes/google-spreadsheet-worksheet?id=fn-loadheaderrow
+   *
+   * @default 1
+   */
+  headerRow?: number;
 }
 
 /**
@@ -38,6 +46,7 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
     if (this.sheet === undefined || this.sheet === null) {
       throw new Error(`Sheet with id ${this.sheetId} not found`);
     }
+    await this.sheet.loadHeaderRow(this.options.headerRow ?? 1);
     this.doc.resetLocalCache();
   }
 
