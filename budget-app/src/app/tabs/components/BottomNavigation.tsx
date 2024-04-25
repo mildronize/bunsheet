@@ -11,7 +11,6 @@ import { useState } from "react";
 import { RecentTransactionTab } from "../RecentTransactionTab";
 import { AddTransactionTab } from "../AddTransactionTab";
 import { SettingTab } from "../SettingTab";
-import { useSafeRouter } from "@/hooks/use-safe-router";
 
 const routerMap = {
   0: {
@@ -35,7 +34,7 @@ export interface BottomNavigationProps {
   currentRouterKey: RouterMapKey;
 }
 export function BottomNavigation(props: BottomNavigationProps) {
-  const router = useSafeRouter();
+  const router = useRouter();
   const [currentTab, setCurrentTab] = useState(props.currentRouterKey);
 
   return (
