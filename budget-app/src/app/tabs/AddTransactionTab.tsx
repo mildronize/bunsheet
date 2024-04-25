@@ -107,9 +107,12 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
       });
     },
     onSuccess: async (res: AxiosResponse<TransactionPostResponse>) => {
-      queryClient.setQueryData(['transactionSingleGet', { id: res.data.data[0].id }], res.data)
+      queryClient.setQueryData(
+        ["transactionSingleGet", { id: res.data.data[0].id }],
+        res.data
+      );
       console.log("Go back to previous page");
-      if(typeof window !== "undefined") window.history.back();
+      if (typeof window !== "undefined") window.history.back();
     },
     onError: (error) => {
       // TODO: Somehow the error message is not displayed.
@@ -170,7 +173,9 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
   };
 
   return (
-    <Box sx={{ paddingLeft: "15px", paddingRight: "15px" }}>
+    <Box
+      sx={{ paddingLeft: "15px", paddingRight: "15px", paddingBottom: "140px" }}
+    >
       {saveMutation.isPending ? (
         <Box sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 100 }}>
           <LinearProgress />
@@ -230,7 +235,7 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
         </div>
         <Toaster closeButton richColors duration={2000} position="top-center" />
         <div className="form-input">
-          <Box sx={{ position: "fixed", bottom: 100, right: 25, zIndex: 100 }}>
+          <Box sx={{ position: "fixed", bottom: 40, right: 25, zIndex: 100 }}>
             <Fab
               variant="extended"
               color="primary"

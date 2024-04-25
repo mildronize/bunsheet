@@ -6,7 +6,7 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import RestoreIcon from "@mui/icons-material/Restore";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Container, Paper } from "@mui/material";
+import { Box, Container, Paper, SwipeableDrawer } from "@mui/material";
 import { useState } from "react";
 import { RecentTransactionTab } from "../RecentTransactionTab";
 import { AddTransactionTab } from "../AddTransactionTab";
@@ -37,11 +37,43 @@ export function BottomNavigation(props: BottomNavigationProps) {
   const router = useRouter();
   const [currentTab, setCurrentTab] = useState(props.currentRouterKey);
 
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  const iOS =
+    typeof navigator !== "undefined" &&
+    /iPad|iPhone|iPod/.test(navigator.userAgent);
+
   return (
     <>
       <Container maxWidth="sm" className="mb-200">
         {/* {routerMap[props.currentRouterKey].component} */}
         {props.children}
+        <SwipeableDrawer
+          // disableBackdropTransition={!iOS}
+          // disableDiscovery={iOS}
+          hideBackdrop={true}
+          PaperProps={{
+            style: {
+              borderRadius: "20px",
+              boxShadow: "0px 0px 20px 0px rgba(0,0,0,0.3)",
+              backgroundColor: "#dedede",
+            },
+          }}
+          anchor="bottom"
+          open={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+          onOpen={() => setIsDrawerOpen(true)}
+        >
+          <Box
+            sx={{
+              // marginTop: "100px",
+              height: "98vh",
+              padding: "20px",
+            }}
+          >
+            <AddTransactionTab action="add" />
+          </Box>
+        </SwipeableDrawer>
         <Paper
           sx={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 80 }}
           elevation={3}
@@ -55,7 +87,11 @@ export function BottomNavigation(props: BottomNavigationProps) {
             value={currentTab}
             onChange={(event, newValue: RouterMapKey) => {
               setCurrentTab(newValue);
-              router.push(routerMap[newValue].path);
+              if (newValue === 1 && iOS) {
+                setIsDrawerOpen(true);
+              } else {
+                router.push(routerMap[newValue].path);
+              }
             }}
           >
             <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />

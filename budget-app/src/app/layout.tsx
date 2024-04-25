@@ -6,7 +6,7 @@ const APP_TITLE_TEMPLATE = "%s - My Budget";
 const APP_DESCRIPTION = "My Budget on Mobile";
 
 export const viewport: Viewport = {
-  themeColor: "#FFFFFF",
+  themeColor: "#dedede",
 };
 
 export const metadata: Metadata = {
