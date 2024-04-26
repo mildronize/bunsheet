@@ -8,21 +8,14 @@ import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import {
   AppBar,
-  Box,
-  Button,
   Container,
-  IconButton,
   Paper,
-  SwipeableDrawer,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
-import { RecentTransactionTab } from "../RecentTransactionTab";
 import { AddTransactionTab } from "../AddTransactionTab";
-import { SettingTab } from "../SettingTab";
-import { set } from "core-js/core/dict";
-import InfoIcon from "@mui/icons-material/Info";
+import { SwipeableDrawer } from "./SwipeableDrawer";
 
 const routerMap = {
   0: {
@@ -67,11 +60,7 @@ export function BottomNavigation(props: BottomNavigationProps) {
         }}
       >
         <Toolbar sx={{ justifyContent: "center" }}>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ fontSize: "1rem", fontWeight: "700" }}
-          >
+          <Typography variant="h6" sx={{ fontSize: "1rem", fontWeight: "600" }}>
             {routerMap[currentTab].title}
           </Typography>
         </Toolbar>
@@ -89,67 +78,12 @@ export function BottomNavigation(props: BottomNavigationProps) {
       >
         {props.children}
         <SwipeableDrawer
-          disableBackdropTransition={!iOS}
-          disableDiscovery={iOS}
-          PaperProps={{
-            style: {
-              borderRadius: "20px",
-              boxShadow: "0px 0px 20px 0px rgba(0,0,0,0.3)",
-            },
-          }}
-          ModalProps={{
-            sx: {
-              "& .MuiBackdrop-root": {
-                backgroundColor: "rgba(255, 255, 255, 0.4)",
-              },
-            },
-          }}
-          anchor="bottom"
+          title="Add Transaction"
           open={isDrawerOpen}
           onClose={() => setIsDrawerOpen(false)}
           onOpen={() => setIsDrawerOpen(true)}
         >
-          <Box
-            sx={{
-              height: "98vh",
-            }}
-          >
-            <AppBar>
-              <Toolbar
-                sx={{
-                  justifyContent: "space-between",
-                }}
-              >
-                <Button
-                  onClick={() => setIsDrawerOpen(false)}
-                  color="inherit"
-                  sx={{
-                    textTransform: "none",
-                  }}
-                >
-                  Cancel
-                </Button>
-
-                <Typography
-                  variant="h6"
-                  component="div"
-                  sx={{ fontSize: "1rem", fontWeight: "700" }}
-                >
-                  Add Transaction
-                </Typography>
-                <IconButton aria-label="info">
-                  <InfoIcon />
-                </IconButton>
-              </Toolbar>
-            </AppBar>
-            <Box
-              sx={{
-                padding: "0px 10px",
-              }}
-            >
-              <AddTransactionTab action="add" />
-            </Box>
-          </Box>
+          <AddTransactionTab action="add" />
         </SwipeableDrawer>
         <Paper
           sx={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 80 }}
