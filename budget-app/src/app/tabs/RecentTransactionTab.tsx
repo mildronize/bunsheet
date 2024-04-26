@@ -27,9 +27,9 @@ export function RecentTransactionTab() {
           <LinearProgress />
         </Box>
       ) : null}
-      <Typography variant="h6" gutterBottom sx={{ paddingLeft: '15px'}}>
+      {/* <Typography variant="h6" gutterBottom sx={{ paddingLeft: '15px'}}>
         Recent Transactions <CountQueueChip />
-      </Typography>
+      </Typography> */}
       <TransactionList data={transactionList.data?.data ?? []} />
     </div>
   );

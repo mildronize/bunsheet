@@ -6,22 +6,37 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import RestoreIcon from "@mui/icons-material/Restore";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { Box, Container, Paper, SwipeableDrawer } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Button,
+  Container,
+  IconButton,
+  Paper,
+  SwipeableDrawer,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { RecentTransactionTab } from "../RecentTransactionTab";
 import { AddTransactionTab } from "../AddTransactionTab";
 import { SettingTab } from "../SettingTab";
+import { set } from "core-js/core/dict";
+import InfoIcon from "@mui/icons-material/Info";
 
 const routerMap = {
   0: {
     path: "/",
+    title: "Recent Transactions",
     // component: <RecentTransactionTab />,
   },
   1: {
     path: "/transaction/add",
+    title: "Add Transaction",
     // component: <AddTransactionTab />,
   },
   2: {
+    title: "Settings",
     path: "/settings",
     // component: <SettingTab />,
   },
@@ -45,18 +60,48 @@ export function BottomNavigation(props: BottomNavigationProps) {
 
   return (
     <>
-      <Container maxWidth="sm" className="mb-200">
-        {/* {routerMap[props.currentRouterKey].component} */}
+      <AppBar
+        position="fixed"
+        sx={{
+          backgroundColor: "white",
+        }}
+      >
+        <Toolbar sx={{ justifyContent: "center" }}>
+          <Typography
+            variant="h6"
+            component="div"
+            sx={{ fontSize: "1rem", fontWeight: "700" }}
+          >
+            {routerMap[currentTab].title}
+          </Typography>
+        </Toolbar>
+      </AppBar>
+
+      <Container
+        maxWidth="sm"
+        sx={{
+          // Margin due to the fixed AppBar
+          marginTop: "80px",
+          paddingLeft: "0px",
+          paddingRight: "0px",
+        }}
+        className="mb-200"
+      >
         {props.children}
         <SwipeableDrawer
-          // disableBackdropTransition={!iOS}
-          // disableDiscovery={iOS}
-          hideBackdrop={true}
+          disableBackdropTransition={!iOS}
+          disableDiscovery={iOS}
           PaperProps={{
             style: {
               borderRadius: "20px",
               boxShadow: "0px 0px 20px 0px rgba(0,0,0,0.3)",
-              backgroundColor: "#dedede",
+            },
+          }}
+          ModalProps={{
+            sx: {
+              "& .MuiBackdrop-root": {
+                backgroundColor: "rgba(255, 255, 255, 0.4)",
+              },
             },
           }}
           anchor="bottom"
@@ -66,12 +111,44 @@ export function BottomNavigation(props: BottomNavigationProps) {
         >
           <Box
             sx={{
-              // marginTop: "100px",
               height: "98vh",
-              padding: "20px",
             }}
           >
-            <AddTransactionTab action="add" />
+            <AppBar>
+              <Toolbar
+                sx={{
+                  justifyContent: "space-between",
+                }}
+              >
+                <Button
+                  onClick={() => setIsDrawerOpen(false)}
+                  color="inherit"
+                  sx={{
+                    textTransform: "none",
+                  }}
+                >
+                  Cancel
+                </Button>
+
+                <Typography
+                  variant="h6"
+                  component="div"
+                  sx={{ fontSize: "1rem", fontWeight: "700" }}
+                >
+                  Add Transaction
+                </Typography>
+                <IconButton aria-label="info">
+                  <InfoIcon />
+                </IconButton>
+              </Toolbar>
+            </AppBar>
+            <Box
+              sx={{
+                padding: "0px 10px",
+              }}
+            >
+              <AddTransactionTab action="add" />
+            </Box>
           </Box>
         </SwipeableDrawer>
         <Paper
@@ -86,10 +163,10 @@ export function BottomNavigation(props: BottomNavigationProps) {
             sx={{ height: 80, paddingBottom: "20px" }}
             value={currentTab}
             onChange={(event, newValue: RouterMapKey) => {
-              setCurrentTab(newValue);
-              if (newValue === 1 && iOS) {
+              if (newValue === 1) {
                 setIsDrawerOpen(true);
               } else {
+                setCurrentTab(newValue);
                 router.push(routerMap[newValue].path);
               }
             }}

@@ -25,6 +25,7 @@ import { InferRouteResponse } from "@/types";
 import type * as SelectAccount from "@/app/api/select/account/route";
 import { catchResponseMessage } from "@/global/catchResponse";
 import type * as TransactionPost from "@/app/api/transaction/route";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 export type TransactionInputs = {
   amount: string;
@@ -182,7 +183,7 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
         </Box>
       ) : null}
       <Typography variant="h6" gutterBottom>
-        {capitalize(props.action)} Transaction
+        {/* {capitalize(props.action)} Transaction */}
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-input"></div>
@@ -238,12 +239,18 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
           <Box sx={{ position: "fixed", bottom: 40, right: 25, zIndex: 100 }}>
             <Fab
               variant="extended"
+              size="large"
               color="primary"
               type="submit"
               disabled={saveMutation.isPending}
+              sx={{
+                paddingLeft: "40px",
+                paddingRight: "40px",
+              }}
             >
-              <SendIcon sx={{ mr: 1 }} />
-              {capitalize(props.action)} Transaction
+              <CheckCircleIcon sx={{ mr: 1 }} />
+              {/* {capitalize(props.action)} Transaction */}
+              Save
             </Fab>
           </Box>
         </div>
