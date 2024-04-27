@@ -40,6 +40,7 @@ function parseTransactionInputs(
 }
 
 export function TransactionDataContainer(props: TransactionDataContainerProps) {
+  console.log("TransactionDataContainer", props.id, props.defaultValue?.amount);
   const transaction = useQuery<TransactionGetResponse>({
     queryKey: ["transactionSingleGet", { id: props.id }],
     queryFn: () =>
