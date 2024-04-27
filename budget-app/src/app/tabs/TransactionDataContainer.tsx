@@ -49,7 +49,7 @@ export function TransactionDataContainer(props: TransactionDataContainerProps) {
         .catch(catchResponseMessage),
   });
 
-  useGlobalLoading(transaction);
+  useGlobalLoading(transaction.isPending);
 
   if (props.id === undefined) {
     return <AddTransactionTab action="add" />;

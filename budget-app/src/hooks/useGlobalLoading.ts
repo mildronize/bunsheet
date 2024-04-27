@@ -1,15 +1,14 @@
 import { useGlobalLoadingStore } from "@/store";
-import { UseQueryResult } from "@tanstack/react-query";
 import { useEffect } from "react";
 
-export function useGlobalLoading(reactQueryResult: UseQueryResult) {
+export function useGlobalLoading(isLoading: boolean) {
   const setLoading = useGlobalLoadingStore((state) => state.setIsLoading);
 
   useEffect(() => {
-    if (reactQueryResult.isPending) {
+    if (isLoading) {
       setLoading(true);
     } else {
       setLoading(false);
     }
-  }, [reactQueryResult.isPending, setLoading]);
+  }, [isLoading, setLoading]);
 }

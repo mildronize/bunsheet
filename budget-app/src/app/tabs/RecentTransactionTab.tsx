@@ -27,7 +27,7 @@ export function RecentTransactionTab() {
         .catch(catchResponseMessage),
   });
 
-  useGlobalLoading(transactionList);
+  useGlobalLoading(transactionList.isPending);
 
   if (transactionList.isError) {
     return (
