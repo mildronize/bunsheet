@@ -6,7 +6,7 @@ import { Typography } from "@mui/material";
 
 export function RecentTransactionTitle() {
   return (
-    <Typography variant="h6" sx={{ fontSize: "1rem", fontWeight: "600" }}>
+    <Typography variant="h6" sx={{ fontSize: "0.9rem", fontWeight: "600" }}>
       Recent Transactions <CountQueueChip />
     </Typography>
   );

@@ -58,13 +58,6 @@ function isValidAction(action: string): action is ValidAction {
   return false;
 }
 
-function capitalize(str: string) {
-  if (str && typeof str === "string") {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-  }
-  return str;
-}
-
 export function AddTransactionTab(props: AddTransactionTabProps) {
   const queryClient = useQueryClient();
   const defaultValues = props.defaultValue ?? {

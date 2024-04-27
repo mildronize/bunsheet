@@ -32,7 +32,6 @@ export function SettingTab() {
       <div className="form-input">
         <Button
           variant="contained"
-          // size="large"
           fullWidth
           endIcon={<CleaningServicesRoundedIcon />}
           onClick={clearCache}
@@ -44,9 +43,7 @@ export function SettingTab() {
         <Button
           variant="contained"
           sx={{ backgroundColor: "#dfdfdf", color: "#000000" }}
-          // size="large"
           fullWidth
-          // endIcon={<CleaningServicesRoundedIcon />}
           onClick={reloadPage}
         >
           Reload App

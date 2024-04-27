@@ -57,7 +57,7 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
           {typeof props.title === "string" || props.title === undefined ? (
             <Typography
               variant="h6"
-              sx={{ fontSize: "1rem", fontWeight: "600" }}
+              sx={{ fontSize: "0.9rem", fontWeight: "600" }}
             >
               {props.title ?? routerMap[currentTab].title}
             </Typography>
