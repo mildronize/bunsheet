@@ -4,7 +4,7 @@ import { RecentTransactionTab } from "./tabs/RecentTransactionTab";
 import { CountQueueChip } from "./components/CountQueueChip";
 import { Typography } from "@mui/material";
 
-export function RecentTransactionTitle() {
+function RecentTransactionTitle() {
   return (
     <Typography variant="h6" sx={{ fontSize: "0.9rem", fontWeight: "600" }}>
       Recent Transactions <CountQueueChip />
