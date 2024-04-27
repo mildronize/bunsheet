@@ -46,6 +46,11 @@ export interface AddTransactionTabProps {
   action: ValidAction | (string & {});
   id?: string;
   defaultValue?: TransactionInputs;
+  /**
+   * the default behavior is to go back to the previous page after the transaction is saved.
+   * @returns Callback function to be called after the transaction is saved.
+   */
+  onSaveSuccess?: () => void;
 }
 
 function isValidAction(action: string): action is ValidAction {
@@ -105,8 +110,12 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
         ["transactionSingleGet", { id: res.data.data[0].id }],
         res.data
       );
-      console.log("Go back to previous page");
-      if (typeof window !== "undefined") window.history.back();
+      if (props.onSaveSuccess) {
+        props.onSaveSuccess();
+      } else {
+        console.log("Go back to previous page");
+        if (typeof window !== "undefined") window.history.back();
+      }
     },
     onError: (error) => {
       // TODO: Somehow the error message is not displayed.

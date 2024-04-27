@@ -61,7 +61,9 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
             >
               {props.title ?? routerMap[currentTab].title}
             </Typography>
-          ) : props.title }
+          ) : (
+            props.title
+          )}
         </Toolbar>
       </AppBar>
 
@@ -82,7 +84,10 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
           onClose={() => setIsDrawerOpen(false)}
           onOpen={() => setIsDrawerOpen(true)}
         >
-          <AddTransactionTab action="add" />
+          <AddTransactionTab
+            action="add"
+            onSaveSuccess={() => setIsDrawerOpen(false)}
+          />
         </SwipeableDrawer>
         <Paper
           sx={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 80 }}
