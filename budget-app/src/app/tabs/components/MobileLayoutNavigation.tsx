@@ -6,13 +6,7 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import RestoreIcon from "@mui/icons-material/Restore";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
-import {
-  AppBar,
-  Container,
-  Paper,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { AppBar, Container, Paper, Toolbar, Typography } from "@mui/material";
 import { useState } from "react";
 import { AddTransactionTab } from "../AddTransactionTab";
 import { SwipeableDrawer } from "./SwipeableDrawer";
@@ -37,19 +31,19 @@ const routerMap = {
 
 export type RouterMapKey = keyof typeof routerMap;
 
-export interface BottomNavigationProps {
+export interface MobileLayoutNavigationProps {
+  /**
+   * Override the title of the BottomNavigation
+   */
+  title?: React.ReactNode;
   children?: React.ReactNode;
   currentRouterKey: RouterMapKey;
 }
-export function BottomNavigation(props: BottomNavigationProps) {
+export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
   const router = useRouter();
   const [currentTab, setCurrentTab] = useState(props.currentRouterKey);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-
-  const iOS =
-    typeof navigator !== "undefined" &&
-    /iPad|iPhone|iPod/.test(navigator.userAgent);
 
   return (
     <>
@@ -60,9 +54,14 @@ export function BottomNavigation(props: BottomNavigationProps) {
         }}
       >
         <Toolbar sx={{ justifyContent: "center" }}>
-          <Typography variant="h6" sx={{ fontSize: "1rem", fontWeight: "600" }}>
-            {routerMap[currentTab].title}
-          </Typography>
+          {typeof props.title === "string" || props.title === undefined ? (
+            <Typography
+              variant="h6"
+              sx={{ fontSize: "1rem", fontWeight: "600" }}
+            >
+              {props.title ?? routerMap[currentTab].title}
+            </Typography>
+          ) : props.title }
         </Toolbar>
       </AppBar>
 

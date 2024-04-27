@@ -1,6 +1,5 @@
 import * as React from "react";
-import { BottomNavigation } from "@/app/tabs/components/BottomNavigation";
-import { AddTransactionTab } from "@/app/tabs/AddTransactionTab";
+import { MobileLayoutNavigation } from "@/app/tabs/components/MobileLayoutNavigation";
 import { TransactionDataContainer } from "./TransactionDataContainer";
 
 export interface PageProps {
@@ -11,9 +10,9 @@ export default function TransactionSinglePage({ params }: PageProps) {
   console.log('params',params);
   return (
     <div>
-      <BottomNavigation currentRouterKey={1}>
+      <MobileLayoutNavigation currentRouterKey={1} title="Edit Transaction">
         <TransactionDataContainer action={params.action} id={params.id} />
-      </BottomNavigation>
+      </MobileLayoutNavigation>
     </div>
   );
 }
