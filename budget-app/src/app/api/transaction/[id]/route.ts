@@ -1,11 +1,8 @@
 import { transactionCacheTable } from "@/bootstrap";
 import { TransactionCacheEntity } from "@/entites/transaction.entity";
 import { globalHandler } from "@/global/globalHandler";
-import dayjs from "dayjs";
 import { NextResponse } from "next/server";
 import { ODataExpression } from "ts-odata-client";
-
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const GET = globalHandler(async (req, { params }) => {
   if (params.id === undefined) {
@@ -27,8 +24,6 @@ export const GET = globalHandler(async (req, { params }) => {
       updatedAt: row.updatedAt,
     });
   }
-
-  await delay(1000);
 
   if(rows.length > 1 ) {
     throw new Error("Multiple rows found");

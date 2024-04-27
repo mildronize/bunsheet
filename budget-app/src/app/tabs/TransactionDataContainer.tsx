@@ -1,6 +1,7 @@
 "use client";
 import {
   AddTransactionTab,
+  AddTransactionTabProps,
   TransactionInputs,
 } from "@/app/tabs/AddTransactionTab";
 import { InferRouteResponse } from "@/types";
@@ -8,23 +9,21 @@ import * as TransactionId from "@/app/api/transaction/[id]/route";
 import axios from "axios";
 import { catchResponseMessage } from "@/global/catchResponse";
 import { useQuery } from "@tanstack/react-query";
-import { Alert, Box, LinearProgress } from "@mui/material";
+import { Alert } from "@mui/material";
 import dayjs from "dayjs";
-import { useGlobalLoadingStore } from "@/store";
-import { use, useEffect } from "react";
+import { useGlobalLoading } from "@/hooks/useGlobalLoading";
 
 export type TransactionGetResponse = InferRouteResponse<
   typeof TransactionId.GET
 >;
-export interface TransactionDataContainerProps {
+export interface TransactionDataContainerProps extends AddTransactionTabProps {
   action: string;
-  id: string;
+  id: string | undefined;
 }
 
 function parseTransactionInputs(
   data: TransactionGetResponse["data"] | undefined
 ): TransactionInputs {
-  console.log("data", data);
   const firstData = data ? data[0] : {};
   return {
     /**
@@ -41,7 +40,6 @@ function parseTransactionInputs(
 }
 
 export function TransactionDataContainer(props: TransactionDataContainerProps) {
-  const setLoading = useGlobalLoadingStore((state) => state.setIsLoading);
   const transaction = useQuery<TransactionGetResponse>({
     queryKey: ["transactionSingleGet", { id: props.id }],
     queryFn: () =>
@@ -51,13 +49,7 @@ export function TransactionDataContainer(props: TransactionDataContainerProps) {
         .catch(catchResponseMessage),
   });
 
-  useEffect(() => {
-    if (transaction.isPending) {
-      setLoading(true);
-    } else {
-      setLoading(false);
-    }
-  }, [transaction.isPending, setLoading]);
+  useGlobalLoading(transaction);
 
   if (props.id === undefined) {
     return <AddTransactionTab action="add" />;
@@ -78,6 +70,7 @@ export function TransactionDataContainer(props: TransactionDataContainerProps) {
   if (transaction.isSuccess && transaction.data?.data) {
     return (
       <AddTransactionTab
+        {...props}
         action={props.action}
         id={props.id}
         defaultValue={parseTransactionInputs(transaction.data?.data)}

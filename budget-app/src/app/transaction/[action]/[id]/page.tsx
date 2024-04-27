@@ -1,6 +1,6 @@
 import * as React from "react";
 import { MobileLayoutNavigation } from "@/app/tabs/components/MobileLayoutNavigation";
-import { TransactionDataContainer } from "./TransactionDataContainer";
+import { TransactionDataContainer } from "@/app/tabs/TransactionDataContainer";
 
 export interface PageProps {
   params: { action: string; id: string };

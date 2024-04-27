@@ -4,9 +4,6 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import Divider from "@mui/material/Divider";
 import ListItemText from "@mui/material/ListItemText";
-import ListItemAvatar from "@mui/material/ListItemAvatar";
-import Avatar from "@mui/material/Avatar";
-import Typography from "@mui/material/Typography";
 import dayjs from "dayjs";
 import { ListItemButton } from "@mui/material";
 import numbro from "numbro";
@@ -38,11 +35,21 @@ export interface TransactionListProps {
     account?: string;
     memo?: string;
   }[];
+  /**
+   * Optional onClickAction, default to redirect to /transaction/edit/:id
+   * @param id 
+   * @returns 
+   */
+  onClickAction?: (id?: string) => void;
 }
 
 export function TransactionList(props: TransactionListProps) {
   const router = useRouter();
   const handleListClick = (item: TransactionListProps["data"][number]) => {
+    if (props.onClickAction) {
+      props.onClickAction(item.id);
+      return;
+    }
     console.log(`Redirecting to /transaction/edit/${item.id}`);
     router.push(`/transaction/edit/${item.id}`);
   };
@@ -55,7 +62,7 @@ export function TransactionList(props: TransactionListProps) {
             dense={true}
             alignItems="flex-start"
             sx={{
-              padding: "0px"
+              padding: "0px",
               // paddingTop: "0px",
               // paddingBottom: "0px",
             }}
@@ -63,7 +70,7 @@ export function TransactionList(props: TransactionListProps) {
             <ListItemButton
               role={undefined}
               onClick={() => handleListClick(item)}
-              sx ={{
+              sx={{
                 paddingLeft: "40px",
                 paddingTop: "5px",
                 paddingBottom: "5px",
@@ -91,7 +98,7 @@ export function TransactionList(props: TransactionListProps) {
                       variant="body2"
                       color="text.primary"
                     > */}
-                      {item.payee}
+                    {item.payee}
                     {/* </Typography> */}
                     {` — ${numbro(item.amount).format("0,0")} on ${dayjs(
                       item.date

@@ -15,7 +15,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AddTransactionTab } from "../AddTransactionTab";
 import { SwipeableDrawer } from "./SwipeableDrawer";
 import { useGlobalLoadingStore } from "@/store";
@@ -59,7 +59,7 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
     <>
       {isLoading ? (
         <Box
-          sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 1000 }}
+          sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 3000 }}
         >
           <LinearProgress />
         </Box>
