@@ -6,10 +6,19 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import RestoreIcon from "@mui/icons-material/Restore";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
-import { AppBar, Container, Paper, Toolbar, Typography } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Container,
+  LinearProgress,
+  Paper,
+  Toolbar,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import { AddTransactionTab } from "../AddTransactionTab";
 import { SwipeableDrawer } from "./SwipeableDrawer";
+import { useGlobalLoadingStore } from "@/store";
 
 const routerMap = {
   0: {
@@ -42,15 +51,24 @@ export interface MobileLayoutNavigationProps {
 export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
   const router = useRouter();
   const [currentTab, setCurrentTab] = useState(props.currentRouterKey);
+  const isLoading = useGlobalLoadingStore((state) => state.isLoading);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
     <>
+      {isLoading ? (
+        <Box
+          sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 1000 }}
+        >
+          <LinearProgress />
+        </Box>
+      ) : null}
       <AppBar
         position="fixed"
         sx={{
           backgroundColor: "white",
+          zIndex: 900,
         }}
       >
         <Toolbar sx={{ justifyContent: "center" }}>

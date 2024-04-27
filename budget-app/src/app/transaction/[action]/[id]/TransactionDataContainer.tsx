@@ -10,6 +10,8 @@ import { catchResponseMessage } from "@/global/catchResponse";
 import { useQuery } from "@tanstack/react-query";
 import { Alert, Box, LinearProgress } from "@mui/material";
 import dayjs from "dayjs";
+import { useGlobalLoadingStore } from "@/store";
+import { use, useEffect } from "react";
 
 export type TransactionGetResponse = InferRouteResponse<
   typeof TransactionId.GET
@@ -22,13 +24,14 @@ export interface TransactionDataContainerProps {
 function parseTransactionInputs(
   data: TransactionGetResponse["data"] | undefined
 ): TransactionInputs {
+  console.log("data", data);
   const firstData = data ? data[0] : {};
   return {
     /**
      * If the amount is negative, it will be converted to positive
      * This will also convert before saving into google sheet as positive
      */
-    amount: String((firstData.amount ?? 0) * -1 ) ?? "-0",
+    amount: String((firstData.amount ?? 0) * -1) ?? "-0",
     payee: firstData.payee ?? "",
     category: firstData.category ?? "",
     account: firstData.account ?? "",
@@ -38,8 +41,9 @@ function parseTransactionInputs(
 }
 
 export function TransactionDataContainer(props: TransactionDataContainerProps) {
+  const setLoading = useGlobalLoadingStore((state) => state.setIsLoading);
   const transaction = useQuery<TransactionGetResponse>({
-    queryKey: ["transactionSingleGet", { id: props.id }], 
+    queryKey: ["transactionSingleGet", { id: props.id }],
     queryFn: () =>
       axios
         .get("/api/transaction/" + props.id)
@@ -47,32 +51,37 @@ export function TransactionDataContainer(props: TransactionDataContainerProps) {
         .catch(catchResponseMessage),
   });
 
+  useEffect(() => {
+    if (transaction.isPending) {
+      setLoading(true);
+    } else {
+      setLoading(false);
+    }
+  }, [transaction.isPending, setLoading]);
+
   if (props.id === undefined) {
     return <AddTransactionTab action="add" />;
   }
 
   if (transaction.isPending) {
+    return null;
+  }
+
+  if (transaction.isError) {
     return (
-      <Box sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 100 }}>
-        <LinearProgress />
-      </Box>
+      <Alert severity="error">
+        Cannot get transaction from id {props.id}: {transaction.error?.message}
+      </Alert>
     );
   }
 
-  if (
-    transaction.data?.data === undefined ||
-    transaction.data?.data.length === 0
-  ) {
-    <Alert severity="error">
-      Cannot get transaction from id {props.id}: {transaction.error?.message}
-    </Alert>;
+  if (transaction.isSuccess && transaction.data?.data) {
+    return (
+      <AddTransactionTab
+        action={props.action}
+        id={props.id}
+        defaultValue={parseTransactionInputs(transaction.data?.data)}
+      />
+    );
   }
-
-  return (
-    <AddTransactionTab
-      action={props.action}
-      id={props.id}
-      defaultValue={parseTransactionInputs(transaction.data?.data)}
-    />
-  );
 }

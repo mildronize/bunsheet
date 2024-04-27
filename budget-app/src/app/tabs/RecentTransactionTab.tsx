@@ -5,7 +5,10 @@ import axios from "axios";
 import { TransactionList } from "../components/TransactionList";
 import { InferRouteResponse } from "@/types";
 import * as Transaction from "@/app/api/transaction/route";
-import { Box, LinearProgress } from "@mui/material";
+import { Alert, Box, LinearProgress } from "@mui/material";
+import { useGlobalLoadingStore } from "@/store";
+import { useEffect } from "react";
+import { useGlobalLoading } from "@/hooks/useGlobalLoading";
 
 export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
 
@@ -19,13 +22,16 @@ export function RecentTransactionTab() {
         .catch(catchResponseMessage),
   });
 
+  useGlobalLoading(transactionList);
+
+  if (transactionList.isError) {
+    return (
+      <Alert severity="error">Error: {transactionList.error?.message}</Alert>
+    );
+  }
+
   return (
     <div>
-      {transactionList.isPending ? (
-        <Box sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 100 }}>
-          <LinearProgress />
-        </Box>
-      ) : null}
       <TransactionList data={transactionList.data?.data ?? []} />
     </div>
   );
