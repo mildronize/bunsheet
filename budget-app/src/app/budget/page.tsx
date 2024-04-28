@@ -1,11 +1,12 @@
 import type * as React from "react";
 import { MobileLayoutNavigation } from "../tabs/components/MobileLayoutNavigation";
 import { BudgetTab } from "../tabs/BudgetTab";
+import dayjs from "dayjs";
 
 export default function BudgetPage() {
   return (
     <div>
-      <MobileLayoutNavigation currentRouterKey={1}>
+      <MobileLayoutNavigation currentRouterKey={1} title={dayjs().format('MMM YYYY')}>
         <BudgetTab
           items={[
             {

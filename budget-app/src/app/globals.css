@@ -27,7 +27,7 @@ body {
 }
 
 .flex-item {
-  flex: 1 1 25%; /* Flex-grow, flex-shrink and flex-basis set to ensure equal width and responsiveness */
+  flex: 1 1 15%; /* Flex-grow, flex-shrink and flex-basis set to ensure equal width and responsiveness */
   /* padding: 10px; Padding for some space inside the items */
   box-sizing: border-box; /* Includes padding and border in the element's total width and height */
   /* min-width: 150px; Minimum width before wrapping */
