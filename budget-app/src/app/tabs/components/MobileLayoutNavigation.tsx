@@ -6,6 +6,9 @@ import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import RestoreIcon from "@mui/icons-material/Restore";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
+import PaymentsIcon from "@mui/icons-material/Payments";
+import EqualizerIcon from "@mui/icons-material/Equalizer";
+import HomeIcon from "@mui/icons-material/Home";
 import {
   AppBar,
   Box,
@@ -20,25 +23,43 @@ import { AddTransactionTab } from "../AddTransactionTab";
 import { SwipeableDrawer } from "./SwipeableDrawer";
 import { useGlobalLoadingStore } from "@/store";
 
-const routerMap = {
-  0: {
+const routerMap: {
+  label: string;
+  icon: React.ReactNode;
+  path: string;
+  title: string;
+}[] = [
+  {
+    label: "Overview",
+    icon: <HomeIcon />,
     path: "/",
-    title: "Recent Transactions",
-    // component: <RecentTransactionTab />,
+    title: "Overview",
   },
-  1: {
+  {
+    label: "Budget",
+    icon: <PaymentsIcon />,
+    path: "/budget",
+    title: "Budget",
+  },
+  {
+    label: "Transaction",
+    icon: <AddCircleRoundedIcon />,
     path: "/transaction/add",
     title: "Add Transaction",
-    // component: <AddTransactionTab />,
   },
-  2: {
+  {
+    label: "Recent",
+    icon: <RestoreIcon />,
+    path: "/transaction",
+    title: "Recent Transactions",
+  },
+  {
+    label: "Settings",
+    icon: <SettingsIcon />,
     title: "Settings",
     path: "/settings",
-    // component: <SettingTab />,
   },
-};
-
-export type RouterMapKey = keyof typeof routerMap;
+];
 
 export interface MobileLayoutNavigationProps {
   /**
@@ -46,7 +67,7 @@ export interface MobileLayoutNavigationProps {
    */
   title?: React.ReactNode;
   children?: React.ReactNode;
-  currentRouterKey: RouterMapKey;
+  currentRouterKey: number;
 }
 export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
   const router = useRouter();
@@ -116,10 +137,10 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
             /**
              * Fix Height for PWA on iOS
              */
-            sx={{ height: 80, paddingBottom: "20px" }}
+            sx={{ height: 90, paddingBottom: "20px" }}
             value={currentTab}
-            onChange={(event, newValue: RouterMapKey) => {
-              if (newValue === 1) {
+            onChange={(event, newValue: number) => {
+              if (newValue === 2) {
                 setIsDrawerOpen(true);
               } else {
                 setCurrentTab(newValue);
@@ -127,12 +148,25 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
               }
             }}
           >
-            <BottomNavigationAction label="Recents" icon={<RestoreIcon />} />
-            <BottomNavigationAction
-              label="Transaction"
-              icon={<AddCircleRoundedIcon />}
-            />
-            <BottomNavigationAction label="Settings" icon={<SettingsIcon />} />
+            {routerMap.map((item, index) => (
+              <BottomNavigationAction
+                key={index}
+                label={item.label}
+                icon={item.icon}
+                sx={{
+                  "&.Mui-selected": {
+                    // Set font size for selected tab
+                    "& .MuiBottomNavigationAction-label": {
+                      fontSize: "0.75rem",
+                    },
+                  },
+                  "& .MuiBottomNavigationAction-label": {
+                    fontSize: "0.65rem",
+                    marginTop: "1px",
+                  },
+                }}
+              />
+            ))}
           </MuiBottomNavigation>
         </Paper>
       </Container>
