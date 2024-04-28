@@ -11,6 +11,8 @@ import { useTheme } from "@mui/material/styles";
 import { Box, Chip, Divider, LinearProgress, linearProgressClasses } from "@mui/material";
 import numbro from "numbro";
 import { useState } from "react";
+import useLongPress from "@/hooks/useLongPress";
+import { toast, Toaster } from "sonner";
 
 export interface BudgetItem {
   name: string;
@@ -45,6 +47,8 @@ export interface ListRowProps {}
 export function ListRow(props: BudgetItem) {
   const [isClick, setIsClick] = useState(false);
 
+  const longPress = useLongPress(() => toast.success("Long Press Happened"), 500);
+
   const theme = useTheme();
   let chipColor = "";
   if (props.available < 0) {
@@ -56,7 +60,7 @@ export function ListRow(props: BudgetItem) {
   }
   return (
     <>
-      <ListItemButton onClick={() => setIsClick(true)}>
+      <ListItemButton onClick={() => setIsClick(true)} {...longPress} >
         <Box
           sx={{
             display: "flex",
@@ -161,6 +165,8 @@ export function BudgetTab(props: BudgetTabProps) {
   };
 
   return (
+    <>
+     <Toaster closeButton richColors duration={2000} position="top-center" />
     <List
       sx={{ width: "100%" }}
       component="nav"
@@ -194,5 +200,6 @@ export function BudgetTab(props: BudgetTabProps) {
         </React.Fragment>
       ))}
     </List>
+    </>
   );
 }
