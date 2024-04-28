@@ -30,20 +30,9 @@ export function AlertActiveQueue() {
   if (transactionQueue.isLoading) {
     return <Skeleton variant="text" sx={{ fontSize: "2rem" }} />;
   }
-
-  // if (transactionQueue.data?.data?.numberOfMessages === 0) {
-  //   return <></>;
-  // }
-
+  
   return (
     <>
-      {transactionQueue.data?.data?.numberOfMessages &&
-      transactionQueue.data?.data?.numberOfMessages > 0 ? (
-        <Alert severity="warning">
-          Number of messages in queue:{" "}
-          {String(transactionQueue.data?.data.numberOfMessages)}
-        </Alert>
-      ) : null}
       {transactionQueue.data?.data?.poisonQueue?.numberOfMessages &&
       transactionQueue.data?.data?.poisonQueue?.numberOfMessages > 0 ? (
         <Alert severity="error">

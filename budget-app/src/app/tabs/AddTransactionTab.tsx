@@ -25,6 +25,7 @@ import { InferRouteResponse } from "@/types";
 import type * as SelectAccount from "@/app/api/select/account/route";
 import { catchResponseMessage } from "@/global/catchResponse";
 import type * as TransactionPost from "@/app/api/transaction/route";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 export type TransactionInputs = {
   amount: string;
@@ -45,6 +46,11 @@ export interface AddTransactionTabProps {
   action: ValidAction | (string & {});
   id?: string;
   defaultValue?: TransactionInputs;
+  /**
+   * the default behavior is to go back to the previous page after the transaction is saved.
+   * @returns Callback function to be called after the transaction is saved.
+   */
+  onSaveSuccess?: () => void;
 }
 
 function isValidAction(action: string): action is ValidAction {
@@ -55,13 +61,6 @@ function isValidAction(action: string): action is ValidAction {
     return true;
   }
   return false;
-}
-
-function capitalize(str: string) {
-  if (str && typeof str === "string") {
-    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-  }
-  return str;
 }
 
 export function AddTransactionTab(props: AddTransactionTabProps) {
@@ -107,9 +106,16 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
       });
     },
     onSuccess: async (res: AxiosResponse<TransactionPostResponse>) => {
-      queryClient.setQueryData(['transactionSingleGet', { id: res.data.data[0].id }], res.data)
-      console.log("Go back to previous page");
-      if(typeof window !== "undefined") window.history.back();
+      queryClient.setQueryData(
+        ["transactionSingleGet", { id: res.data.data[0].id }],
+        res.data
+      );
+      if (props.onSaveSuccess) {
+        props.onSaveSuccess();
+      } else {
+        console.log("Go back to previous page");
+        if (typeof window !== "undefined") window.history.back();
+      }
     },
     onError: (error) => {
       // TODO: Somehow the error message is not displayed.
@@ -170,14 +176,16 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
   };
 
   return (
-    <Box sx={{ paddingLeft: "15px", paddingRight: "15px" }}>
+    <Box
+      sx={{ paddingLeft: "15px", paddingRight: "15px", paddingBottom: "140px" }}
+    >
       {saveMutation.isPending ? (
         <Box sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 100 }}>
           <LinearProgress />
         </Box>
       ) : null}
       <Typography variant="h6" gutterBottom>
-        {capitalize(props.action)} Transaction
+        {/* {capitalize(props.action)} Transaction */}
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="form-input"></div>
@@ -230,15 +238,21 @@ export function AddTransactionTab(props: AddTransactionTabProps) {
         </div>
         <Toaster closeButton richColors duration={2000} position="top-center" />
         <div className="form-input">
-          <Box sx={{ position: "fixed", bottom: 100, right: 25, zIndex: 100 }}>
+          <Box sx={{ position: "fixed", bottom: 40, right: 25, zIndex: 100 }}>
             <Fab
               variant="extended"
+              size="large"
               color="primary"
               type="submit"
               disabled={saveMutation.isPending}
+              sx={{
+                paddingLeft: "40px",
+                paddingRight: "40px",
+              }}
             >
-              <SendIcon sx={{ mr: 1 }} />
-              {capitalize(props.action)} Transaction
+              <CheckCircleIcon sx={{ mr: 1 }} />
+              {/* {capitalize(props.action)} Transaction */}
+              Save
             </Fab>
           </Box>
         </div>

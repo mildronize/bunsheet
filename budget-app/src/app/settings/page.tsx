@@ -1,13 +1,13 @@
 import * as React from "react";
-import { BottomNavigation } from "../tabs/components/BottomNavigation";
+import { MobileLayoutNavigation } from "../tabs/components/MobileLayoutNavigation";
 import { SettingTab } from "../tabs/SettingTab";
 
 export default function Home() {
   return (
     <div>
-      <BottomNavigation currentRouterKey={2} >
+      <MobileLayoutNavigation currentRouterKey={2} >
         <SettingTab />
-      </BottomNavigation>
+      </MobileLayoutNavigation>
     </div>
   );
 }

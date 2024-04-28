@@ -5,12 +5,20 @@ import axios from "axios";
 import { TransactionList } from "../components/TransactionList";
 import { InferRouteResponse } from "@/types";
 import * as Transaction from "@/app/api/transaction/route";
-import { Box, Chip, LinearProgress, Typography } from "@mui/material";
-import { CountQueueChip } from "../components/CountQueueChip";
+import { Alert, Box, LinearProgress } from "@mui/material";
+import { useCallback, useEffect, useState } from "react";
+import { useGlobalLoading } from "@/hooks/useGlobalLoading";
+import { SwipeableDrawer } from "./components/SwipeableDrawer";
+import { TransactionDataContainer } from "./TransactionDataContainer";
 
 export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
 
 export function RecentTransactionTab() {
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [editTransactionId, setEditTransactionId] = useState<
+    string | undefined
+  >(undefined);
+
   const transactionList = useQuery<TransactionGetResponse>({
     queryKey: ["transactionList"],
     queryFn: () =>
@@ -20,17 +28,47 @@ export function RecentTransactionTab() {
         .catch(catchResponseMessage),
   });
 
+  useGlobalLoading(transactionList.isPending);
+
+  if (transactionList.isError) {
+    return (
+      <Alert severity="error">Error: {transactionList.error?.message}</Alert>
+    );
+  }
+
   return (
     <div>
-      {transactionList.isPending ? (
-        <Box sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 100 }}>
-          <LinearProgress />
-        </Box>
-      ) : null}
-      <Typography variant="h6" gutterBottom sx={{ paddingLeft: '15px'}}>
-        Recent Transactions <CountQueueChip />
-      </Typography>
-      <TransactionList data={transactionList.data?.data ?? []} />
+      <SwipeableDrawer
+        title="Edit Transaction"
+        open={isDrawerOpen}
+        onClose={() => setIsDrawerOpen(false)}
+        onOpen={() => setIsDrawerOpen(true)}
+      >
+        {
+          /**
+           * Make sure the TransactionDataContainer is rerendered when the drawer is open
+           */
+          isDrawerOpen ? (
+            <TransactionDataContainer
+              action="edit"
+              id={editTransactionId}
+              onSaveSuccess={() => {
+                setIsDrawerOpen(false);
+                // Refetch the transaction list, use this until we have a better solution
+                // Consider to refetch in realtime
+                transactionList.refetch();
+              }}
+            />
+          ) : null
+        }
+      </SwipeableDrawer>
+      <TransactionList
+        data={transactionList.data?.data ?? []}
+        onClickAction={(id) => {
+          setEditTransactionId(id);
+          setIsDrawerOpen(true);
+        }}
+      />
     </div>
   );
 }

@@ -26,13 +26,9 @@ export function SettingTab() {
   return (
     <Box sx={{ paddingLeft: "15px", paddingRight: "15px" }}>
       <Toaster closeButton richColors duration={2000} position="top-center" />
-      <Typography variant="h6" gutterBottom sx={{ marginBottom: "40px" }}>
-        Settings
-      </Typography>
       <div className="form-input">
         <Button
           variant="contained"
-          // size="large"
           fullWidth
           endIcon={<CleaningServicesRoundedIcon />}
           onClick={clearCache}
@@ -44,9 +40,7 @@ export function SettingTab() {
         <Button
           variant="contained"
           sx={{ backgroundColor: "#dfdfdf", color: "#000000" }}
-          // size="large"
           fullWidth
-          // endIcon={<CleaningServicesRoundedIcon />}
           onClick={reloadPage}
         >
           Reload App
