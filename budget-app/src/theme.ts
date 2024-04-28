@@ -1,9 +1,21 @@
 "use client";
-import { Figtree, Roboto, Heebo } from "next/font/google";
+import { Figtree, Roboto, Heebo, Poppins, Montserrat } from "next/font/google";
 
 import { createTheme } from "@mui/material/styles";
+import { pop } from "core-js/core/array";
 
 // Figtree
+const montserrat = Montserrat({
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const poppins = Poppins({
+  weight: ["400", "500", "600"],
+  subsets: ["latin"],
+  display: "swap",
+});
 
 const figtree = Figtree({
   weight: ["400", "500", "600"],
@@ -27,14 +39,25 @@ const theme = createTheme({
   palette: {
     mode: "light",
   },
+
   typography: {
     fontFamily: heebo.style.fontFamily,
   },
   components: {
-    MuiList: {
+    MuiChip: {
       styleOverrides: {
         root: {
-          fontFamily: heebo.style.fontFamily,
+          fontFamily: poppins.style.fontFamily,
+          fontWeight: 700,
+        },
+      },
+    },
+    MuiListItemText: {
+      defaultProps: {
+        primaryTypographyProps: {
+          sx: {
+            fontFamily: heebo.style.fontFamily,
+          },
         },
       },
     },

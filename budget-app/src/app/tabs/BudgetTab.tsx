@@ -2,12 +2,15 @@
 import * as React from "react";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
+import ListItemText, { ListItemTextProps } from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
+import { alpha, styled } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 import { Box, Chip, Divider } from "@mui/material";
 import numbro from "numbro";
+import { useState } from "react";
 
 export interface BudgetItem {
   name: string;
@@ -28,31 +31,85 @@ export interface BudgetTabProps {
 export interface ListRowProps {}
 
 export function ListRow(props: BudgetItem) {
+  const [isClick, setIsClick] = useState(false);
+
+  const theme = useTheme();
+  let chipColor = "";
+  if (props.available < 0) {
+    chipColor = "#ffc6be";
+  } else if (props.available > 0) {
+    chipColor = "#ccf2a5";
+  } else {
+    chipColor = "#e3e3e3";
+  }
   return (
-    <span className="flex-container">
-      <ListItemText
-        className="flex-item"
-        primary={props.name}
-        sx={{
-          flex: "flex: 1 1 50%; ",
-        }}
-      />
-      <ListItemText
-        className="flex-item"
-        primary={numbro(props.assigned).format("0,0")}
-        sx={{
-          textAlign: "right",
-        }}
-      />
-      <Box
-        className="flex-item"
-        sx={{
-          textAlign: "right",
-        }}
-      >
-        <Chip label={numbro(props.available).format("0,0")} color="success" />{" "}
-      </Box>
-    </span>
+    <ListItemButton onClick={() => setIsClick(!isClick)}>
+      <span className="flex-container">
+        <ListItemText
+          className="flex-item"
+          primary={props.name}
+          primaryTypographyProps={{
+            sx: {
+              fontSize: "0.9rem",
+              fontFamily: theme.typography.fontFamily,
+            },
+          }}
+          sx={{
+            flex: "flex: 1 1 50%; ",
+          }}
+        />
+        {/* <ListItemText
+            className="flex-item"
+            primary={numbro(props.assigned).format("0,0")}
+            primaryTypographyProps={{
+              sx: {
+                fontSize: "0.9rem",
+              },
+            }}
+            sx={{
+              textAlign: "right",
+            }}
+          /> */}
+        {isClick ? (
+          <input
+            className="flex-item"
+            type="text"
+            defaultValue={props.assigned}
+            style={{
+              width: "50px",
+              textAlign: "right",
+              fontSize: "0.9rem",
+              fontFamily: theme.typography.fontFamily,
+              border: "none",
+              backgroundColor: alpha("#ffffff", 0.0),
+            }}
+          />
+        ) : (
+          <> </>
+        )}
+        <Box
+          className="flex-item"
+          sx={{
+            textAlign: "right",
+          }}
+        >
+          <Chip
+            label={numbro(props.available).format("0,0")}
+            // variant="filled"
+            size="small"
+            sx={{
+              "&.MuiChip-root": {
+                backgroundColor: chipColor,
+                fontSize: "0.7rem",
+              },
+              "&.MuiChip-label": {
+                fontWeight: "bold",
+              },
+            }}
+          />
+        </Box>
+      </span>
+    </ListItemButton>
   );
 }
 
@@ -62,7 +119,6 @@ export function BudgetTab(props: BudgetTabProps) {
   const handleClick = () => {
     setOpen(!open);
   };
-  // return <></>;
 
   return (
     <List
@@ -88,9 +144,9 @@ export function BudgetTab(props: BudgetTabProps) {
           <Collapse in={open} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
               {item.budgetItems.map((budgetItem) => (
-                <ListItemButton sx={{ pl: 5 }} key={budgetItem.name}>
+                <Box sx={{ pl: 5 }} key={budgetItem.name}>
                   <ListRow {...budgetItem} />
-                </ListItemButton>
+                </Box>
               ))}
             </List>
           </Collapse>

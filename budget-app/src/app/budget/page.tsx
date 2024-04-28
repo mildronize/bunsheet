@@ -21,13 +21,13 @@ export default function BudgetPage() {
                   name: "Shopping",
                   activity: 100,
                   assigned: 600,
-                  available: 477,
+                  available: -477,
                 },
                 {
                   name: "Entertainment",
                   activity: 300,
                   assigned: 600,
-                  available: 477,
+                  available: 0,
                 },
                 {
                   name: "Travel",
@@ -50,7 +50,7 @@ export default function BudgetPage() {
                   name: "Rent",
                   activity: 400,
                   assigned: 600,
-                  available: 1000,
+                  available: -1000,
                 },
                 {
                   name: "Utilities",
@@ -62,7 +62,7 @@ export default function BudgetPage() {
                   name: "Groceries",
                   activity: 135,
                   assigned: 600,
-                  available: 220,
+                  available: 0,
                 },
               ],
             },
