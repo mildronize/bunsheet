@@ -28,6 +28,18 @@ const BudgetLinearProgress = styled(LinearProgress)(({ theme }) => ({
   },
 }));
 
+const ListContainer = styled(Box)(() => ({
+  display: "flex",
+  flexDirection: "column",
+  width: "100%",
+}));
+
+const ListRowContainer = styled(Box)(() => ({
+  display: "flex",
+  flexWrap: "wrap",
+  width: "100%",
+}));
+
 export interface ListRowProps {}
 
 export function ListRow(props: BudgetItem) {
@@ -40,14 +52,8 @@ export function ListRow(props: BudgetItem) {
   return (
     <>
       <ListItemButton onClick={() => setIsClick(true)} {...longPress}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            width: "100%",
-          }}
-        >
-          <span className="flex-container">
+        <ListContainer>
+          <ListRowContainer>
             <ListItemText
               className="flex-item"
               primary={props.name}
@@ -66,7 +72,7 @@ export function ListRow(props: BudgetItem) {
             {isClick ? (
               <input
                 autoFocus
-                className="flex-item input-cursor"
+                className="flex-item"
                 type="number"
                 defaultValue={props.assigned}
                 style={{
@@ -89,7 +95,7 @@ export function ListRow(props: BudgetItem) {
             >
               <AvailableChip available={props.available} />
             </Box>
-          </span>
+          </ListRowContainer>
           <BudgetLinearProgress
             variant="determinate"
             value={
@@ -100,7 +106,7 @@ export function ListRow(props: BudgetItem) {
                 : 0
             }
           />
-        </Box>
+        </ListContainer>
       </ListItemButton>
       <Divider />
     </>
