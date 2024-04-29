@@ -43,6 +43,7 @@ export interface ListRowProps {
   items: BudgetItem;
   isEditAssigned: boolean;
   onEditAssigned: () => void;
+  onEditAssignedSave: () => void;
 }
 
 export function ListRow(props: ListRowProps) {
@@ -74,6 +75,10 @@ export function ListRow(props: ListRowProps) {
 
             {props.isEditAssigned ? (
               <input
+                /**
+                 * When unfocused, save the value
+                 */
+                onBlur={props.onEditAssignedSave}
                 autoFocus
                 className="flex-item"
                 type="number"

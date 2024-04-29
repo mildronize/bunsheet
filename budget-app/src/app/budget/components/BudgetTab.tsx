@@ -17,16 +17,18 @@ export type ListState = Record<
     isEditAssigned: boolean;
   }
 >;
-export type GroupState = Record<Id, {
-  isExpanded: boolean;
-}>;
+export type GroupState = Record<
+  Id,
+  {
+    isExpanded: boolean;
+  }
+>;
 
 export interface BudgetTabProps {
   budgetGroup: BudgetGroupItem[];
 }
 
 export function BudgetTab(props: BudgetTabProps) {
-  const [open, setOpen] = React.useState(true);
   const [listState, setListState] = React.useState<ListState>(
     props.budgetGroup.reduce((acc, group) => {
       group.budgetItems.forEach((item) => {
@@ -79,13 +81,32 @@ export function BudgetTab(props: BudgetTabProps) {
               {groupState[item.id].isExpanded ? <ExpandLess /> : <ExpandMore />}
               <ListItemText primary={item.name} />
             </ListItemButton>
-            <Collapse in={groupState[item.id].isExpanded} timeout="auto" unmountOnExit>
+            <Collapse
+              in={groupState[item.id].isExpanded}
+              timeout="auto"
+              unmountOnExit
+            >
               <List component="div" disablePadding>
                 {item.budgetItems.map((budgetItem) => (
                   <Box key={budgetItem.name}>
                     <ListRow
                       items={budgetItem}
                       isEditAssigned={listState[budgetItem.id].isEditAssigned}
+                      onEditAssignedSave={
+                        /**
+                         * Clear the active state
+                         */
+                        () => {
+                          setListState((prevState) => {
+                            const newState = { ...prevState };
+                            newState[budgetItem.id] = {
+                              isEditAssigned: false,
+                            };
+                            return newState;
+                          });
+                          console.log("Save the value");
+                        }
+                      }
                       onEditAssigned={() =>
                         /**
                          * Clear all other edit states,
