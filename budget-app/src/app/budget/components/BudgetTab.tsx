@@ -142,11 +142,6 @@ export function ListRow(props: BudgetItem) {
                   : (props.assigned / props.available) * 100
                 : 0
             }
-            sx={{
-              // height: "10px",
-              borderRadius: "5px",
-              marginTop: "5px",
-            }}
           />
         </Box>
       </ListItemButton>

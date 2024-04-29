@@ -1,6 +1,6 @@
 import type * as React from "react";
 import { MobileLayoutNavigation } from "../tabs/components/MobileLayoutNavigation";
-import { BudgetTab } from "../tabs/BudgetTab";
+import { BudgetTab } from "./components/BudgetTab";
 import dayjs from "dayjs";
 
 export default function BudgetPage() {
