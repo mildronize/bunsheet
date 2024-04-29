@@ -40,6 +40,15 @@ const heebo = Heebo({
   display: "swap",
 });
 
+declare module '@mui/material/styles' {
+  interface Theme {
+    budget: Record<string, unknown>;
+  }
+  interface ThemeOptions {
+    budget?: Record<string, unknown>;
+  }
+}
+
 const theme = createTheme({
   palette: {
     mode: "light",

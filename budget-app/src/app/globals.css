@@ -33,3 +33,23 @@ body {
   /* min-width: 150px; Minimum width before wrapping */
   /* text-align: center; Centers the text horizontally */
 }
+
+.input-cursor {
+  position: relative;
+  /* height: 20px; */
+  border-right: 2px solid transparent;
+}
+
+.input-cursor.blink {
+  animation: blinkCursor 1s steps(1, start) infinite;
+}
+
+@keyframes blinkCursor {
+  from,
+  to {
+    border-color: transparent;
+  }
+  50% {
+    border-color: #133373;
+  }
+}

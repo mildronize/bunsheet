@@ -8,7 +8,13 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { alpha, styled } from "@mui/material/styles";
 import { useTheme } from "@mui/material/styles";
-import { Box, Chip, Divider, LinearProgress, linearProgressClasses } from "@mui/material";
+import {
+  Box,
+  Chip,
+  Divider,
+  LinearProgress,
+  linearProgressClasses,
+} from "@mui/material";
 import numbro from "numbro";
 import { useState } from "react";
 import useLongPress from "@/hooks/useLongPress";
@@ -34,11 +40,12 @@ const BudgetLinearProgress = styled(LinearProgress)(({ theme }) => ({
   marginTop: 5,
   borderRadius: 5,
   [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor: theme.palette.grey[theme.palette.mode === 'light' ? 200 : 800],
+    backgroundColor:
+      theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
   },
   [`& .${linearProgressClasses.bar}`]: {
     borderRadius: 5,
-    backgroundColor: theme.palette.mode === 'light' ? '#9ecd6f' : '#ccf2a5',
+    backgroundColor: theme.palette.mode === "light" ? "#9ecd6f" : "#ccf2a5",
   },
 }));
 
@@ -47,7 +54,10 @@ export interface ListRowProps {}
 export function ListRow(props: BudgetItem) {
   const [isClick, setIsClick] = useState(false);
 
-  const longPress = useLongPress(() => toast.success("Long Press Happened"), 500);
+  const longPress = useLongPress(
+    () => toast.success("Long Press Happened"),
+    500
+  );
 
   const theme = useTheme();
   let chipColor = "";
@@ -60,7 +70,7 @@ export function ListRow(props: BudgetItem) {
   }
   return (
     <>
-      <ListItemButton onClick={() => setIsClick(true)} {...longPress} >
+      <ListItemButton onClick={() => setIsClick(true)} {...longPress}>
         <Box
           sx={{
             display: "flex",
@@ -83,22 +93,11 @@ export function ListRow(props: BudgetItem) {
                 minWidth: "200px",
               }}
             />
-            {/* <ListItemText
-            className="flex-item"
-            primary={numbro(props.assigned).format("0,0")}
-            primaryTypographyProps={{
-              sx: {
-                fontSize: "0.9rem",
-              },
-            }}
-            sx={{
-              textAlign: "right",
-            }}
-          /> */}
+
             {isClick ? (
               <input
                 autoFocus
-                className="flex-item"
+                className="flex-item input-cursor"
                 type="number"
                 defaultValue={props.assigned}
                 style={{
@@ -121,7 +120,6 @@ export function ListRow(props: BudgetItem) {
             >
               <Chip
                 label={numbro(props.available).format("0,0")}
-                // variant="filled"
                 size="small"
                 sx={{
                   "&.MuiChip-root": {
@@ -166,40 +164,40 @@ export function BudgetTab(props: BudgetTabProps) {
 
   return (
     <>
-     <Toaster closeButton richColors duration={2000} position="top-center" />
-    <List
-      sx={{ width: "100%" }}
-      component="nav"
-      aria-labelledby="nested-list-subheader"
-    >
-      {props.items.map((item) => (
-        <React.Fragment key={item.name}>
-          <ListItemButton
-            onClick={handleClick}
-            sx={{
-              bgcolor: "#f0f0f0",
-              "&:hover": {
-                bgcolor: "#e0e0e0", // Background color on hover
-                //color: "white", // Optional: change text color on hover
-              },
-            }}
-          >
-            {open ? <ExpandLess /> : <ExpandMore />}
-            <ListItemText primary={item.name} />
-          </ListItemButton>
-          <Collapse in={open} timeout="auto" unmountOnExit>
-            <List component="div" disablePadding>
-              {item.budgetItems.map((budgetItem) => (
-                <Box key={budgetItem.name}>
-                  <ListRow {...budgetItem} />
-                </Box>
-              ))}
-            </List>
-          </Collapse>
-          <Divider />
-        </React.Fragment>
-      ))}
-    </List>
+      <Toaster closeButton richColors duration={2000} position="top-center" />
+      <List
+        sx={{ width: "100%" }}
+        component="nav"
+        aria-labelledby="nested-list-subheader"
+      >
+        {props.items.map((item) => (
+          <React.Fragment key={item.name}>
+            <ListItemButton
+              onClick={handleClick}
+              sx={{
+                bgcolor: "#f0f0f0",
+                "&:hover": {
+                  bgcolor: "#e0e0e0", // Background color on hover
+                  //color: "white", // Optional: change text color on hover
+                },
+              }}
+            >
+              {open ? <ExpandLess /> : <ExpandMore />}
+              <ListItemText primary={item.name} />
+            </ListItemButton>
+            <Collapse in={open} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                {item.budgetItems.map((budgetItem) => (
+                  <Box key={budgetItem.name}>
+                    <ListRow {...budgetItem} />
+                  </Box>
+                ))}
+              </List>
+            </Collapse>
+            <Divider />
+          </React.Fragment>
+        ))}
+      </List>
     </>
   );
 }
