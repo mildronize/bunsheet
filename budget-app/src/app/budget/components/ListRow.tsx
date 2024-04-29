@@ -10,7 +10,6 @@ import {
   LinearProgress,
   linearProgressClasses,
 } from "@mui/material";
-import { useState } from "react";
 import useLongPress from "@/hooks/useLongPress";
 import { BudgetItem } from "./types";
 import { AvailableChip } from "./AvailableChip";
@@ -40,10 +39,14 @@ const ListRowContainer = styled(Box)(() => ({
   width: "100%",
 }));
 
-export interface ListRowProps {}
+export interface ListRowProps {
+  items: BudgetItem;
+  isEditAssigned: boolean;
+  onEditAssigned: () => void;
+}
 
-export function ListRow(props: BudgetItem) {
-  const [isClick, setIsClick] = useState(false);
+export function ListRow(props: ListRowProps) {
+  const { items } = props;
 
   const longPress = useLongPress(() => console.log("Long Press Happened"), 500);
 
@@ -51,12 +54,12 @@ export function ListRow(props: BudgetItem) {
 
   return (
     <>
-      <ListItemButton onClick={() => setIsClick(true)} {...longPress}>
+      <ListItemButton onClick={props.onEditAssigned} {...longPress}>
         <ListContainer>
           <ListRowContainer>
             <ListItemText
               className="flex-item"
-              primary={props.name}
+              primary={items.name}
               primaryTypographyProps={{
                 sx: {
                   fontSize: "0.9rem",
@@ -69,12 +72,12 @@ export function ListRow(props: BudgetItem) {
               }}
             />
 
-            {isClick ? (
+            {props.isEditAssigned ? (
               <input
                 autoFocus
                 className="flex-item"
                 type="number"
-                defaultValue={props.assigned}
+                defaultValue={items.assigned}
                 style={{
                   width: "50px",
                   textAlign: "right",
@@ -93,16 +96,16 @@ export function ListRow(props: BudgetItem) {
                 textAlign: "right",
               }}
             >
-              <AvailableChip available={props.available} />
+              <AvailableChip available={items.available} />
             </Box>
           </ListRowContainer>
           <BudgetLinearProgress
             variant="determinate"
             value={
-              props.available > 0
-                ? props.assigned > props.available
+              items.available > 0
+                ? items.assigned > items.available
                   ? 1
-                  : (props.assigned / props.available) * 100
+                  : (items.assigned / items.available) * 100
                 : 0
             }
           />

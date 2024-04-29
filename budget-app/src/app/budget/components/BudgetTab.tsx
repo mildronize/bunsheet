@@ -7,14 +7,54 @@ import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { Box, Divider } from "@mui/material";
-import { BudgetTabProps } from "./types";
+import { BudgetGroupItem } from "./types";
 import { ListRow } from "./ListRow";
+
+type Id = string;
+export type ListState = Record<
+  Id,
+  {
+    isEditAssigned: boolean;
+  }
+>;
+export type GroupState = Record<Id, {
+  isExpanded: boolean;
+}>;
+
+export interface BudgetTabProps {
+  budgetGroup: BudgetGroupItem[];
+}
 
 export function BudgetTab(props: BudgetTabProps) {
   const [open, setOpen] = React.useState(true);
+  const [listState, setListState] = React.useState<ListState>(
+    props.budgetGroup.reduce((acc, group) => {
+      group.budgetItems.forEach((item) => {
+        acc[item.id] = {
+          isEditAssigned: false,
+        };
+      });
+      return acc;
+    }, {} as ListState)
+  );
 
-  const handleClick = () => {
-    setOpen(!open);
+  const [groupState, setGroupState] = React.useState<GroupState>(
+    props.budgetGroup.reduce((acc, group) => {
+      acc[group.id] = {
+        isExpanded: true,
+      };
+      return acc;
+    }, {} as GroupState)
+  );
+
+  const handleClick = (id: string) => {
+    setGroupState((prevState) => {
+      const newState = { ...prevState };
+      newState[id] = {
+        isExpanded: !prevState[id].isExpanded,
+      };
+      return newState;
+    });
   };
 
   return (
@@ -24,10 +64,10 @@ export function BudgetTab(props: BudgetTabProps) {
         component="nav"
         aria-labelledby="nested-list-subheader"
       >
-        {props.items.map((item) => (
+        {props.budgetGroup.map((item) => (
           <React.Fragment key={item.name}>
             <ListItemButton
-              onClick={handleClick}
+              onClick={() => handleClick(item.id)}
               sx={{
                 bgcolor: "#f0f0f0",
                 "&:hover": {
@@ -36,14 +76,35 @@ export function BudgetTab(props: BudgetTabProps) {
                 },
               }}
             >
-              {open ? <ExpandLess /> : <ExpandMore />}
+              {groupState[item.id].isExpanded ? <ExpandLess /> : <ExpandMore />}
               <ListItemText primary={item.name} />
             </ListItemButton>
-            <Collapse in={open} timeout="auto" unmountOnExit>
+            <Collapse in={groupState[item.id].isExpanded} timeout="auto" unmountOnExit>
               <List component="div" disablePadding>
                 {item.budgetItems.map((budgetItem) => (
                   <Box key={budgetItem.name}>
-                    <ListRow {...budgetItem} />
+                    <ListRow
+                      items={budgetItem}
+                      isEditAssigned={listState[budgetItem.id].isEditAssigned}
+                      onEditAssigned={() =>
+                        /**
+                         * Clear all other edit states,
+                         * then set the current item to edit mode
+                         */
+                        setListState((prevState) => {
+                          const newState = { ...prevState };
+                          Object.keys(newState).forEach((key) => {
+                            newState[key] = {
+                              isEditAssigned: false,
+                            };
+                          });
+                          newState[budgetItem.id] = {
+                            isEditAssigned: true,
+                          };
+                          return newState;
+                        })
+                      }
+                    />
                   </Box>
                 ))}
               </List>
