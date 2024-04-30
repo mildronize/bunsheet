@@ -66,7 +66,11 @@ export function ListRow(props: ListRowProps) {
               />
             </ListTableColumn>
 
-            <ListTableColumn>
+            <ListTableColumn
+              sx={{
+                textAlign: "center",
+              }}
+            >
               {props.isEditAssigned ? (
                 <AutoSelectTextField
                   /**

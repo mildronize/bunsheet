@@ -9,13 +9,15 @@ export const ListTableRow = styled(Box)(() => ({
 export function ListTableColumn(
   props: {
     ratio?: number;
-    children: React.ReactNode;
+    children?: React.ReactNode;
   } & React.ComponentProps<typeof Box>
 ) {
   return (
     <Box
       {...props}
       sx={{
+        // display: 'flex',
+        // alignItems: 'center',
         flex: `0 0 ${props.ratio ?? 20}%`,
         ...(props.sx ?? {}),
       }}

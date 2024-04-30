@@ -10,6 +10,7 @@ import { Box, Divider, ListSubheader, useTheme } from "@mui/material";
 import { BudgetGroupItem } from "./types";
 import { ListRow } from "./ListRow";
 import { StickyHeader } from "./StickerHeader";
+import { StickerListHeader } from "./StickerListHeader";
 
 type Id = string;
 export type ListState = Record<
@@ -64,7 +65,8 @@ export function BudgetTab(props: BudgetTabProps) {
   const [isStickyHeaderVisible, setIsStickyHeaderVisible] =
     React.useState(true);
 
-  const stickyHeaderHeight = 80;
+  const stickyHeaderHeight = 90;
+  const stickerListHeaderHeight = 40;
 
   return (
     <>
@@ -77,6 +79,7 @@ export function BudgetTab(props: BudgetTabProps) {
         {isStickyHeaderVisible ? (
           <StickyHeader height={stickyHeaderHeight} />
         ) : null}
+        <StickerListHeader height={stickerListHeaderHeight} />
         <List
           component="nav"
           aria-labelledby="nested-list-subheader"
@@ -88,7 +91,8 @@ export function BudgetTab(props: BudgetTabProps) {
               theme.global.appBar.height +
               theme.global.bottomNavigation.height +
               theme.global.bottomNavigation.paddingBottom +
-              (isStickyHeaderVisible ? stickyHeaderHeight : 0)
+              (isStickyHeaderVisible ? stickyHeaderHeight : 0) +
+              stickerListHeaderHeight
             }px)`,
             paddingTop: 0,
           }}

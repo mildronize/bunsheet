@@ -1,18 +1,17 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
 export interface StickyHeaderProps {
-  height: number;
+  height?: number;
 }
 
 export function StickyHeader(props: StickyHeaderProps) {
   return (
     <Box
       sx={{
-        maxHeight: `${props.height}px`,
-        // padding: "10px 20px",
-        margin: "10px",
+        ...(props.height ? { height: `${props.height}px` } : {}),
         display: "flex",
-        flexDirection:"column",
+        flexDirection: "column",
+        // margin: "0 10px",
       }}
     >
       <Box
@@ -20,14 +19,12 @@ export function StickyHeader(props: StickyHeaderProps) {
           backgroundColor: "#FAEEED",
           padding: "10px 20px",
           borderRadius: "5px",
+          margin: "10px",
           // textAlign: "right",
         }}
       >
         0<br />
         Unassigned Budget
-      </Box>
-      <Box>
-        header
       </Box>
     </Box>
   );
