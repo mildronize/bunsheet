@@ -13,5 +13,6 @@ export interface BudgetGroupItem {
   totalAssigned: number,
   totalAvailable: number,
   order: number;
+  countOverspent: number;
   budgetItems: BudgetItem[];
 }

@@ -41,12 +41,16 @@ export const GET = globalHandler(async (req) => {
       budgetGroup.budgetItems.push(budgetItem);
       budgetGroup.totalAssigned += row.assigned;
       budgetGroup.totalAvailable += row.available;
+      if (row.available < 0) {
+        budgetGroup.countOverspent++;
+      }
     } else {
       const budgetGroup: BudgetGroupItem = {
         id: row.categoryGroupID,
         name: row.categoryGroup,
         totalAssigned: 0,
         totalAvailable: 0,
+        countOverspent: 0,
         order: row.baseOrder,
         budgetItems: [],
       };

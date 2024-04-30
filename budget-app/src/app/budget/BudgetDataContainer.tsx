@@ -46,6 +46,7 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
         order: 0,
         totalAssigned: 0,
         totalAvailable: 0,
+        countOverspent: 0,
         budgetItems: [],
       },
     ],

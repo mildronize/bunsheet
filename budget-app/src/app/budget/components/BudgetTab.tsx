@@ -1,17 +1,12 @@
 "use client";
 import * as React from "react";
 import List from "@mui/material/List";
-import ListItemButton from "@mui/material/ListItemButton";
-import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
 import { Box, Divider, ListSubheader, useTheme } from "@mui/material";
 import { BudgetGroupItem } from "./types";
 import { ListRow } from "./ListRow";
 import { StickyHeader } from "./StickerHeader";
 import { StickerListHeader } from "./StickerListHeader";
-import { ListTableColumn, ListTableRow } from "./layouts";
 import { CategoryGroupDropDownList } from "./CategoryGroupDropDownList";
 import { MonthlyBudgetSummaryCacheEntity } from "@/entites/monthly-budget.entity";
 
@@ -50,7 +45,7 @@ export function BudgetTab(props: BudgetTabProps) {
   const [groupState, setGroupState] = React.useState<GroupState>(
     props.budgetGroup.reduce((acc, group) => {
       acc[group.id] = {
-        isExpanded: true,
+        isExpanded: false,
       };
       return acc;
     }, {} as GroupState)

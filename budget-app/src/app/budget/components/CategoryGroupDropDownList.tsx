@@ -1,5 +1,11 @@
 "use client";
-import { Box, ListItemButton, ListItemText, useTheme } from "@mui/material";
+import {
+  Badge,
+  Box,
+  ListItemButton,
+  ListItemText,
+  useTheme,
+} from "@mui/material";
 import { ListTableColumn, ListTableRow } from "./layouts";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
@@ -68,7 +74,18 @@ export function CategoryGroupDropDownList(
             padding: 0,
           }}
         >
-          {numbro(props.header.totalAvailable).format("0,0")}
+          {props.header.countOverspent > 0 ? (
+            <Badge
+              color="error"
+              variant="dot"
+              overlap="circular"
+              badgeContent={" "}
+            >
+              {numbro(props.header.totalAvailable).format("0,0")}
+            </Badge>
+          ) : (
+            numbro(props.header.totalAvailable).format("0,0")
+          )}
         </ListTableColumn>
       </ListTableRow>
     </ListItemButton>
