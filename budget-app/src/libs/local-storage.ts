@@ -4,9 +4,15 @@ export class LocalStorage<T> {
   }
 
   isExist() {
+    if (typeof window === "undefined") {
+      return false;
+    }
     return localStorage.getItem(this.key) !== null;
   }
   get(): T {
+    if (typeof window === "undefined") {
+      return this.initData;
+    }
     if (localStorage.getItem(this.key)) {
       return JSON.parse(localStorage.getItem(this.key)!) as T;
     } else {
@@ -16,6 +22,9 @@ export class LocalStorage<T> {
   }
 
   set(data: T) {
+    if (typeof window === "undefined") {
+      return;
+    }
     localStorage.setItem(this.key, JSON.stringify(data));
   }
 }
