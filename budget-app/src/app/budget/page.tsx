@@ -17,6 +17,8 @@ export default function BudgetPage() {
             {
               id: uuid(),
               name: "Want",
+              totalAssigned: 1800,
+              totalAvailable: 1000,
               budgetItems: [
                 {
                   id: uuid(),
@@ -58,6 +60,8 @@ export default function BudgetPage() {
             {
               id: uuid(),
               name: "Need",
+              totalAssigned: 2040,
+              totalAvailable: 3000,
               budgetItems: [
                 {
                   id: uuid(),
@@ -85,6 +89,8 @@ export default function BudgetPage() {
             {
               id: uuid(),
               name: "Savings",
+              totalAssigned: 300,
+              totalAvailable: 2300,
               budgetItems: [
                 {
                   id: uuid(),

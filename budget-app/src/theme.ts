@@ -49,7 +49,13 @@ const heebo = Heebo({
 
 declare module "@mui/material/styles" {
   interface OverrideTheme {
-    budget: Record<string, unknown>;
+    budget: {
+      amount: {
+        fontFamily: string;
+        fontWeight: number;
+        fontSize: string;
+      };
+    };
     global: {
       appBar: {
         height: number;
@@ -77,20 +83,22 @@ const theme = createTheme({
       paddingBottom: 20,
     },
   },
-
+  budget: {
+    amount: {
+      fontFamily: poppins.style.fontFamily,
+      fontWeight: 500,
+      fontSize: "0.9rem",
+    },
+  },
   typography: {
     fontFamily: heebo.style.fontFamily,
-    // budget: {
-    //   fontFamily: karla.style.fontFamily,
-    //   fontWeight: 700,
-    // },
   },
   components: {
     MuiChip: {
       styleOverrides: {
         root: {
           fontFamily: poppins.style.fontFamily,
-          fontWeight: 700,
+          fontWeight: 500,
         },
       },
     },

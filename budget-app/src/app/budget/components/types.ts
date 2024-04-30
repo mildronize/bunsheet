@@ -9,5 +9,7 @@ export interface BudgetItem {
 export interface BudgetGroupItem {
   id: string;
   name: string;
+  totalAssigned: number,
+  totalAvailable: number,
   budgetItems: BudgetItem[];
 }

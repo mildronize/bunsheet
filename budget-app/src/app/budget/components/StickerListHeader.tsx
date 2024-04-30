@@ -19,7 +19,7 @@ export function StickerListHeader(props: StickerListHeaderProps) {
       <ListTableColumn ratio={20}>
         <Typography
           variant="subtitle2"
-          align="center"
+          align="right"
           sx={{
             textTransform: "uppercase",
             fontSize: "0.7rem",
@@ -33,7 +33,7 @@ export function StickerListHeader(props: StickerListHeaderProps) {
       <ListTableColumn ratio={20}>
         <Typography
           variant="subtitle2"
-          align="center"
+          align="right"
           sx={{
             textTransform: "uppercase",
             fontSize: "0.7rem",

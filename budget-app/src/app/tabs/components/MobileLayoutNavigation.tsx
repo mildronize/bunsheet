@@ -104,7 +104,7 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
           backgroundColor: "white",
           overflow: "hidden",
           marginBottom: 0,
-          height: `${theme.global.appBarHeight}px`,
+          height: `${theme.global.appBar.height}px`,
           zIndex: 900,
         }}
       >

@@ -22,10 +22,10 @@ export function AvailableChip(props: AvailableChipProps) {
       sx={{
         "&.MuiChip-root": {
           backgroundColor: chipColor,
-          fontSize: "0.7rem",
+          fontSize: "0.8rem",
         },
         "&.MuiChip-label": {
-          fontWeight: "bold",
+          fontWeight: "500",
         },
       }}
     />

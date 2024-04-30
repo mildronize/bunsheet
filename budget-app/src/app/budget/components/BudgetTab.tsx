@@ -11,6 +11,8 @@ import { BudgetGroupItem } from "./types";
 import { ListRow } from "./ListRow";
 import { StickyHeader } from "./StickerHeader";
 import { StickerListHeader } from "./StickerListHeader";
+import { ListTableColumn, ListTableRow } from "./layouts";
+import { CategoryGroupDropDownList } from "./CategoryGroupDropDownList";
 
 type Id = string;
 export type ListState = Record<
@@ -99,24 +101,12 @@ export function BudgetTab(props: BudgetTabProps) {
         >
           {props.budgetGroup.map((item) => (
             <React.Fragment key={item.name}>
-              <ListSubheader disableGutters sx={{}}>
-                <ListItemButton
+              <ListSubheader disableGutters>
+                <CategoryGroupDropDownList
                   onClick={() => handleClick(item.id)}
-                  sx={{
-                    bgcolor: "#f0f0f0",
-                    "&:hover": {
-                      bgcolor: "#e0e0e0", // Background color on hover
-                      //color: "white", // Optional: change text color on hover
-                    },
-                  }}
-                >
-                  {groupState[item.id].isExpanded ? (
-                    <ExpandLess />
-                  ) : (
-                    <ExpandMore />
-                  )}
-                  <ListItemText primary={item.name} />
-                </ListItemButton>
+                  header={item}
+                  isExpanded={groupState[item.id].isExpanded}
+                />
               </ListSubheader>
               <Collapse
                 in={groupState[item.id].isExpanded}
