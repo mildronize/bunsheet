@@ -1,5 +1,6 @@
-import { sheetClient, transactionTableCache } from '../bootstrap';
+import { monthlyBudgetSummaryTableCache, sheetClient, transactionTableCache } from '../bootstrap';
 import { func } from '../nammatham';
+import { MonthlyBudgetSummaryCacheService } from '../services/monthly-budget-cache.service';
 import { TransactionCacheService } from '../services/transaction-cache.service';
 
 export default func
@@ -10,6 +11,16 @@ export default func
     schedule: '0 0 */6 * * *',
   })
   .handler(async c => {
-    await new TransactionCacheService(c.context, sheetClient, transactionTableCache).updateWhenExpired();
-    await new TransactionCacheService(c.context, sheetClient, transactionTableCache).deleteNonExistentRows();
+    // await new TransactionCacheService(c.context, sheetClient.transaction, transactionTableCache).updateWhenExpired();
+    // await new TransactionCacheService(
+    //   c.context,
+    //   sheetClient.transaction,
+    //   transactionTableCache
+    // ).deleteNonExistentRows();
+
+    await new MonthlyBudgetSummaryCacheService(
+      c.context,
+      sheetClient.monthlyBudgetSummary,
+      monthlyBudgetSummaryTableCache
+    ).forceUpdate();
   });

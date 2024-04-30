@@ -6,6 +6,7 @@ import { TableClient } from '@azure/data-tables';
 import { AzureTable } from './libs/azure-table';
 import { TransactionCacheEntity } from './entities/transaction.entity';
 import { AzureTableCache } from './libs/azure-table-cache';
+import { MonthlyBudgetCacheEntity, MonthlyBudgetSummaryCacheEntity } from './entities/monthly-budget.entity';
 
 /**
  * Google Sheet Service
@@ -76,7 +77,7 @@ export const sheetClient = {
       FilterMonth: 'date',
       StartDate: 'date',
       EndDate: 'date',
-      ReadytoAssign: 'number',
+      ReadyToAssign: 'number',
       TotalIncome: 'number',
       TotalAssigned: 'number',
       TotalActivity: 'number',
@@ -86,15 +87,17 @@ export const sheetClient = {
 };
 
 /**
+ * ----------------------------------------
  * Azure Table Service
+ * ----------------------------------------
+ */
+/**
+ * Azure Table, Transaction Cache Table
  */
 const transactionCacheTableClient = TableClient.fromConnectionString(
   env.AzureWebJobsStorage,
   env.AZURE_STORAGE_TABLE_TRANSACTION_CACHE_TABLE_NAME
 );
-/**
- * Azure Table, Transaction Cache Table
- */
 const transactionCacheTable = new AzureTable<TransactionCacheEntity>(transactionCacheTableClient);
 export const transactionTableCache = new AzureTableCache(transactionCacheTable, {
   /**
@@ -106,7 +109,11 @@ export const transactionTableCache = new AzureTableCache(transactionCacheTable, 
 /**
  * Azure Table, Monthly Budget Cache Table
  */
-const monthlyBudgetCacheTable = new AzureTable(transactionCacheTableClient);
+const monthlyBudgetCacheTableClient = TableClient.fromConnectionString(
+  env.AzureWebJobsStorage,
+  env.AZURE_STORAGE_TABLE_MONTHLY_BUDGET_CACHE_TABLE_NAME
+);
+const monthlyBudgetCacheTable = new AzureTable<MonthlyBudgetCacheEntity>(monthlyBudgetCacheTableClient);
 export const monthlyBudgetTableCache = new AzureTableCache(monthlyBudgetCacheTable, {
   /**
    * Default field in Azure Table
@@ -117,7 +124,13 @@ export const monthlyBudgetTableCache = new AzureTableCache(monthlyBudgetCacheTab
 /**
  * Azure Table, Monthly Budget Summary Cache Table
  */
-const monthlyBudgetSummaryCacheTable = new AzureTable(transactionCacheTableClient);
+const monthlyBudgetSummaryCacheTableClient = TableClient.fromConnectionString(
+  env.AzureWebJobsStorage,
+  env.AZURE_STORAGE_TABLE_MONTHLY_BUDGET_SUMMARY_CACHE_TABLE_NAME
+);
+const monthlyBudgetSummaryCacheTable = new AzureTable<MonthlyBudgetSummaryCacheEntity>(
+  monthlyBudgetSummaryCacheTableClient
+);
 export const monthlyBudgetSummaryTableCache = new AzureTableCache(monthlyBudgetSummaryCacheTable, {
   /**
    * Default field in Azure Table

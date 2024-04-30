@@ -160,6 +160,14 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
     }
   }
 
+  async readAllArray(): Promise<MapObject<Headers>[]> {
+    const result: MapObject<Headers>[] = [];
+    for await (const row of this.readAll()) {
+      result.push(row);
+    }
+    return result;
+  }
+
   /**
    * Note: This function is not optimized for large data
    *

@@ -64,11 +64,11 @@ export default func
       }
       await sheetClient.transaction.update(data.id, googleSheetData);
       context.log('Transaction updated to google sheet');
-      await new TransactionCacheService(c.context, sheetClient, transactionTableCache).updateWhenExpired('normal');
+      await new TransactionCacheService(c.context, sheetClient.transaction, transactionTableCache).updateWhenExpired('normal');
     } else if (data.type === 'add_transaction_queue') {
       await sheetClient.transaction.append(googleSheetData);
       context.log('Transaction added to google sheet');
-      await new TransactionCacheService(c.context, sheetClient, transactionTableCache).updateWhenExpired('insertOnly');
+      await new TransactionCacheService(c.context, sheetClient.transaction, transactionTableCache).updateWhenExpired('insertOnly');
       context.log('Cache updated');
     } else {
       throw new Error('Invalid transaction type');

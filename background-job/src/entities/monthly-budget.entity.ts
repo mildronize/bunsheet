@@ -51,7 +51,7 @@ export interface MonthlyBudgetSummaryCacheEntity extends AzureTableEntityBase {
   filterMonth: Date;
   startDate: Date;
   endDate: Date;
-  readytoAssign: number;
+  readyToAssign: number;
   totalIncome: number;
   totalAssigned: number;
   totalActivity: number;
