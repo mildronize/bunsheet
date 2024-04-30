@@ -9,7 +9,7 @@ export default function BudgetPage() {
   return (
     <div>
       <MobileLayoutNavigation
-        currentRouterKey={1}
+        currentRouterKey={0}
         title={dayjs().format("MMM YYYY")}
         disableOverflow
       >

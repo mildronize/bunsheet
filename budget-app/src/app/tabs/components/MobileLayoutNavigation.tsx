@@ -31,16 +31,16 @@ const routerMap: {
   title: string;
 }[] = [
   {
-    label: "Overview",
-    icon: <HomeIcon />,
-    path: "/",
-    title: "Overview",
-  },
-  {
     label: "Budget",
     icon: <PaymentsIcon />,
-    path: "/budget",
+    path: "/",
     title: "Budget",
+  },
+  {
+    label: "Accounts",
+    icon: <HomeIcon />,
+    path: "/accounts",
+    title: "Accounts",
   },
   {
     label: "Transaction",

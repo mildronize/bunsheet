@@ -24,7 +24,7 @@ export function SettingTab() {
   };
 
   return (
-    <Box sx={{ paddingLeft: "15px", paddingRight: "15px" }}>
+    <Box sx={{ padding: "15px" }}>
       <Toaster closeButton richColors duration={2000} position="top-center" />
       <div className="form-input">
         <Button
