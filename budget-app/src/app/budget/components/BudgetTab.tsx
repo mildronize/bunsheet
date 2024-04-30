@@ -6,7 +6,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { Box, Divider } from "@mui/material";
+import { Box, Divider, ListSubheader } from "@mui/material";
 import { BudgetGroupItem } from "./types";
 import { ListRow } from "./ListRow";
 
@@ -61,79 +61,88 @@ export function BudgetTab(props: BudgetTabProps) {
 
   return (
     <>
-      <List
-        sx={{ width: "100%" }}
-        component="nav"
-        aria-labelledby="nested-list-subheader"
+      <Box
+        sx={{
+          width: "100%",
+          bgcolor: "background.paper",
+        }}
       >
-        {props.budgetGroup.map((item) => (
-          <React.Fragment key={item.name}>
-            <ListItemButton
-              onClick={() => handleClick(item.id)}
-              sx={{
-                bgcolor: "#f0f0f0",
-                "&:hover": {
-                  bgcolor: "#e0e0e0", // Background color on hover
-                  //color: "white", // Optional: change text color on hover
-                },
-              }}
-            >
-              {groupState[item.id].isExpanded ? <ExpandLess /> : <ExpandMore />}
-              <ListItemText primary={item.name} />
-            </ListItemButton>
-            <Collapse
-              in={groupState[item.id].isExpanded}
-              timeout="auto"
-              unmountOnExit
-            >
-              <List component="div" disablePadding>
-                {item.budgetItems.map((budgetItem) => (
-                  <Box key={budgetItem.name}>
-                    <ListRow
-                      items={budgetItem}
-                      isEditAssigned={listState[budgetItem.id].isEditAssigned}
-                      onEditAssignedSave={
-                        /**
-                         * Clear the active state
-                         */
-                        () => {
+        <List component="nav" aria-labelledby="nested-list-subheader">
+          {props.budgetGroup.map((item) => (
+            <React.Fragment key={item.name}>
+              <ListSubheader disableGutters>
+                <ListItemButton
+                  onClick={() => handleClick(item.id)}
+                  sx={{
+                    bgcolor: "#f0f0f0",
+                    "&:hover": {
+                      bgcolor: "#e0e0e0", // Background color on hover
+                      //color: "white", // Optional: change text color on hover
+                    },
+                  }}
+                >
+                  {groupState[item.id].isExpanded ? (
+                    <ExpandLess />
+                  ) : (
+                    <ExpandMore />
+                  )}
+                  <ListItemText primary={item.name} />
+                </ListItemButton>
+              </ListSubheader>
+              <Collapse
+                in={groupState[item.id].isExpanded}
+                timeout="auto"
+                unmountOnExit
+              >
+                <List component="div" disablePadding>
+                  {item.budgetItems.map((budgetItem) => (
+                    <Box key={budgetItem.name}>
+                      <ListRow
+                        items={budgetItem}
+                        isEditAssigned={listState[budgetItem.id].isEditAssigned}
+                        onEditAssignedSave={
+                          /**
+                           * Clear the active state
+                           */
+                          () => {
+                            setListState((prevState) => {
+                              const newState = { ...prevState };
+                              newState[budgetItem.id] = {
+                                isEditAssigned: false,
+                              };
+                              return newState;
+                            });
+                            console.log("Save the value");
+                          }
+                        }
+                        onEditAssigned={() =>
+                          /**
+                           * Clear all other edit states,
+                           * then set the current item to edit mode
+                           */
                           setListState((prevState) => {
                             const newState = { ...prevState };
+                            Object.keys(newState).forEach((key) => {
+                              newState[key] = {
+                                isEditAssigned: false,
+                              };
+                            });
                             newState[budgetItem.id] = {
-                              isEditAssigned: false,
+                              isEditAssigned: true,
                             };
                             return newState;
-                          });
-                          console.log("Save the value");
+                          })
                         }
-                      }
-                      onEditAssigned={() =>
-                        /**
-                         * Clear all other edit states,
-                         * then set the current item to edit mode
-                         */
-                        setListState((prevState) => {
-                          const newState = { ...prevState };
-                          Object.keys(newState).forEach((key) => {
-                            newState[key] = {
-                              isEditAssigned: false,
-                            };
-                          });
-                          newState[budgetItem.id] = {
-                            isEditAssigned: true,
-                          };
-                          return newState;
-                        })
-                      }
-                    />
-                  </Box>
-                ))}
-              </List>
-            </Collapse>
-            <Divider />
-          </React.Fragment>
-        ))}
-      </List>
+                      />
+                    </Box>
+                  ))}
+                </List>
+              </Collapse>
+              <Divider />
+            </React.Fragment>
+          ))}
+        </List>
+      </Box>
     </>
   );
 }

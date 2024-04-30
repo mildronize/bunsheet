@@ -77,7 +77,18 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   return (
-    <>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        /**
+         * 100vh issue in Safari (Fix for Viewport Height on Mobile devices)
+         * https://www.youtube.com/watch?v=Wet2WECg0oM
+         */
+        height: "100svh" /* Full height to the container */,
+        overflow: "hidden",
+      }}
+    >
       {isLoading ? (
         <Box
           sx={{ position: "fixed", top: 0, right: 0, left: 0, zIndex: 3000 }}
@@ -86,9 +97,11 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
         </Box>
       ) : null}
       <AppBar
-        position="fixed"
+        // position="fixed"
         sx={{
           backgroundColor: "white",
+          overflow: "hidden",
+          marginBottom: 0,
           zIndex: 900,
         }}
       >
@@ -110,11 +123,15 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
         maxWidth="sm"
         sx={{
           // Margin due to the fixed AppBar
-          marginTop: "80px",
+          // marginTop: "80px",
+          flex: 1 /* Takes up remaining space */,
+          overflowY: "scroll" /* Allows scrolling within the content area */,
+          overflowX: "hidden",
           paddingLeft: "0px",
           paddingRight: "0px",
+          // paddingTop: "10px",
         }}
-        className="mb-200"
+        // className="mb-200"
       >
         {props.children}
         <SwipeableDrawer
@@ -128,48 +145,48 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
             onSaveSuccess={() => setIsDrawerOpen(false)}
           />
         </SwipeableDrawer>
-        <Paper
-          sx={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 80 }}
-          elevation={3}
-        >
-          <MuiBottomNavigation
-            showLabels
-            /**
-             * Fix Height for PWA on iOS
-             */
-            sx={{ height: 90, paddingBottom: "20px" }}
-            value={currentTab}
-            onChange={(event, newValue: number) => {
-              if (newValue === 2) {
-                setIsDrawerOpen(true);
-              } else {
-                setCurrentTab(newValue);
-                router.push(routerMap[newValue].path);
-              }
-            }}
-          >
-            {routerMap.map((item, index) => (
-              <BottomNavigationAction
-                key={index}
-                label={item.label}
-                icon={item.icon}
-                sx={{
-                  "&.Mui-selected": {
-                    // Set font size for selected tab
-                    "& .MuiBottomNavigationAction-label": {
-                      fontSize: "0.75rem",
-                    },
-                  },
-                  "& .MuiBottomNavigationAction-label": {
-                    fontSize: "0.65rem",
-                    marginTop: "1px",
-                  },
-                }}
-              />
-            ))}
-          </MuiBottomNavigation>
-        </Paper>
       </Container>
-    </>
+      <Paper
+        // sx={{ position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 80 }}
+        elevation={3}
+      >
+        <MuiBottomNavigation
+          showLabels
+          /**
+           * Fix Height for PWA on iOS
+           */
+          sx={{ height: 90, paddingBottom: "20px" }}
+          value={currentTab}
+          onChange={(event, newValue: number) => {
+            if (newValue === 2) {
+              setIsDrawerOpen(true);
+            } else {
+              setCurrentTab(newValue);
+              router.push(routerMap[newValue].path);
+            }
+          }}
+        >
+          {routerMap.map((item, index) => (
+            <BottomNavigationAction
+              key={index}
+              label={item.label}
+              icon={item.icon}
+              sx={{
+                "&.Mui-selected": {
+                  // Set font size for selected tab
+                  "& .MuiBottomNavigationAction-label": {
+                    fontSize: "0.75rem",
+                  },
+                },
+                "& .MuiBottomNavigationAction-label": {
+                  fontSize: "0.65rem",
+                  marginTop: "1px",
+                },
+              }}
+            />
+          ))}
+        </MuiBottomNavigation>
+      </Paper>
+    </Box>
   );
 }
