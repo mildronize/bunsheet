@@ -57,6 +57,19 @@ export const envSchema = z.object({
     .string()
     .default("BudgetTransactionCache"),
   /**
+   * Azure Storage Table Name, Monthly Budget Cache Table
+   */
+  AZURE_STORAGE_TABLE_MONTHLY_BUDGET_CACHE_TABLE_NAME: z
+    .string()
+    .default("MonthlyBudgetCache"),
+  /**
+   * Azure Storage Table Name, Monthly Budget Summary Cache Table
+   */
+  AZURE_STORAGE_TABLE_MONTHLY_BUDGET_SUMMARY_CACHE_TABLE_NAME: z
+    .string()
+    .default("MonthlyBudgetSummaryCache"),
+
+  /**
    *  Google Sheet Private Key
    *
    *  NOTE:
@@ -88,6 +101,10 @@ export const envSchema = z.object({
     }
     return parseInt(value, 10);
   }, z.number()),
+    /**
+   * Timezone
+   */
+    TIMEZONE: z.string().default('Asia/Bangkok'),
 });
 
 function printSecretFields(

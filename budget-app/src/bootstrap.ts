@@ -7,6 +7,10 @@ import { TableClient } from "@azure/data-tables";
 import { AzureTable } from "./libs/azure-table";
 import { SelectEntity } from "./entites/select.entity";
 import { TransactionCacheEntity } from "./entites/transaction.entity";
+import {
+  MonthlyBudgetCacheEntity,
+  MonthlyBudgetSummaryCacheEntity,
+} from "./entites/monthly-budget.entity";
 
 /**
  * Azure Storage Queue Client
@@ -48,6 +52,19 @@ export const transactionCacheTable = new AzureTable<TransactionCacheEntity>(
     env.AZURE_STORAGE_TABLE_TRANSACTION_CACHE_TABLE_NAME
   )
 );
+export const monthlyBudgetTable = new AzureTable<MonthlyBudgetCacheEntity>(
+  TableClient.fromConnectionString(
+    env.AZURE_STORAGE_CONNECTION_STRING,
+    env.AZURE_STORAGE_TABLE_MONTHLY_BUDGET_CACHE_TABLE_NAME
+  )
+);
+export const monthlyBudgetSummaryTable =
+  new AzureTable<MonthlyBudgetSummaryCacheEntity>(
+    TableClient.fromConnectionString(
+      env.AZURE_STORAGE_CONNECTION_STRING,
+      env.AZURE_STORAGE_TABLE_MONTHLY_BUDGET_SUMMARY_CACHE_TABLE_NAME
+    )
+  );
 /**
  * Google Sheet Service
  */

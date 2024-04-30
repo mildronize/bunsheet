@@ -4,6 +4,7 @@ export interface BudgetItem {
   assigned: number;
   activity: number;
   available: number;
+  order: number;
 }
 
 export interface BudgetGroupItem {
@@ -11,5 +12,6 @@ export interface BudgetGroupItem {
   name: string;
   totalAssigned: number,
   totalAvailable: number,
+  order: number;
   budgetItems: BudgetItem[];
 }

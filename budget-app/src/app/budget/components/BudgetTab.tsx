@@ -100,7 +100,7 @@ export function BudgetTab(props: BudgetTabProps) {
           }}
         >
           {props.budgetGroup.map((item) => (
-            <React.Fragment key={item.name}>
+            <React.Fragment key={item.id}>
               <ListSubheader disableGutters>
                 <CategoryGroupDropDownList
                   onClick={() => handleClick(item.id)}
@@ -115,7 +115,7 @@ export function BudgetTab(props: BudgetTabProps) {
               >
                 <List component="div" disablePadding>
                   {item.budgetItems.map((budgetItem) => (
-                    <Box key={budgetItem.name}>
+                    <Box key={budgetItem.id}>
                       <ListRow
                         items={budgetItem}
                         isEditAssigned={listState[budgetItem.id].isEditAssigned}
