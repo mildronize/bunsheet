@@ -2,12 +2,10 @@ import { func } from '../nammatham';
 import { startCacheUpdate } from './cache-helper';
 
 export default func
-  .timer('updateCache', {
-    /**
-     * Every 6 hours update the cache
-     */
-    schedule: '0 0 */6 * * *',
+  .httpGet('resetCache', {
+    authLevel: 'function',
   })
   .handler(async c => {
     await startCacheUpdate(c.context);
+    return c.json({ message: 'Cache updated' });
   });
