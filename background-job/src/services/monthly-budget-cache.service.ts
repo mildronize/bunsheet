@@ -2,7 +2,7 @@ import { InvocationContext } from '@azure/functions';
 import type { sheetClient } from '../bootstrap';
 import { AzureTableCache } from '../libs/azure-table-cache';
 import { MonthlyBudgetCacheEntity, MonthlyBudgetSummaryCacheEntity } from '../entities/monthly-budget.entity';
-import { dayjsUTC } from '../libs/dayjs';
+import { dateTimezone, dayjsUTC } from '../libs/dayjs';
 
 export class MonthlyBudgetCacheService {
   constructor(
@@ -35,15 +35,15 @@ export class MonthlyBudgetSummaryCacheService {
       return;
     }
     const sheetData = sheetDataArray[0];
-    const partitionKey = dayjsUTC(sheetData.FilterMonth).format('YYYY');
-    const rowKey = dayjsUTC(sheetData.FilterMonth).format('YYYY-MM');
+    const partitionKey = dateTimezone(sheetData.FilterMonth).format('YYYY');
+    const rowKey = dateTimezone(sheetData.FilterMonth).format('YYYY-MM');
 
     const entity: Omit<MonthlyBudgetSummaryCacheEntity, 'partitionKey' | 'rowKey'> = {
-      latestUpdate: dayjsUTC(sheetData.LatestUpdate).toDate(),
-      startBudgetDate: dayjsUTC(sheetData.StartBudgetDate).toDate(),
-      filterMonth: dayjsUTC(sheetData.FilterMonth).toDate(),
-      startDate: dayjsUTC(sheetData.StartDate).toDate(),
-      endDate: dayjsUTC(sheetData.EndDate).toDate(),
+      latestUpdate: dateTimezone(sheetData.LatestUpdate).toDate(),
+      startBudgetDate: dateTimezone(sheetData.StartBudgetDate).toDate(),
+      filterMonth: dateTimezone(sheetData.FilterMonth).toDate(),
+      startDate: dateTimezone(sheetData.StartDate).toDate(),
+      endDate: dateTimezone(sheetData.EndDate).toDate(),
       readyToAssign: sheetData.ReadyToAssign ?? 0,
       totalIncome: sheetData.TotalIncome ?? 0,
       totalAssigned: sheetData.TotalAssigned ?? 0,
