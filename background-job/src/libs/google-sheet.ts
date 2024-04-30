@@ -7,9 +7,17 @@ import { dayjsUTC } from './dayjs';
  */
 type RowCellData = string | number | boolean | Date;
 type RawRowData = RowCellData[] | Record<string, RowCellData>;
-export type HeaderType = 'string' | 'number' | 'date';
+export type HeaderType = 'string' | 'number' | 'date' | 'boolean';
 
-type MapType<T> = T extends 'string' ? string : T extends 'number' ? number : T extends 'date' ? Date : never;
+type MapType<T> = T extends 'string'
+  ? string
+  : T extends 'number'
+  ? number
+  : T extends 'date'
+  ? Date
+  : T extends 'boolean'
+  ? boolean
+  : never;
 type MapObject<T, NullType = null> = {
   [K in keyof T]: MapType<T[K]> | NullType;
 };
@@ -18,6 +26,10 @@ export interface GoogleSheetRowClientOptions<Headers extends Record<string, Head
   pageSize: number;
   headers: Headers;
   skipRowKeyword?: string;
+  /**
+   * Header row number, default is 1
+   */
+  headerRow?: number;
 }
 
 /**
@@ -39,6 +51,7 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
       throw new Error(`Sheet with id ${this.sheetId} not found`);
     }
     this.doc.resetLocalCache();
+    await this.sheet.loadHeaderRow(this.options.headerRow ?? 1);
   }
 
   async append(row: Record<keyof Headers, unknown>) {
