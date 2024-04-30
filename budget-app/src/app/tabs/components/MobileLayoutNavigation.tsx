@@ -17,6 +17,7 @@ import {
   Paper,
   Toolbar,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { AddTransactionTab } from "../AddTransactionTab";
@@ -68,8 +69,10 @@ export interface MobileLayoutNavigationProps {
   title?: React.ReactNode;
   children?: React.ReactNode;
   currentRouterKey: number;
+  disableOverflow?: boolean;
 }
 export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
+  const theme = useTheme();
   const router = useRouter();
   const [currentTab, setCurrentTab] = useState(props.currentRouterKey);
   const isLoading = useGlobalLoadingStore((state) => state.isLoading);
@@ -97,11 +100,11 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
         </Box>
       ) : null}
       <AppBar
-        // position="fixed"
         sx={{
           backgroundColor: "white",
           overflow: "hidden",
           marginBottom: 0,
+          height: `${theme.global.appBarHeight}px`,
           zIndex: 900,
         }}
       >
@@ -122,10 +125,13 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
       <Container
         maxWidth="sm"
         sx={{
+          /**
+           * Allow overflow for the content
+           */
+          ...(props.disableOverflow ? { overflow: "hidden" } : {}),
           // Margin due to the fixed AppBar
           // marginTop: "80px",
           flex: 1 /* Takes up remaining space */,
-          overflowY: "scroll" /* Allows scrolling within the content area */,
           overflowX: "hidden",
           paddingLeft: "0px",
           paddingRight: "0px",
@@ -155,7 +161,10 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
           /**
            * Fix Height for PWA on iOS
            */
-          sx={{ height: 90, paddingBottom: "20px" }}
+          sx={{
+            height: `${theme.global.bottomNavigation.height}px`,
+            paddingBottom: `${theme.global.bottomNavigation.paddingBottom}px`,
+          }}
           value={currentTab}
           onChange={(event, newValue: number) => {
             if (newValue === 2) {

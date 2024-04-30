@@ -6,9 +6,10 @@ import ListItemText from "@mui/material/ListItemText";
 import Collapse from "@mui/material/Collapse";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
-import { Box, Divider, ListSubheader } from "@mui/material";
+import { Box, Divider, ListSubheader, useTheme } from "@mui/material";
 import { BudgetGroupItem } from "./types";
 import { ListRow } from "./ListRow";
+import { StickyHeader } from "./StickerHeader";
 
 type Id = string;
 export type ListState = Record<
@@ -29,6 +30,7 @@ export interface BudgetTabProps {
 }
 
 export function BudgetTab(props: BudgetTabProps) {
+  const theme = useTheme();
   const [listState, setListState] = React.useState<ListState>(
     props.budgetGroup.reduce((acc, group) => {
       group.budgetItems.forEach((item) => {
@@ -59,6 +61,11 @@ export function BudgetTab(props: BudgetTabProps) {
     });
   };
 
+  const [isStickyHeaderVisible, setIsStickyHeaderVisible] =
+    React.useState(true);
+
+  const stickyHeaderHeight = 80;
+
   return (
     <>
       <Box
@@ -67,10 +74,28 @@ export function BudgetTab(props: BudgetTabProps) {
           bgcolor: "background.paper",
         }}
       >
-        <List component="nav" aria-labelledby="nested-list-subheader">
+        {isStickyHeaderVisible ? (
+          <StickyHeader height={stickyHeaderHeight} />
+        ) : null}
+        <List
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+          sx={{
+            overflowY: "scroll",
+            overflowX: "hidden",
+            position: "relative",
+            height: `calc(100svh - ${
+              theme.global.appBar.height +
+              theme.global.bottomNavigation.height +
+              theme.global.bottomNavigation.paddingBottom +
+              (isStickyHeaderVisible ? stickyHeaderHeight : 0)
+            }px)`,
+            paddingTop: 0,
+          }}
+        >
           {props.budgetGroup.map((item) => (
             <React.Fragment key={item.name}>
-              <ListSubheader disableGutters>
+              <ListSubheader disableGutters sx={{}}>
                 <ListItemButton
                   onClick={() => handleClick(item.id)}
                   sx={{

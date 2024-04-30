@@ -14,6 +14,7 @@ import useLongPress from "@/hooks/useLongPress";
 import { BudgetItem } from "./types";
 import { AvailableChip } from "./AvailableChip";
 import { AutoSelectTextField } from "./AutoSelectNumberTextField";
+import { ListTableColumn, ListTableRow } from "./layouts";
 
 const BudgetLinearProgress = styled(LinearProgress)(({ theme }) => ({
   marginTop: 5,
@@ -31,12 +32,6 @@ const BudgetLinearProgress = styled(LinearProgress)(({ theme }) => ({
 const ListContainer = styled(Box)(() => ({
   display: "flex",
   flexDirection: "column",
-  width: "100%",
-}));
-
-const ListRowContainer = styled(Box)(() => ({
-  display: "flex",
-  flexWrap: "wrap",
   width: "100%",
 }));
 
@@ -58,44 +53,42 @@ export function ListRow(props: ListRowProps) {
     <>
       <ListItemButton onClick={props.onEditAssigned} {...longPress}>
         <ListContainer>
-          <ListRowContainer>
-            <ListItemText
-              className="flex-item"
-              primary={items.name}
-              primaryTypographyProps={{
-                sx: {
-                  fontSize: "0.9rem",
-                  fontFamily: theme.typography.fontFamily,
-                },
-              }}
-              sx={{
-                flex: "flex: 1 1 65%; ",
-                minWidth: "200px",
-              }}
-            />
-
-            {props.isEditAssigned ? (
-              <AutoSelectTextField
-                /**
-                 * When unfocused, save the value
-                 */
-                onBlur={props.onEditAssignedSave}
-                className="flex-item"
-                type="number"
-                defaultValue={items.assigned}
+          <ListTableRow>
+            <ListTableColumn ratio={60}>
+              <ListItemText
+                primary={items.name}
+                primaryTypographyProps={{
+                  sx: {
+                    fontSize: "0.9rem",
+                    fontFamily: theme.typography.fontFamily,
+                  },
+                }}
               />
-            ) : (
-              <> </>
-            )}
-            <Box
-              className="flex-item"
+            </ListTableColumn>
+
+            <ListTableColumn>
+              {props.isEditAssigned ? (
+                <AutoSelectTextField
+                  /**
+                   * When unfocused, save the value
+                   */
+                  onBlur={props.onEditAssignedSave}
+                  type="number"
+                  defaultValue={items.assigned}
+                />
+              ) : (
+                <> </>
+              )}
+            </ListTableColumn>
+
+            <ListTableColumn
               sx={{
                 textAlign: "right",
               }}
             >
               <AvailableChip available={items.available} />
-            </Box>
-          </ListRowContainer>
+            </ListTableColumn>
+          </ListTableRow>
           <BudgetLinearProgress
             variant="determinate"
             value={

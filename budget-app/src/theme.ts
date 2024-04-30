@@ -1,20 +1,27 @@
 "use client";
-import { Figtree, Roboto, Heebo, Poppins, Montserrat, Karla } from "next/font/google";
+import {
+  Figtree,
+  Roboto,
+  Heebo,
+  Poppins,
+  Montserrat,
+  Karla,
+} from "next/font/google";
 
 import { createTheme } from "@mui/material/styles";
 
-const karla = Karla({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  display: "swap",
-});
+// const karla = Karla({
+//   weight: ["400", "500", "600"],
+//   subsets: ["latin"],
+//   display: "swap",
+// });
 
 // Figtree
-const montserrat = Montserrat({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  display: "swap",
-});
+// const montserrat = Montserrat({
+//   weight: ["400", "500", "600"],
+//   subsets: ["latin"],
+//   display: "swap",
+// });
 
 const poppins = Poppins({
   weight: ["400", "500", "600"],
@@ -22,17 +29,17 @@ const poppins = Poppins({
   display: "swap",
 });
 
-const figtree = Figtree({
-  weight: ["400", "500", "600"],
-  subsets: ["latin"],
-  display: "swap",
-});
+// const figtree = Figtree({
+//   weight: ["400", "500", "600"],
+//   subsets: ["latin"],
+//   display: "swap",
+// });
 
-const roboto = Roboto({
-  weight: ["400", "500", "700"],
-  subsets: ["latin"],
-  display: "swap",
-});
+// const roboto = Roboto({
+//   weight: ["400", "500", "700"],
+//   subsets: ["latin"],
+//   display: "swap",
+// });
 
 const heebo = Heebo({
   weight: ["400", "500", "700"],
@@ -40,18 +47,35 @@ const heebo = Heebo({
   display: "swap",
 });
 
-declare module '@mui/material/styles' {
-  interface Theme {
+declare module "@mui/material/styles" {
+  interface OverrideTheme {
     budget: Record<string, unknown>;
+    global: {
+      appBar: {
+        height: number;
+      };
+      bottomNavigation: {
+        height: number;
+        paddingBottom: number;
+      };
+    };
   }
-  interface ThemeOptions {
-    budget?: Record<string, unknown>;
-  }
+  interface Theme extends OverrideTheme {}
+  interface ThemeOptions extends Partial<OverrideTheme> {}
 }
 
 const theme = createTheme({
   palette: {
     mode: "light",
+  },
+  global: {
+    appBar: {
+      height: 60,
+    },
+    bottomNavigation: {
+      height: 90,
+      paddingBottom: 20,
+    },
   },
 
   typography: {
