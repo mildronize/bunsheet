@@ -7,6 +7,7 @@ import axios from "axios";
 import { catchResponseMessage } from "@/global/catchResponse";
 import { useGlobalLoading } from "@/hooks/useGlobalLoading";
 import { Alert } from "@mui/material";
+import { useQueryCache } from "@/hooks/useQueryCache";
 
 export type BudgetGetResponse = InferRouteResponse<typeof Budget.GET>;
 
@@ -23,6 +24,20 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
   });
 
   useGlobalLoading(budgetGroup.isPending);
+  const cachedBudgetGroup = useQueryCache(budgetGroup, "budgetGroupGet", {
+    count: 0,
+    data: [
+      {
+        id: "",
+        name: "",
+        order: 0,
+        totalAssigned: 0,
+        totalAvailable: 0,
+        budgetItems: [],
+      },
+    ],
+    message: "",
+  });
 
   if (budgetGroup.isError) {
     <Alert severity="error">Error: {budgetGroup.error?.message}</Alert>;
@@ -31,28 +46,10 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
   if (!budgetGroup.data?.data) {
     return (
       <BudgetTab
-        budgetGroup={[
-          {
-            id: "1",
-            name: "Group 1",
-            order: 1,
-            totalAssigned: 100,
-            totalAvailable: 200,
-            budgetItems: [
-              {
-                id: "2",
-                name: "Item 1",
-                activity: 100,
-                assigned: 200,
-                available: 100,
-                order: 1,
-              },
-            ],
-          },
-        ]}
+        budgetGroup={cachedBudgetGroup.data}
       />
     );
   }
-
+  
   return <BudgetTab budgetGroup={budgetGroup.data?.data} />;
 }

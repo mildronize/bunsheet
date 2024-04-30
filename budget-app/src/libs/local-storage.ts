@@ -1,20 +1,21 @@
-export class LocalStorage {
-  constructor(public key: string, public initData: string) {}
+export class LocalStorage<T> {
+  constructor(public key: string, public initData: T) {
+    this.key = `bunsheet-cache-${key}`;
+  }
 
   isExist() {
     return localStorage.getItem(this.key) !== null;
   }
-
-  get() {
+  get(): T {
     if (localStorage.getItem(this.key)) {
-      return localStorage.getItem(this.key);
+      return JSON.parse(localStorage.getItem(this.key)!) as T;
     } else {
-      localStorage.setItem(this.key, this.initData);
+      localStorage.setItem(this.key, JSON.stringify(this.initData));
     }
     return this.initData;
   }
 
-  set(data: string) {
-    localStorage.setItem(this.key, data);
+  set(data: T) {
+    localStorage.setItem(this.key, JSON.stringify(data));
   }
 }

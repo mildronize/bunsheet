@@ -58,7 +58,7 @@ export function BudgetTab(props: BudgetTabProps) {
     setGroupState((prevState) => {
       const newState = { ...prevState };
       newState[id] = {
-        isExpanded: !prevState[id].isExpanded,
+        isExpanded: !(prevState[id]?.isExpanded ?? false),
       };
       return newState;
     });
@@ -118,7 +118,9 @@ export function BudgetTab(props: BudgetTabProps) {
                     <Box key={budgetItem.id}>
                       <ListRow
                         items={budgetItem}
-                        isEditAssigned={listState[budgetItem.id]?.isEditAssigned ?? false}
+                        isEditAssigned={
+                          listState[budgetItem.id]?.isEditAssigned ?? false
+                        }
                         onEditAssignedSave={
                           /**
                            * Clear the active state
