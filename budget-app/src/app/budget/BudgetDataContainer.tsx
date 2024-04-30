@@ -28,8 +28,30 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
     <Alert severity="error">Error: {budgetGroup.error?.message}</Alert>;
   }
 
-  if(!budgetGroup.data?.data) {
-    return null;
+  if (!budgetGroup.data?.data) {
+    return (
+      <BudgetTab
+        budgetGroup={[
+          {
+            id: "1",
+            name: "Group 1",
+            order: 1,
+            totalAssigned: 100,
+            totalAvailable: 200,
+            budgetItems: [
+              {
+                id: "2",
+                name: "Item 1",
+                activity: 100,
+                assigned: 200,
+                available: 100,
+                order: 1,
+              },
+            ],
+          },
+        ]}
+      />
+    );
   }
 
   return <BudgetTab budgetGroup={budgetGroup.data?.data} />;

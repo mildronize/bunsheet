@@ -105,11 +105,11 @@ export function BudgetTab(props: BudgetTabProps) {
                 <CategoryGroupDropDownList
                   onClick={() => handleClick(item.id)}
                   header={item}
-                  isExpanded={groupState[item.id].isExpanded}
+                  isExpanded={groupState[item.id]?.isExpanded ?? false}
                 />
               </ListSubheader>
               <Collapse
-                in={groupState[item.id].isExpanded}
+                in={groupState[item.id]?.isExpanded ?? false}
                 timeout="auto"
                 unmountOnExit
               >
@@ -118,7 +118,7 @@ export function BudgetTab(props: BudgetTabProps) {
                     <Box key={budgetItem.id}>
                       <ListRow
                         items={budgetItem}
-                        isEditAssigned={listState[budgetItem.id].isEditAssigned}
+                        isEditAssigned={listState[budgetItem.id]?.isEditAssigned ?? false}
                         onEditAssignedSave={
                           /**
                            * Clear the active state
