@@ -13,6 +13,7 @@ import { StickyHeader } from "./StickerHeader";
 import { StickerListHeader } from "./StickerListHeader";
 import { ListTableColumn, ListTableRow } from "./layouts";
 import { CategoryGroupDropDownList } from "./CategoryGroupDropDownList";
+import { MonthlyBudgetSummaryCacheEntity } from "@/entites/monthly-budget.entity";
 
 type Id = string;
 export type ListState = Record<
@@ -29,6 +30,7 @@ export type GroupState = Record<
 >;
 
 export interface BudgetTabProps {
+  summary: MonthlyBudgetSummaryCacheEntity;
   budgetGroup: BudgetGroupItem[];
 }
 
@@ -64,8 +66,7 @@ export function BudgetTab(props: BudgetTabProps) {
     });
   };
 
-  const [isStickyHeaderVisible, setIsStickyHeaderVisible] =
-    React.useState(true);
+  const isStickyHeaderVisible = Math.abs(props.summary.readyToAssign) > 1;
 
   const stickyHeaderHeight = 90;
   const stickerListHeaderHeight = 40;
@@ -79,8 +80,9 @@ export function BudgetTab(props: BudgetTabProps) {
         }}
       >
         {isStickyHeaderVisible ? (
-          <StickyHeader height={stickyHeaderHeight} />
+          <StickyHeader summary={props.summary} height={stickyHeaderHeight} />
         ) : null}
+
         <StickerListHeader height={stickerListHeaderHeight} />
         <List
           component="nav"
@@ -99,6 +101,9 @@ export function BudgetTab(props: BudgetTabProps) {
             paddingTop: 0,
           }}
         >
+          {!isStickyHeaderVisible ? (
+            <StickyHeader summary={props.summary} height={stickyHeaderHeight} />
+          ) : null}
           {props.budgetGroup.map((item) => (
             <React.Fragment key={item.id}>
               <ListSubheader disableGutters>

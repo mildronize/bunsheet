@@ -1,14 +1,40 @@
+"use client";
+import { useTheme } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
+import numbro from "numbro";
 
 export interface StickyHeaderProps {
+  summary: {
+    readyToAssign: number;
+    totalIncome: number;
+    totalAssigned: number;
+    totalActivity: number;
+    totalAvailable: number;
+  };
   height?: number;
 }
 
-export function StickyHeader(props: StickyHeaderProps) {
+export function StickyHeader({ summary, height }: StickyHeaderProps) {
+  const theme = useTheme();
+  const readyToAssign =
+    Math.abs(summary.readyToAssign) < 1 ? 0 : summary.readyToAssign;
+  let errorMessage = "";
+  let backgroundColor = "";
+  if (summary.readyToAssign < 0) {
+    errorMessage = "You assigned more than you have";
+    backgroundColor = "#FAEEED";
+  } else if (summary.readyToAssign > 1) {
+    errorMessage = "Ready to Assign";
+    backgroundColor = "#ccf2a5";
+  } else {
+    errorMessage = "All Money Assigned";
+    backgroundColor = "#f0f0f0";
+  }
+
   return (
     <Box
       sx={{
-        ...(props.height ? { height: `${props.height}px` } : {}),
+        ...(height ? { height: `${height}px` } : {}),
         display: "flex",
         flexDirection: "column",
         // margin: "0 10px",
@@ -16,15 +42,17 @@ export function StickyHeader(props: StickyHeaderProps) {
     >
       <Box
         sx={{
-          backgroundColor: "#FAEEED",
+          backgroundColor: backgroundColor,
           padding: "10px 20px",
           borderRadius: "5px",
           margin: "10px",
+          fontFamily: theme.budget.amount.fontFamily,
           // textAlign: "right",
         }}
       >
-        0<br />
-        Unassigned Budget
+        {numbro(readyToAssign).format("0,0")}
+        <br />
+        {errorMessage}
       </Box>
     </Box>
   );
