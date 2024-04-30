@@ -28,7 +28,7 @@ export interface MonthlyBudgetCacheEntity extends AzureTableEntityBase {
    * pattern is 'YYYY-MM'
    * e.g. '2021-01'
    */
-  monthKey: string;
+  filterMonth: Date;
   assigned: number;
   activity: number;
   cumulativeAssigned: number;

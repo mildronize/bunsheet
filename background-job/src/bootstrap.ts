@@ -60,7 +60,7 @@ export const sheetClient = {
        * pattern is 'YYYY-MM'
        * e.g. '2021-01'
        */
-      MonthKey: 'string',
+      FilterMonth: 'string',
       Assigned: 'number',
       Activity: 'number',
       CumulativeAssigned: 'number',

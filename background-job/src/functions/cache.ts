@@ -1,6 +1,11 @@
-import { monthlyBudgetSummaryTableCache, sheetClient, transactionTableCache } from '../bootstrap';
+import {
+  monthlyBudgetSummaryTableCache,
+  monthlyBudgetTableCache,
+  sheetClient,
+  transactionTableCache,
+} from '../bootstrap';
 import { func } from '../nammatham';
-import { MonthlyBudgetSummaryCacheService } from '../services/monthly-budget-cache.service';
+import { MonthlyBudgetCacheService, MonthlyBudgetSummaryCacheService } from '../services/monthly-budget-cache.service';
 import { TransactionCacheService } from '../services/transaction-cache.service';
 
 export default func
@@ -18,9 +23,11 @@ export default func
     //   transactionTableCache
     // ).deleteNonExistentRows();
 
-    await new MonthlyBudgetSummaryCacheService(
-      c.context,
-      sheetClient.monthlyBudgetSummary,
-      monthlyBudgetSummaryTableCache
-    ).forceUpdate();
+    // await new MonthlyBudgetSummaryCacheService(
+    //   c.context,
+    //   sheetClient.monthlyBudgetSummary,
+    //   monthlyBudgetSummaryTableCache
+    // ).forceUpdate();
+
+    await new MonthlyBudgetCacheService(c.context, sheetClient.monthlyBudget, monthlyBudgetTableCache).forceUpdate();
   });
