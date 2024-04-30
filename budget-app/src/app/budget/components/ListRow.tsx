@@ -13,6 +13,7 @@ import {
 import useLongPress from "@/hooks/useLongPress";
 import { BudgetItem } from "./types";
 import { AvailableChip } from "./AvailableChip";
+import { AutoSelectTextField } from "./AutoSelectNumberTextField";
 
 const BudgetLinearProgress = styled(LinearProgress)(({ theme }) => ({
   marginTop: 5,
@@ -74,23 +75,14 @@ export function ListRow(props: ListRowProps) {
             />
 
             {props.isEditAssigned ? (
-              <input
+              <AutoSelectTextField
                 /**
                  * When unfocused, save the value
                  */
                 onBlur={props.onEditAssignedSave}
-                autoFocus
                 className="flex-item"
                 type="number"
                 defaultValue={items.assigned}
-                style={{
-                  width: "50px",
-                  textAlign: "right",
-                  fontSize: "16px", // Use font 16px prevent zooming on mobile
-                  fontFamily: theme.typography.fontFamily,
-                  border: "none",
-                  backgroundColor: alpha("#ffffff", 0.0),
-                }}
               />
             ) : (
               <> </>
