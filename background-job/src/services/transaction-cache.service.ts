@@ -5,7 +5,7 @@ import { TransactionCacheEntity } from '../entities/transaction.entity';
 import dayjs from 'dayjs';
 import { UpdatedStats } from '../libs/table-cache';
 
-export class CacheService {
+export class TransactionCacheService {
   constructor(
     public readonly context: InvocationContext,
     public readonly sheet: typeof sheetClient,

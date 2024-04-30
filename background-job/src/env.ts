@@ -62,6 +62,20 @@ export const envSchema = z.object({
     z.number()
   ),
   /**
+   * Google Sheet, Monthly Budget Sheet ID
+   */
+  GSHEET_SHEET_MONTHLY_BUDGET_SHEET_ID: z.preprocess(
+    value => parseGSheetId(value, 'GSHEET_SHEET_MONTHLY_BUDGET_SHEET_ID'),
+    z.number()
+  ),
+  /**
+   * Google Sheet, Monthly Budget Summary Sheet ID
+   */
+  GSHEET_SHEET_MONTHLY_BUDGET_SUMMARY_SHEET_ID: z.preprocess(
+    value => parseGSheetId(value, 'GSHEET_SHEET_MONTHLY_BUDGET_SUMMARY_SHEET_ID'),
+    z.number()
+  ),
+  /**
    * Google Sheet, Required Field for Transaction Sheet ID
    *
    * Use for checking the required field in the row read
