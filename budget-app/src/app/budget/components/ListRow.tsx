@@ -49,6 +49,15 @@ export function ListRow(props: ListRowProps) {
 
   const theme = useTheme();
 
+  let progress = 0;
+  if (items.available > 0) {
+    // progress =
+    //   items.assigned > items.available
+    //     ? 1
+    //     : (items.assigned / items.available) * 100;
+    progress = ((items.activity + items.available) / items.available) * 100;
+  }
+
   return (
     <>
       <ListItemButton onClick={props.onEditAssigned} {...longPress}>
@@ -93,16 +102,7 @@ export function ListRow(props: ListRowProps) {
               <AvailableChip available={items.available} />
             </ListTableColumn>
           </ListTableRow>
-          <BudgetLinearProgress
-            variant="determinate"
-            value={
-              items.available > 0
-                ? items.assigned > items.available
-                  ? 1
-                  : (items.assigned / items.available) * 100
-                : 0
-            }
-          />
+          <BudgetLinearProgress variant="determinate" value={progress} />
         </ListContainer>
       </ListItemButton>
       <Divider />

@@ -2,6 +2,7 @@
 import {
   Badge,
   Box,
+  Chip,
   ListItemButton,
   ListItemText,
   useTheme,
@@ -75,14 +76,19 @@ export function CategoryGroupDropDownList(
           }}
         >
           {props.header.countOverspent > 0 ? (
-            <Badge
-              color="error"
-              variant="dot"
-              overlap="circular"
-              badgeContent={" "}
-            >
-              {numbro(props.header.totalAvailable).format("0,0")}
-            </Badge>
+            <Chip
+              label={numbro(props.header.totalAvailable).format("0,0")}
+              size="small"
+              sx={{
+                "&.MuiChip-root": {
+                  backgroundColor: "#ffc6be",
+                  fontSize: theme.budget.amount.fontSize,
+                },
+                "&.MuiChip-label": {
+                  fontWeight: "500",
+                },
+              }}
+            />
           ) : (
             numbro(props.header.totalAvailable).format("0,0")
           )}
