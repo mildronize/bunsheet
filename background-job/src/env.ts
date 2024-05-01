@@ -95,6 +95,11 @@ export const envSchema = z.object({
    * Timezone
    */
   TIMEZONE: z.string().default('Asia/Bangkok'),
+
+  /**
+   * Azure SignalR Connection String
+   */
+  AzureSignalRConnectionString: z.string(),
 });
 
 function printSecretFields(data: Record<string, unknown>, secretFields: string[]) {

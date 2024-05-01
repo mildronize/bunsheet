@@ -4,7 +4,12 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const response = await axios.get(env.RESET_CACHE_URL ?? "");
+    const response = await axios.get(
+      new URL(
+        env.AZURE_FUNCTION_RESET_CACHE_PATH,
+        env.NEXT_PUBLIC_AZURE_FUNCTION_URL
+      ).toString()
+    );
     return NextResponse.json(response.data);
   } catch (error) {
     if (error instanceof Error) {

@@ -107,9 +107,13 @@ export const envSchema = z.object({
   TIMEZONE: z.string().default("Asia/Bangkok"),
 
   /**
-   * Reset Cache URL
+   * Reset Cache PATH
    */
-  RESET_CACHE_URL: z.string().optional(),
+  AZURE_FUNCTION_RESET_CACHE_PATH: z.string().default("/api/resetcache"),
+  /**
+   * Azure Function URL
+   */
+  NEXT_PUBLIC_AZURE_FUNCTION_URL: z.string().default("http://localhost:7071"),
 });
 
 function printSecretFields(

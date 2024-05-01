@@ -4,6 +4,7 @@
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
     "AzureWebJobsStorage": "UseDevelopmentStorage=true"
-    },
-  "ConnectionStrings": {}
+  },
+  "ConnectionStrings": {},
+  "watchDirectories": ["node_modules", "dist"]
 }

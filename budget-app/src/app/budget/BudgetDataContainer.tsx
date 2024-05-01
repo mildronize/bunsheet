@@ -10,6 +10,8 @@ import { useGlobalLoading } from "@/hooks/useGlobalLoading";
 import { Alert } from "@mui/material";
 import { useQueryCache } from "@/hooks/useQueryCache";
 import { useClient } from "@/hooks/useClient";
+import { useEffect } from "react";
+import { initSignalRClient } from "@/libs/signalr-client";
 
 export type BudgetGetResponse = InferRouteResponse<typeof Budget.GET>;
 export type BudgetSummaryGetResponse = InferRouteResponse<
@@ -75,6 +77,10 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
     ],
     message: "",
   });
+
+  useEffect(() => {
+    initSignalRClient();
+  }, []);
 
   if (budgetSummary.isError) {
     <Alert severity="error">Error: {budgetSummary.error?.message}</Alert>;
