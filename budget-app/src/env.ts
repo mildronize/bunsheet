@@ -113,7 +113,7 @@ export const envSchema = z.object({
   /**
    * Azure Function URL
    */
-  NEXT_PUBLIC_AZURE_FUNCTION_URL: z.string().default("http://localhost:7072"),
+  NEXT_PUBLIC_AZURE_FUNCTION_URL: z.string().default("http://localhost:7071"),
 });
 
 function printSecretFields(

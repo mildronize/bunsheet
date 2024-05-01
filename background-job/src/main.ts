@@ -12,8 +12,7 @@ app.addFunctions(
   handleLongQueue,
   cacheFunction,
   resetCache,
-  negotiateSignalr,
-  func.httpGet('test').handler(c => c.text('Hello World' + ' '))
+  negotiateSignalr
 );
 
 const dev = process.env.NODE_ENV === 'development';

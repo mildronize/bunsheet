@@ -1,4 +1,5 @@
-import { env } from "./env";
+// import { env } from "./env";
+import { env } from "next-runtime-env";
 import { initSignalRClient } from "./libs/signalr-client";
 
 /**
@@ -8,5 +9,5 @@ import { initSignalRClient } from "./libs/signalr-client";
  */
 
 export const signalRConnection = initSignalRClient(
-  env.NEXT_PUBLIC_AZURE_FUNCTION_URL
+  env("NEXT_PUBLIC_AZURE_FUNCTION_URL") ?? ""
 );
