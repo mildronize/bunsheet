@@ -20,14 +20,16 @@ export function StickyHeader({ summary, height }: StickyHeaderProps) {
     Math.abs(summary.readyToAssign) < 1 ? 0 : summary.readyToAssign;
   let errorMessage = "";
   let backgroundColor = "";
+  let fontColor = theme.palette.text.primary;
   if (summary.readyToAssign < 0) {
     errorMessage = "You assigned more than you have";
     backgroundColor = "#FAEEED";
   } else if (summary.readyToAssign > 1) {
-    errorMessage = "Ready to Assign";
+    errorMessage = "Ready to assign";
     backgroundColor = "#ccf2a5";
   } else {
-    errorMessage = "All Money Assigned";
+    errorMessage = "All money assigned";
+    fontColor = theme.palette.text.secondary;
     backgroundColor = "#f0f0f0";
   }
 
@@ -46,6 +48,7 @@ export function StickyHeader({ summary, height }: StickyHeaderProps) {
           padding: "10px 20px",
           borderRadius: "5px",
           margin: "10px",
+          color: fontColor,
           fontFamily: theme.budget.amount.fontFamily,
           // textAlign: "right",
         }}

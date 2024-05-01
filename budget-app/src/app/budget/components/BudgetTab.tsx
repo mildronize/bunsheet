@@ -6,7 +6,7 @@ import { Box, Divider, ListSubheader, useTheme } from "@mui/material";
 import { BudgetGroupItem } from "./types";
 import { ListRow } from "./ListRow";
 import { StickyHeader } from "./StickerHeader";
-import { StickerListHeader } from "./StickerListHeader";
+import { ListHeader } from "./ListHeader";
 import { CategoryGroupDropDownList } from "./CategoryGroupDropDownList";
 import { MonthlyBudgetSummaryCacheEntity } from "@/entites/monthly-budget.entity";
 
@@ -31,8 +31,12 @@ export interface BudgetTabProps {
 
 export function BudgetTab(props: BudgetTabProps) {
   const theme = useTheme();
+  let totalAssigned = 0;
+  let totalAvailable = 0;
   for (const group of props.budgetGroup) {
     group.budgetItems = group.budgetItems.filter((item) => !item.isHidden);
+    totalAssigned += group.totalAssigned;
+    totalAvailable += group.totalAvailable;
   }
 
   const [isShowAssigned, setIsShowAssigned] = React.useState(false);
@@ -84,7 +88,11 @@ export function BudgetTab(props: BudgetTabProps) {
           <StickyHeader summary={props.summary} height={stickyHeaderHeight} />
         ) : null}
 
-        <StickerListHeader height={stickerListHeaderHeight} />
+        <ListHeader
+          columns={["", "Assigned", "Available"]}
+          height={stickerListHeaderHeight}
+        />
+
         <List
           component="nav"
           aria-labelledby="nested-list-subheader"
@@ -98,10 +106,17 @@ export function BudgetTab(props: BudgetTabProps) {
               theme.global.bottomNavigation.paddingBottom +
               (isStickyHeaderVisible ? stickyHeaderHeight : 0) +
               stickerListHeaderHeight
+              // (isShowAssigned ? stickerListHeaderHeight : 0)
             }px)`,
             paddingTop: 0,
           }}
         >
+          {isShowAssigned ? (
+            <ListHeader
+              columns={["", totalAssigned, totalAvailable]}
+              height={stickerListHeaderHeight}
+            />
+          ) : null}
           {!isStickyHeaderVisible ? (
             <StickyHeader summary={props.summary} height={stickyHeaderHeight} />
           ) : null}

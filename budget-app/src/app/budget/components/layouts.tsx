@@ -1,4 +1,5 @@
-import { Box, styled } from "@mui/material";
+import { Box, styled, Typography, useTheme } from "@mui/material";
+import numbro from "numbro";
 
 export const ListTableRow = styled(Box)(() => ({
   display: "flex",
@@ -16,13 +17,51 @@ export function ListTableColumn(
     <Box
       {...props}
       sx={{
-        // display: 'flex',
-        // alignItems: 'center',
         flex: `0 0 ${props.ratio ?? 20}%`,
         ...(props.sx ?? {}),
       }}
     >
       {props.children}
     </Box>
+  );
+}
+
+export function MoneyColumn(
+  props: { value: number } & React.ComponentProps<typeof Box>
+) {
+  const theme = useTheme();
+  return (
+    <Box
+      {...props}
+      sx={{
+        fontFamily: theme.budget.amount.fontFamily,
+        fontSize: theme.budget.amount.fontSize,
+        ...(props.sx ?? {}),
+      }}
+    >
+      {numbro(props.value).format("0,0")}
+    </Box>
+  );
+}
+
+export function HeaderColumn(
+  props: { children: React.ReactNode } & React.ComponentProps<typeof Typography>
+) {
+  const theme = useTheme();
+  return (
+    <Typography
+      variant="subtitle2"
+      align="right"
+      sx={{
+        textTransform: "uppercase",
+        fontSize: "0.7rem",
+        fontWeight: "bold",
+        color: theme.palette.text.secondary,
+        ...(props.sx ?? {}),
+      }}
+      {...props}
+    >
+      {props.children}
+    </Typography>
   );
 }

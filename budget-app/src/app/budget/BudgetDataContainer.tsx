@@ -11,7 +11,6 @@ import { Alert } from "@mui/material";
 import { useQueryCache } from "@/hooks/useQueryCache";
 import { useClient } from "@/hooks/useClient";
 import { useSignalR } from "@/hooks/useSignalR";
-import { useState } from "react";
 
 export type BudgetGetResponse = InferRouteResponse<typeof Budget.GET>;
 export type BudgetSummaryGetResponse = InferRouteResponse<
@@ -43,17 +42,19 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
   const isClient = useClient();
   const cachedBudgetGroup = useQueryCache(budgetGroup, "budgetGroupGet", {
     count: 0,
-    data: [
-      {
-        id: "",
-        name: "",
-        order: 0,
-        totalAssigned: 0,
-        totalAvailable: 0,
-        countOverspent: 0,
-        budgetItems: [],
-      },
-    ],
+    data: {
+      budgetGroups: [
+        {
+          id: "",
+          name: "",
+          order: 0,
+          totalAssigned: 0,
+          totalAvailable: 0,
+          countOverspent: 0,
+          budgetItems: [],
+        },
+      ],
+    },
     message: "",
   });
 
@@ -101,7 +102,7 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
   if (!budgetGroup.data?.data || !budgetSummary.data?.data) {
     return isClient ? (
       <BudgetTab
-        budgetGroup={cachedBudgetGroup.data}
+        budgetGroup={cachedBudgetGroup.data.budgetGroups}
         summary={cachedBudgetSummary.data[0]}
       />
     ) : null;
@@ -113,7 +114,7 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
 
   return (
     <BudgetTab
-      budgetGroup={budgetGroup.data?.data}
+      budgetGroup={budgetGroup.data?.data.budgetGroups}
       summary={budgetSummary.data?.data[0]}
     />
   );
