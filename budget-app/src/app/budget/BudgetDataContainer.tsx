@@ -42,19 +42,17 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
   const isClient = useClient();
   const cachedBudgetGroup = useQueryCache(budgetGroup, "budgetGroupGet", {
     count: 0,
-    data: {
-      budgetGroups: [
-        {
-          id: "",
-          name: "",
-          order: 0,
-          totalAssigned: 0,
-          totalAvailable: 0,
-          countOverspent: 0,
-          budgetItems: [],
-        },
-      ],
-    },
+    data: [
+      {
+        id: "",
+        name: "",
+        order: 0,
+        totalAssigned: 0,
+        totalAvailable: 0,
+        countOverspent: 0,
+        budgetItems: [],
+      },
+    ],
     message: "",
   });
 
@@ -102,7 +100,7 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
   if (!budgetGroup.data?.data || !budgetSummary.data?.data) {
     return isClient ? (
       <BudgetTab
-        budgetGroup={cachedBudgetGroup.data.budgetGroups}
+        budgetGroup={cachedBudgetGroup.data}
         summary={cachedBudgetSummary.data[0]}
       />
     ) : null;
@@ -114,7 +112,7 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
 
   return (
     <BudgetTab
-      budgetGroup={budgetGroup.data?.data.budgetGroups}
+      budgetGroup={budgetGroup.data?.data}
       summary={budgetSummary.data?.data[0]}
     />
   );

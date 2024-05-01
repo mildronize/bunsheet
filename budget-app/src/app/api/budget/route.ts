@@ -94,8 +94,6 @@ export const GET = globalHandler(async (req) => {
   return NextResponse.json({
     message: "OK",
     count: sortedBudgetGroups.length,
-    data: {
-      budgetGroups: sortedBudgetGroups,
-    },
+    data: sortedBudgetGroups,
   });
 });
