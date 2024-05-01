@@ -35,6 +35,8 @@ export function BudgetTab(props: BudgetTabProps) {
     group.budgetItems = group.budgetItems.filter((item) => !item.isHidden);
   }
 
+  const [isShowAssigned, setIsShowAssigned] = React.useState(false);
+
   const [listState, setListState] = React.useState<ListState>(
     props.budgetGroup.reduce((acc, group) => {
       group.budgetItems.forEach((item) => {
@@ -125,6 +127,7 @@ export function BudgetTab(props: BudgetTabProps) {
                         isEditAssigned={
                           listState[budgetItem.id]?.isEditAssigned ?? false
                         }
+                        isShowAssigned={isShowAssigned}
                         onEditAssignedSave={
                           /**
                            * Clear the active state
@@ -138,9 +141,10 @@ export function BudgetTab(props: BudgetTabProps) {
                               return newState;
                             });
                             console.log("Save the value");
+                            setIsShowAssigned(false);
                           }
                         }
-                        onEditAssigned={() =>
+                        onEditAssigned={() => {
                           /**
                            * Clear all other edit states,
                            * then set the current item to edit mode
@@ -156,8 +160,9 @@ export function BudgetTab(props: BudgetTabProps) {
                               isEditAssigned: true,
                             };
                             return newState;
-                          })
-                        }
+                          });
+                          setIsShowAssigned(true);
+                        }}
                       />
                     </Box>
                   ))}

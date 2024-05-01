@@ -106,6 +106,7 @@ const ListContainer = styled(Box)(() => ({
 export interface ListRowProps {
   items: BudgetItem;
   isEditAssigned: boolean;
+  isShowAssigned: boolean;
   onEditAssigned: () => void;
   onEditAssignedSave: () => void;
 }
@@ -145,7 +146,7 @@ export function ListRow(props: ListRowProps) {
 
             <ListTableColumn
               sx={{
-                textAlign: "center",
+                textAlign: "right",
               }}
             >
               {props.isEditAssigned ? (
@@ -157,9 +158,17 @@ export function ListRow(props: ListRowProps) {
                   type="number"
                   defaultValue={items.assigned}
                 />
-              ) : (
-                <> </>
-              )}
+              ) : props.isShowAssigned ? (
+                <Box
+                  sx={{
+                    marginTop: '3px',
+                    fontFamily: theme.budget.amount.fontFamily,
+                    fontSize: theme.budget.amount.fontSize,
+                  }}
+                >
+                  {numbro(items.assigned).format("0,0")}
+                </Box>
+              ) : null}
             </ListTableColumn>
 
             <ListTableColumn
