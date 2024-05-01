@@ -101,10 +101,15 @@ export const envSchema = z.object({
     }
     return parseInt(value, 10);
   }, z.number()),
-    /**
+  /**
    * Timezone
    */
-    TIMEZONE: z.string().default('Asia/Bangkok'),
+  TIMEZONE: z.string().default("Asia/Bangkok"),
+
+  /**
+   * Reset Cache URL
+   */
+  RESET_CACHE_URL: z.string().optional(),
 });
 
 function printSecretFields(

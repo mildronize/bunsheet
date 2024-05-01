@@ -6,17 +6,24 @@ import { queryClient } from "../components/ReactQueryClientProvider";
 import CleaningServicesRoundedIcon from "@mui/icons-material/CleaningServicesRounded";
 import { toast, Toaster } from "sonner";
 import { AlertActiveQueue } from "../components/AlertActiveQueue";
+import axios from "axios";
 
 export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
 
 export function SettingTab() {
-  const clearCache = () => {
-    /**
-     * https://github.com/TanStack/query/discussions/3280
-     * Clear all queries
-     */
-    queryClient.clear();
-    toast.success("Clean Cache Successfully");
+  const resetCache = async () => {
+    try {
+      await axios.get("/api/cache/reset");
+      /**
+       * https://github.com/TanStack/query/discussions/3280
+       * Clear all queries
+       */
+      queryClient.clear();
+      toast.success("Clean Cache Successfully");
+    } catch (error) {
+      toast.error("Failed to reset cache");
+      return;
+    }
   };
 
   const reloadPage = () => {
@@ -31,9 +38,9 @@ export function SettingTab() {
           variant="contained"
           fullWidth
           endIcon={<CleaningServicesRoundedIcon />}
-          onClick={clearCache}
+          onClick={resetCache}
         >
-          Clear Cache
+          Reset Cache
         </Button>
       </div>
       <div className="form-input">
