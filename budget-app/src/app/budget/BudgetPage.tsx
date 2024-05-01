@@ -15,7 +15,6 @@ export function MonthlyBudgetTitle() {
 
 export function BudgetPage() {
   return (
-    <div>
       <MobileLayoutNavigation
         currentRouterKey={0}
         title={<MonthlyBudgetTitle />}
@@ -23,6 +22,5 @@ export function BudgetPage() {
       >
         <BudgetDataContainer />
       </MobileLayoutNavigation>
-    </div>
   );
 }

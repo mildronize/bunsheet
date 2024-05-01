@@ -3,11 +3,23 @@ import axios from "axios";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  if (!env.RESET_CACHE_URL) {
-    return NextResponse.json({
-      message: "Cache Reset URL is not set",
-    });
+  try {
+    const response = await axios.get(env.RESET_CACHE_URL ?? "");
+    return NextResponse.json(response.data);
+  } catch (error) {
+    if (error instanceof Error) {
+      return NextResponse.json(
+        { error: error.message },
+        {
+          status: 500,
+        }
+      );
+    }
+    return NextResponse.json(
+      { error: String(error) },
+      {
+        status: 500,
+      }
+    );
   }
-  const response = await axios.get(env.RESET_CACHE_URL);
-  return NextResponse.json(response.data);
 }
