@@ -8,15 +8,17 @@ import {
 import { MonthlyBudgetCacheService, MonthlyBudgetSummaryCacheService } from '../services/monthly-budget-cache.service';
 import { TransactionCacheService } from '../services/transaction-cache.service';
 
-export async function startCacheUpdate(context: InvocationContext) {
+export async function startCacheUpdate(context: InvocationContext, partial = false) {
   const workers: Promise<void>[] = [];
 
-  workers.push(
-    new TransactionCacheService(context, sheetClient.transaction, transactionTableCache).updateWhenExpired()
-  );
-  workers.push(
-    new TransactionCacheService(context, sheetClient.transaction, transactionTableCache).deleteNonExistentRows()
-  );
+  if (!partial) {
+    workers.push(
+      new TransactionCacheService(context, sheetClient.transaction, transactionTableCache).updateWhenExpired()
+    );
+    workers.push(
+      new TransactionCacheService(context, sheetClient.transaction, transactionTableCache).deleteNonExistentRows()
+    );
+  }
 
   workers.push(
     new MonthlyBudgetSummaryCacheService(

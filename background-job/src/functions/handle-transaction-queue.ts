@@ -4,6 +4,7 @@ import { dateString, dateStringTimezone, dateTimeString, dateTimeStringTimezone 
 import { sheetClient, transactionTableCache } from '../bootstrap';
 import { v4 as uuid } from 'uuid';
 import { TransactionCacheService } from '../services/transaction-cache.service';
+import { startCacheUpdate } from './cache-helper';
 
 const transactionPostSchema = z.object({
   type: z.enum(['add_transaction_queue', 'edit_transaction_queue']),
@@ -26,6 +27,8 @@ export interface GsheetTransactionModel {
   Memo: string;
   UpdatedAt: string;
 }
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 function parseTransactionToGoogleSheet(data: z.infer<typeof transactionPostSchema>): GsheetTransactionModel {
   return {
@@ -73,4 +76,9 @@ export default func
     } else {
       throw new Error('Invalid transaction type');
     }
+    /**
+     * Make sure google sheet is already calculated before updating cache
+     */
+    await delay(500);
+    await startCacheUpdate(c.context, true);
   });
