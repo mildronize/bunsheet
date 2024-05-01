@@ -7,7 +7,7 @@ import RestoreIcon from "@mui/icons-material/Restore";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PaymentsIcon from "@mui/icons-material/Payments";
-import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
+import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import {
   AppBar,
   Badge,
@@ -24,11 +24,16 @@ import { AddTransactionTab } from "../AddTransactionTab";
 import { SwipeableDrawer } from "./SwipeableDrawer";
 import { useGlobalLoadingStore } from "@/store";
 import { CountQueueBadge } from "./CountQueueBadge";
+import { LocalStorage } from "@/libs/local-storage";
+import { SettingTab } from "../SettingTab";
+import { RecentTransactionTab } from "../RecentTransactionTab";
+import { BudgetDataContainer } from "@/app/budget/BudgetDataContainer";
 
 const routerMap: {
   label: string;
   icon: React.ReactNode;
   path: string;
+  content?: React.ReactNode;
   title: string;
 }[] = [
   {
@@ -36,12 +41,14 @@ const routerMap: {
     icon: <PaymentsIcon />,
     path: "/",
     title: "Budget",
+    content: <BudgetDataContainer />,
   },
   {
     label: "Accounts",
     icon: <AccountBalanceIcon />,
     path: "/accounts",
     title: "Accounts",
+    content: <>TBA</>,
   },
   {
     label: "Transaction",
@@ -54,12 +61,18 @@ const routerMap: {
     icon: <RestoreIcon />,
     path: "/transaction",
     title: "Recent Transactions",
+    content: <RecentTransactionTab />,
   },
   {
     label: "System",
-    icon: <CountQueueBadge><SettingsIcon /></CountQueueBadge>,
+    icon: (
+      <CountQueueBadge>
+        <SettingsIcon />
+      </CountQueueBadge>
+    ),
     title: "System",
     path: "/settings",
+    content: <SettingTab />,
   },
 ];
 
@@ -68,17 +81,29 @@ export interface MobileLayoutNavigationProps {
    * Override the title of the BottomNavigation
    */
   title?: React.ReactNode;
-  children?: React.ReactNode;
-  currentRouterKey: number;
+  // children?: React.ReactNode;
+  // currentRouterKey: number;
   disableOverflow?: boolean;
 }
 export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
   const theme = useTheme();
   const router = useRouter();
-  const [currentTab, setCurrentTab] = useState(props.currentRouterKey);
+  const [currentTab, setCurrentTab] = useState(0);
+  const tabStorage = new LocalStorage("currentTab", "0");
+
+  useEffect(() => {
+    setCurrentTab(Number(tabStorage.get()) || 0);
+    console.log(tabStorage.get());
+  }, []);
+
   const isLoading = useGlobalLoadingStore((state) => state.isLoading);
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  function handleBottomNavigation(value: number) {
+    setCurrentTab(value);
+    tabStorage.set(value + "");
+  }
 
   return (
     <Box
@@ -136,11 +161,9 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
           overflowX: "hidden",
           paddingLeft: "0px",
           paddingRight: "0px",
-          // paddingTop: "10px",
         }}
-        // className="mb-200"
       >
-        {props.children}
+        {routerMap[currentTab].content}
         <SwipeableDrawer
           title="Add Transaction"
           open={isDrawerOpen}
@@ -171,8 +194,8 @@ export function MobileLayoutNavigation(props: MobileLayoutNavigationProps) {
             if (newValue === 2) {
               setIsDrawerOpen(true);
             } else {
-              setCurrentTab(newValue);
-              router.push(routerMap[newValue].path);
+              handleBottomNavigation(newValue);
+              // router.push(routerMap[newValue].path);
             }
           }}
         >

@@ -15,12 +15,12 @@ import { CountQueueChip } from "../components/CountQueueChip";
 
 export function BudgetPage() {
   return (
-    <MobileLayoutNavigation
-      currentRouterKey={0}
-      title={dayjs().format("MMM YYYY")}
-      disableOverflow
-    >
+    // <MobileLayoutNavigation
+    //   currentRouterKey={0}
+    //   title={dayjs().format("MMM YYYY")}
+    //   disableOverflow
+    // >
       <BudgetDataContainer />
-    </MobileLayoutNavigation>
+    // </MobileLayoutNavigation>
   );
 }
