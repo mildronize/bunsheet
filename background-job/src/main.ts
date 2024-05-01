@@ -11,7 +11,7 @@ app.addFunctions(
   cacheFunction,
   resetCache,
   negotiateSignalr,
-  func.httpGet('test').handler(c => c.text('Hello World'))
+  func.httpGet('test').handler(c => c.text('Hello World'+ ' ' ))
 );
 
 const dev = process.env.NODE_ENV === 'development';

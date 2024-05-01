@@ -3,7 +3,8 @@
   "Values": {
     "FUNCTIONS_WORKER_RUNTIME": "node",
     "AzureWebJobsFeatureFlags": "EnableWorkerIndexing",
-    "AzureWebJobsStorage": "UseDevelopmentStorage=true"
+    "AzureWebJobsStorage": "UseDevelopmentStorage=true",
+    "AzureSignalRConnectionString": "Endpoint=https://<your-service>.service.signalr.net;AccessKey"
   },
   "ConnectionStrings": {},
   "watchDirectories": ["node_modules", "dist"]
