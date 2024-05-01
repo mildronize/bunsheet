@@ -5,6 +5,7 @@ export interface BudgetItem {
   activity: number;
   available: number;
   order: number;
+  isHidden: boolean;
 }
 
 export interface BudgetGroupItem {

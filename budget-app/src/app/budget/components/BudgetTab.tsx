@@ -31,6 +31,10 @@ export interface BudgetTabProps {
 
 export function BudgetTab(props: BudgetTabProps) {
   const theme = useTheme();
+  for (const group of props.budgetGroup) {
+    group.budgetItems = group.budgetItems.filter((item) => !item.isHidden);
+  }
+
   const [listState, setListState] = React.useState<ListState>(
     props.budgetGroup.reduce((acc, group) => {
       group.budgetItems.forEach((item) => {

@@ -9,6 +9,7 @@ import { catchResponseMessage } from "@/global/catchResponse";
 import { useGlobalLoading } from "@/hooks/useGlobalLoading";
 import { Alert } from "@mui/material";
 import { useQueryCache } from "@/hooks/useQueryCache";
+import { useClient } from "@/hooks/useClient";
 
 export type BudgetGetResponse = InferRouteResponse<typeof Budget.GET>;
 export type BudgetSummaryGetResponse = InferRouteResponse<
@@ -37,6 +38,7 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
   });
 
   useGlobalLoading(budgetGroup.isPending || budgetSummary.isPending);
+  const isClient = useClient();
   const cachedBudgetGroup = useQueryCache(budgetGroup, "budgetGroupGet", {
     count: 0,
     data: [
@@ -83,12 +85,12 @@ export function BudgetDataContainer(props: BudgetDataContainerProps) {
   }
 
   if (!budgetGroup.data?.data || !budgetSummary.data?.data) {
-    return (
+    return isClient ? (
       <BudgetTab
         budgetGroup={cachedBudgetGroup.data}
         summary={cachedBudgetSummary.data[0]}
       />
-    );
+    ) : null;
   }
 
   if (!budgetSummary.data?.data[0]) {

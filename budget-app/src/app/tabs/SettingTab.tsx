@@ -7,12 +7,27 @@ import CleaningServicesRoundedIcon from "@mui/icons-material/CleaningServicesRou
 import { toast, Toaster } from "sonner";
 import { AlertActiveQueue } from "../components/AlertActiveQueue";
 import axios from "axios";
+import { LocalStorage } from "@/libs/local-storage";
+import { useState } from "react";
+import { useGlobalLoading } from "@/hooks/useGlobalLoading";
 
 export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
 
 export function SettingTab() {
+  const [isResettingCache, setIsResettingCache] = useState(false);
+
+  const clearAppCache = () => {
+    const caches = [
+      new LocalStorage("budgetGroupGet"),
+      new LocalStorage("budgetSummaryGet"),
+    ];
+    caches.forEach((cache) => cache.clear());
+  };
+
   const resetCache = async () => {
     try {
+      setIsResettingCache(true);
+      clearAppCache();
       await axios.get("/api/cache/reset");
       /**
        * https://github.com/TanStack/query/discussions/3280
@@ -24,7 +39,10 @@ export function SettingTab() {
       toast.error("Failed to reset cache");
       return;
     }
+    setIsResettingCache(false);
   };
+
+  useGlobalLoading(isResettingCache);
 
   const reloadPage = () => {
     if (typeof window !== "undefined") window.location.reload();
@@ -36,6 +54,7 @@ export function SettingTab() {
       <div className="form-input">
         <Button
           variant="contained"
+          disabled={isResettingCache}
           fullWidth
           endIcon={<CleaningServicesRoundedIcon />}
           onClick={resetCache}

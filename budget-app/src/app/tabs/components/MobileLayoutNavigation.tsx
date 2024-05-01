@@ -7,8 +7,7 @@ import RestoreIcon from "@mui/icons-material/Restore";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PaymentsIcon from "@mui/icons-material/Payments";
-import EqualizerIcon from "@mui/icons-material/Equalizer";
-import HomeIcon from "@mui/icons-material/Home";
+import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import {
   AppBar,
   Box,
@@ -38,7 +37,7 @@ const routerMap: {
   },
   {
     label: "Accounts",
-    icon: <HomeIcon />,
+    icon: <AccountBalanceIcon />,
     path: "/accounts",
     title: "Accounts",
   },

@@ -86,7 +86,7 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
     headerType: HeaderType
   ): {
     isSkip: boolean;
-    value?: string | number | Date | null;
+    value?: RowCellData | null;
   } {
     const cellValue = row.get(header);
     if (cellValue === this.options.skipRowKeyword) {
@@ -106,10 +106,16 @@ export class GoogleSheetRowClient<Headers extends Record<string, HeaderType>> {
         value: cellValue ? numbro(cellValue).value() : null,
       };
     }
+    if (headerType === 'boolean') {
+      return {
+        isSkip: false,
+        value: cellValue ? String(cellValue).trim().toUpperCase() === 'TRUE' : null,
+      };
+    }
 
     return {
       isSkip: false,
-      value: cellValue,
+      value: String(cellValue).trim(),
     };
   }
 
