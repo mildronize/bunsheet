@@ -15,10 +15,32 @@ import { BudgetItem } from "./types";
 import { AvailableChip } from "./AvailableChip";
 import { AutoSelectTextField } from "./AutoSelectNumberTextField";
 import { ListTableColumn, ListTableRow } from "./layouts";
+import numbro from "numbro";
+
+const SpendingLinearProgress = styled(LinearProgress)(({ theme }) => ({
+  marginTop: 5,
+  borderRadius: 5,
+  height: 5,
+  [`&.${linearProgressClasses.colorPrimary}`]: {
+    backgroundColor: theme.palette.mode === "light" ? "#9ecd6f" : "#ccf2a5",
+  },
+  [`& .${linearProgressClasses.bar}`]: {
+    borderRadius: 5,
+    background: `repeating-linear-gradient(
+      45deg,
+      ${alpha("#d3e4c5", 0.6)}, 
+      ${alpha("#d3e4c5", 0.6)} 5px,
+      ${alpha("#f0ffe4", 0.6)} 5px, 
+      ${alpha("#f4ffeb", 0.6)} 10px, 
+      ${alpha("#d3e4c5", 0.6)} 10px
+    )`,
+  },
+}));
 
 const BudgetLinearProgress = styled(LinearProgress)(({ theme }) => ({
   marginTop: 5,
   borderRadius: 5,
+  height: 5,
   [`&.${linearProgressClasses.colorPrimary}`]: {
     backgroundColor:
       theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
@@ -28,6 +50,52 @@ const BudgetLinearProgress = styled(LinearProgress)(({ theme }) => ({
     backgroundColor: theme.palette.mode === "light" ? "#9ecd6f" : "#ccf2a5",
   },
 }));
+
+function BudgetProgress({
+  items,
+  value,
+}: {
+  value: number;
+  items: BudgetItem;
+}) {
+  const theme = useTheme();
+  if (items.activity * -1 > 0 && items.activity * -1 <= items.available) {
+    return (
+      <Box>
+        <SpendingLinearProgress variant="determinate" value={100 - value} />
+        <Box
+          sx={{
+            fontSize: "0.85rem",
+            color: theme.palette.text.secondary,
+            paddingTop: "10px",
+          }}
+        >
+          Spent {numbro(items.activity * -1).format("0,0")} of{" "}
+          {numbro(items.available).format("0,0")}
+        </Box>
+      </Box>
+    );
+  } else if (
+    Math.abs(items.activity * -1 - items.assigned) < 1 &&
+    items.activity * -1 > 0
+  ) {
+    return (
+      <Box>
+        <SpendingLinearProgress variant="determinate" value={100} />
+        <Box
+          sx={{
+            fontSize: "0.85rem",
+            color: theme.palette.text.secondary,
+            paddingTop: "10px",
+          }}
+        >
+          Fully Spent
+        </Box>
+      </Box>
+    );
+  }
+  return <BudgetLinearProgress variant="determinate" value={value} />;
+}
 
 const ListContainer = styled(Box)(() => ({
   display: "flex",
@@ -102,7 +170,7 @@ export function ListRow(props: ListRowProps) {
               <AvailableChip available={items.available} />
             </ListTableColumn>
           </ListTableRow>
-          <BudgetLinearProgress variant="determinate" value={progress} />
+          <BudgetProgress value={progress} items={items} />
         </ListContainer>
       </ListItemButton>
       <Divider />
