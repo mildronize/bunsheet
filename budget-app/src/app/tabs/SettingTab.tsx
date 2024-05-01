@@ -10,6 +10,7 @@ import axios from "axios";
 import { LocalStorage } from "@/libs/local-storage";
 import { useState } from "react";
 import { useGlobalLoading } from "@/hooks/useGlobalLoading";
+import { useSignalR } from "@/hooks/useSignalR";
 
 export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
 
@@ -44,6 +45,8 @@ export function SettingTab() {
 
   useGlobalLoading(isResettingCache);
 
+  const signalRConnection = useSignalR();
+
   const reloadPage = () => {
     if (typeof window !== "undefined") window.location.reload();
   };
@@ -74,6 +77,11 @@ export function SettingTab() {
       </div>
       <Box sx={{ paddingTop: "25px" }}>
         <AlertActiveQueue />
+      </Box>
+      <Box sx={{ paddingTop: "25px" }}>
+        <Typography variant="body1">
+          SignalR State: {signalRConnection.state}
+        </Typography>
       </Box>
     </Box>
   );

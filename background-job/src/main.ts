@@ -5,13 +5,15 @@ import addTransactionQueue from './functions/handle-transaction-queue';
 import cacheFunction from './functions/cache';
 import resetCache from './functions/reset-cache';
 import negotiateSignalr from './functions/negotiate-signalr';
+import handleLongQueue from './functions/handle-long-queue';
 
 app.addFunctions(
   addTransactionQueue,
+  handleLongQueue,
   cacheFunction,
   resetCache,
   negotiateSignalr,
-  func.httpGet('test').handler(c => c.text('Hello World'+ ' ' ))
+  func.httpGet('test').handler(c => c.text('Hello World' + ' '))
 );
 
 const dev = process.env.NODE_ENV === 'development';

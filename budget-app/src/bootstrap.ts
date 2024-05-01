@@ -11,6 +11,7 @@ import {
   MonthlyBudgetCacheEntity,
   MonthlyBudgetSummaryCacheEntity,
 } from "./entites/monthly-budget.entity";
+import { initSignalRClient } from "./libs/signalr-client";
 
 /**
  * Azure Storage Queue Client

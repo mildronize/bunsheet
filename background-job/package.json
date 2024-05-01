@@ -9,7 +9,7 @@
     "build:prod": "run-s build && npm prune --production",
     "lint": "tsc --noEmit",
     "start": "func start",
-    "dev:func": "run-p build:watch start",
+    "dev:func": "run-s build && run-p build:watch start",
     "dev": "cross-env NODE_ENV=development tsx watch src/main.ts",
     "azurite": "pnpx azurite --silent --location ./.azurite --debug ./.azurite/debug.log"
   },
