@@ -10,6 +10,7 @@ import PaymentsIcon from "@mui/icons-material/Payments";
 import AccountBalanceIcon from '@mui/icons-material/AccountBalance';
 import {
   AppBar,
+  Badge,
   Box,
   Container,
   LinearProgress,
@@ -22,6 +23,7 @@ import { useEffect, useState } from "react";
 import { AddTransactionTab } from "../AddTransactionTab";
 import { SwipeableDrawer } from "./SwipeableDrawer";
 import { useGlobalLoadingStore } from "@/store";
+import { CountQueueBadge } from "./CountQueueBadge";
 
 const routerMap: {
   label: string;
@@ -54,9 +56,9 @@ const routerMap: {
     title: "Recent Transactions",
   },
   {
-    label: "Settings",
-    icon: <SettingsIcon />,
-    title: "Settings",
+    label: "System",
+    icon: <CountQueueBadge><SettingsIcon /></CountQueueBadge>,
+    title: "System",
     path: "/settings",
   },
 ];

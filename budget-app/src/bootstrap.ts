@@ -22,7 +22,12 @@ const queueServiceClient = QueueServiceClient.fromConnectionString(
 
 export const queue = new AzureStorageQueue(
   queueServiceClient,
-  env.AZURE_STORAGE_QUEUE_NAME
+  env.AZURE_STORAGE_QUEUE_BUDGET_QUEUE_NAME
+);
+
+export const longQueue = new AzureStorageQueue(
+  queueServiceClient,
+  env.AZURE_STORAGE_QUEUE_BUDGET_LONG_QUEUE_NAME
 );
 
 /**
@@ -33,7 +38,12 @@ export const queue = new AzureStorageQueue(
  */
 export const poisonQueue = new AzureStorageQueue(
   queueServiceClient,
-  `${env.AZURE_STORAGE_QUEUE_NAME}-poison`
+  `${env.AZURE_STORAGE_QUEUE_BUDGET_QUEUE_NAME}-poison`
+);
+
+export const longPoisonQueue = new AzureStorageQueue(
+  queueServiceClient,
+  `${env.AZURE_STORAGE_QUEUE_BUDGET_LONG_QUEUE_NAME}-poison`
 );
 
 /**

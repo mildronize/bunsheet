@@ -43,8 +43,15 @@ export const envSchema = z.object({
 
   /**
    * Azure Storage Queue Name
+   * 
+   * It's should be `transactionqueue`
    */
-  AZURE_STORAGE_QUEUE_NAME: z.string().default("budgetqueue"),
+  AZURE_STORAGE_QUEUE_BUDGET_QUEUE_NAME: z.string().default("budgetqueue"),
+
+  /**
+   * Azure Storage Budget Long Queue Name
+   */
+  AZURE_STORAGE_QUEUE_BUDGET_LONG_QUEUE_NAME: z.string().default("budgetlongqueue"),
 
   /**
    * Azure Storage Table Name for Select Table
