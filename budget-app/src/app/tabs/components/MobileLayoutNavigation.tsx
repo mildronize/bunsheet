@@ -28,6 +28,7 @@ import { LocalStorage } from "@/libs/local-storage";
 import { SettingTab } from "../SettingTab";
 import { RecentTransactionTab } from "../RecentTransactionTab";
 import { BudgetDataContainer } from "@/app/budget/BudgetDataContainer";
+import dayjs from "dayjs";
 
 const routerMap: {
   label: string;
@@ -40,7 +41,7 @@ const routerMap: {
     label: "Budget",
     icon: <PaymentsIcon />,
     path: "/",
-    title: "Budget",
+    title: dayjs().format("MMM YYYY"),
     content: <BudgetDataContainer />,
   },
   {
