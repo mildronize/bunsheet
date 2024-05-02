@@ -62,7 +62,7 @@ function BudgetProgress({
   if (items.activity * -1 > 0 && items.activity * -1 <= items.available) {
     return (
       <Box>
-        <SpendingLinearProgress variant="determinate" value={100 - value} />
+        <SpendingLinearProgress variant="determinate" value={value} />
         <Box
           sx={{
             fontSize: "0.85rem",
@@ -71,7 +71,7 @@ function BudgetProgress({
           }}
         >
           Spent {numbro(items.activity * -1).format("0,0")} of{" "}
-          {numbro(items.available).format("0,0")}
+          {numbro(items.available + items.activity * -1).format("0,0")}
         </Box>
       </Box>
     );
@@ -124,7 +124,8 @@ export function ListRow(props: ListRowProps) {
     //   items.assigned > items.available
     //     ? 1
     //     : (items.assigned / items.available) * 100;
-    progress = ((items.activity + items.available) / items.available) * 100;
+    progress =
+      ((items.activity * -1) / (items.available + items.activity * -1)) * 100;
   }
 
   return (
@@ -161,7 +162,7 @@ export function ListRow(props: ListRowProps) {
               ) : props.isShowAssigned ? (
                 <Box
                   sx={{
-                    marginTop: '3px',
+                    marginTop: "3px",
                     fontFamily: theme.budget.amount.fontFamily,
                     fontSize: theme.budget.amount.fontSize,
                   }}

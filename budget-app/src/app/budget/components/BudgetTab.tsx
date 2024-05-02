@@ -111,12 +111,12 @@ export function BudgetTab(props: BudgetTabProps) {
             paddingTop: 0,
           }}
         >
-          {isShowAssigned ? (
+
             <ListHeader
               columns={["", totalAssigned, totalAvailable]}
               height={stickerListHeaderHeight}
             />
-          ) : null}
+    
           {!isStickyHeaderVisible ? (
             <StickyHeader summary={props.summary} height={stickyHeaderHeight} />
           ) : null}
