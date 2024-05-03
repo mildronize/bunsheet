@@ -1,6 +1,6 @@
 // import { env } from "./env";
 import { env } from "next-runtime-env";
-import { initSignalRClient } from "./libs/signalr-client";
+// import { initSignalRClient } from "./libs/signalr-client";
 
 /**
  * SignalR Connection
@@ -8,6 +8,6 @@ import { initSignalRClient } from "./libs/signalr-client";
  * Make sure singletons are used
  */
 
-export const signalRConnection = initSignalRClient(
-  env("NEXT_PUBLIC_AZURE_FUNCTION_URL") ?? ""
-);
+// export const signalRConnection = initSignalRClient(
+//   env("NEXT_PUBLIC_AZURE_FUNCTION_URL") ?? ""
+// );

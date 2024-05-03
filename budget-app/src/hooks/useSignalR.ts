@@ -1,8 +1,13 @@
-import { signalRConnection } from "@/bootstrap-client";
-import * as signalR from "@microsoft/signalr";
-import { set } from "core-js/core/dict";
-import { is } from "core-js/core/object";
 import { useEffect, useState } from "react";
+import { env } from "next-runtime-env";
+import {
+  HubConnection,
+  HubConnectionBuilder,
+  HubConnectionState,
+  LogLevel,
+} from "@microsoft/signalr";
+import invariant from "tiny-invariant";
+// import { useInterval } from "usehooks-ts";
 
 export type OnMessageFunction = (message: string) => void;
 export type MessageName = string;
@@ -11,38 +16,47 @@ export interface UseSignalROptions {
   onMessages?: Record<MessageName, OnMessageFunction>;
 }
 
-export function useSignalR(options?: UseSignalROptions) {
-  const [connection, setConnection] = useState<signalR.HubConnection | null>(
-    null
+export const useSignalR = (options?: UseSignalROptions) => {
+  const [connection, setConnection] = useState<HubConnection | null>(null);
+  const [state, setState] = useState<HubConnectionState>(
+    HubConnectionState.Disconnected
   );
-
-  const [state, setState] = useState<signalR.HubConnectionState>(
-    signalR.HubConnectionState.Disconnected
-  );
-
   /**
    * For preventing duplicate messages
    */
-  const [cachedMessages, setCachedMessages] = useState<Set<string>>(new Set());
-
-  const handleSignalRClient = async () => {
-    setConnection(signalRConnection);
-    try {
-      if (signalRConnection.state === signalR.HubConnectionState.Disconnected) {
-        await signalRConnection.start();
-      }
-      console.log("SignalR connection state:", signalRConnection.state);
-      setState(signalRConnection.state);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  const [cachedMessages, setCachedMessages] = useState<Map<string, Date>>(
+    new Map()
+  );
 
   useEffect(() => {
-    handleSignalRClient();
+    const apiBaseUrl = env("NEXT_PUBLIC_AZURE_FUNCTION_URL");
+    invariant(apiBaseUrl, "NEXT_PUBLIC_AZURE_FUNCTION_URL is not defined");
 
+    const newConnection = new HubConnectionBuilder()
+      .withUrl(new URL("/api", apiBaseUrl).toString())
+      .withAutomaticReconnect()
+      .configureLogging(LogLevel.Information)
+      .build();
+
+    setConnection(newConnection);
+    setState(newConnection.state);
+
+    const startConnection = async () => {
+      try {
+        await newConnection.start();
+        console.log("Connection started!");
+        setState(newConnection.state);
+      } catch (err) {
+        console.error("Connection failed: ", err);
+        setState(newConnection.state);
+      }
+    };
+
+    startConnection();
+
+    // Clean up on dismount
     return () => {
-      if (connection) connection.stop();
+      newConnection.stop().then(() => console.log("Connection stopped!"));
     };
   }, []);
 
@@ -51,33 +65,39 @@ export function useSignalR(options?: UseSignalROptions) {
       Object.entries(options?.onMessages ?? {}).forEach(
         ([messageName, onMessage]) => {
           if (cachedMessages.has(messageName)) {
-            return;
+            return console.log("Message already cached", cachedMessages )
           }
-          setCachedMessages((prev) => new Set(prev.add(messageName)));
+          setCachedMessages(
+            (prev) => new Map(prev.set(messageName, new Date()))
+          );
           connection.on(messageName, onMessage);
         }
       );
     }
-  }, [connection, options]);
 
-  useEffect(() => {
-    if (connection) {
-      connection.onreconnecting(() => {
-        setState(signalR.HubConnectionState.Reconnecting);
-      });
-
-      connection.onreconnected(() => {
-        setState(signalR.HubConnectionState.Connected);
-      });
-
-      connection.onclose(() => {
-        setState(signalR.HubConnectionState.Disconnected);
-      });
-    }
   }, [connection]);
+
+  // // Prevent duplicate messages
+  // useInterval(() => {
+  //   if (cachedMessages.size === 0) return;
+  //   const now = new Date();
+  //   const expiredMessages = Array.from(cachedMessages.entries()).filter(
+  //     ([_, date]) => now.getTime() - date.getTime() > 500 // 500 ms
+  //   ); // Get expired messages when the message is older than 500 ms
+  //   expiredMessages.forEach(([messageName, _]) => {
+  //     setCachedMessages((prev) => {
+  //       const newMap = new Map(prev);
+  //       newMap.delete(messageName);
+  //       return newMap;
+  //     });
+  //   });
+  //   // console.log(cachedMessages);
+  //   console.log("Reset cached messages");
+  // }, 1000);
 
   return {
     connection,
     state,
+    isLoading: state !== HubConnectionState.Connected,
   };
-}
+};

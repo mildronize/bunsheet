@@ -5,7 +5,6 @@ import MuiBottomNavigation from "@mui/material/BottomNavigation";
 import BottomNavigationAction from "@mui/material/BottomNavigationAction";
 import RestoreIcon from "@mui/icons-material/Restore";
 import AddCircleRoundedIcon from "@mui/icons-material/AddCircleRounded";
-import SettingsIcon from "@mui/icons-material/Settings";
 import PaymentsIcon from "@mui/icons-material/Payments";
 import AccountBalanceIcon from "@mui/icons-material/AccountBalance";
 import {
@@ -23,7 +22,7 @@ import { useEffect, useState } from "react";
 import { AddTransactionTab } from "../AddTransactionTab";
 import { SwipeableDrawer } from "./SwipeableDrawer";
 import { useGlobalLoadingStore } from "@/store";
-import { CountQueueBadge } from "./CountQueueBadge";
+import { CountQueueBadgeWithIcon } from "./CountQueueBadge";
 import { LocalStorage } from "@/libs/local-storage";
 import { SettingTab } from "../SettingTab";
 import { RecentTransactionTab } from "../RecentTransactionTab";
@@ -66,11 +65,7 @@ const routerMap: {
   },
   {
     label: "System",
-    icon: (
-      <CountQueueBadge>
-        <SettingsIcon />
-      </CountQueueBadge>
-    ),
+    icon: <CountQueueBadgeWithIcon />,
     title: "System",
     path: "/settings",
     content: <SettingTab />,
