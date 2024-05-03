@@ -22,7 +22,7 @@ import { useEffect, useState } from "react";
 import { AddTransactionTab } from "../AddTransactionTab";
 import { SwipeableDrawer } from "./SwipeableDrawer";
 import { useGlobalLoadingStore } from "@/store";
-import { CountQueueBadgeWithIcon } from "./CountQueueBadge";
+import { SettingIconWithStatusBadge } from "./SettingIconWithStatusBadge";
 import { LocalStorage } from "@/libs/local-storage";
 import { SettingTab } from "../SettingTab";
 import { RecentTransactionTab } from "../RecentTransactionTab";
@@ -65,7 +65,7 @@ const routerMap: {
   },
   {
     label: "System",
-    icon: <CountQueueBadgeWithIcon />,
+    icon: <SettingIconWithStatusBadge />,
     title: "System",
     path: "/settings",
     content: <SettingTab />,

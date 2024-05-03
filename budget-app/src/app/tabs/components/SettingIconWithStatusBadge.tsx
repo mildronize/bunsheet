@@ -93,7 +93,7 @@ export function TargetIcon(props: { isLoading?: boolean }) {
  * @returns
  */
 
-export function CountQueueBadgeWithIcon(props: CountQueueBadgeProps) {
+export function SettingIconWithStatusBadge(props: CountQueueBadgeProps) {
   const [isLoading, setIsLoading] = useState(false);
   // const signalRConnection = useSignalR();
 
