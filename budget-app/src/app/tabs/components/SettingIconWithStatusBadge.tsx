@@ -16,6 +16,7 @@ import { useEventEmitter } from "@/hooks/useEventEmitter";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { useEffect, useState } from "react";
 import { useSignalR } from "@/hooks/useSignalR";
+import { useHealthCheck } from "@/hooks/useHealthCheck";
 
 export type TransactionQueueGetResponse = InferRouteResponse<
   typeof TransactionQueue.GET
@@ -29,15 +30,35 @@ export interface CountQueueBadgeProps {
   children?: React.ReactNode;
 }
 
+export interface SimpleCircularProgressProps extends CircularProgressProps {
+  spinnerColor?: "blue" | "red" | "orange";
+}
+
 /**
  * Inspired by the former Facebook spinners.
  * Ref: https://mui.com/material-ui/react-progress/#customization
  * @param props
  * @returns
  */
-function FacebookCircularProgress(props: CircularProgressProps) {
+function SimpleCircularProgress(props: SimpleCircularProgressProps) {
   const size = 20;
   const thickness = 5;
+  const spinnerColor = props.spinnerColor ?? "blue";
+
+  const spinnerColorMap = {
+    blue: {
+      light: "#1a90ff",
+      dark: "#308fe8",
+    },
+    red: {
+      light: "#f5222d",
+      dark: "#ff4d4f",
+    },
+    orange: {
+      light: "#fa8c16",
+      dark: "#faad14",
+    },
+  };
 
   return (
     <Box sx={{ position: "relative", marginTop: "4px" }}>
@@ -57,7 +78,9 @@ function FacebookCircularProgress(props: CircularProgressProps) {
         disableShrink
         sx={{
           color: (theme) =>
-            theme.palette.mode === "light" ? "#1a90ff" : "#308fe8",
+            theme.palette.mode === "light"
+              ? spinnerColorMap[spinnerColor].light
+              : spinnerColorMap[spinnerColor].dark,
           animationDuration: "700ms",
           position: "absolute",
           left: 0,
@@ -75,9 +98,14 @@ function FacebookCircularProgress(props: CircularProgressProps) {
 
 const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export function TargetIcon(props: { isLoading?: boolean }) {
+export interface TargetIconProps {
+  isLoading?: boolean;
+  simpleCircularProgressProps?: SimpleCircularProgressProps;
+}
+
+export function TargetIcon(props: TargetIconProps) {
   return props.isLoading ?? false ? (
-    <FacebookCircularProgress />
+    <SimpleCircularProgress {...props.simpleCircularProgressProps} />
   ) : (
     <SettingsIcon />
   );
@@ -94,13 +122,34 @@ export function TargetIcon(props: { isLoading?: boolean }) {
  */
 
 export function SettingIconWithStatusBadge(props: CountQueueBadgeProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  // const signalRConnection = useSignalR();
+  const [isConnectingSignalR, setIsConnectingSignalR] = useState(true);
+  const [isHealthy, setIsHealthy] = useState(true);
+
+  const getSpinnerColor = (
+    isConnectingRealtime: boolean,
+    isHealthy: boolean
+  ) => {
+    if (isConnectingRealtime) {
+      return "blue";
+    }
+    if (!isHealthy) {
+      return "red";
+    }
+    return "blue";
+  };
+
+  useHealthCheck({
+    interval: 5000,
+    timeout: 1500,
+    onSuccess: () => setIsHealthy(true),
+    onError: () => setIsHealthy(false),
+  });
 
   const signalR = useSignalR();
+
   useEffect(() => {
     console.log("signalR state:", signalR.state);
-    setIsLoading(signalR.isLoading);
+    setIsConnectingSignalR(signalR.isLoading);
   }, [signalR.state, signalR.isLoading]);
 
   const queueCount = useQuery<TransactionQueueGetResponse>({
@@ -136,11 +185,11 @@ export function SettingIconWithStatusBadge(props: CountQueueBadgeProps) {
   });
 
   if (queueCount.error) {
-    return <TargetIcon isLoading={isLoading} />;
+    return <TargetIcon isLoading={isConnectingSignalR || !isHealthy} />;
   }
 
   if (queueCount.isLoading) {
-    return <TargetIcon isLoading={isLoading} />;
+    return <TargetIcon isLoading={isConnectingSignalR || !isHealthy} />;
   }
 
   if (
@@ -148,7 +197,14 @@ export function SettingIconWithStatusBadge(props: CountQueueBadgeProps) {
       parseQueueCount(queueCount.data?.data?.longMain) ===
     0
   ) {
-    return <TargetIcon isLoading={isLoading} />;
+    return (
+      <TargetIcon
+        isLoading={isConnectingSignalR || !isHealthy}
+        simpleCircularProgressProps={{
+          spinnerColor: getSpinnerColor(isConnectingSignalR, isHealthy),
+        }}
+      />
+    );
   }
 
   return (
@@ -159,7 +215,12 @@ export function SettingIconWithStatusBadge(props: CountQueueBadgeProps) {
       }
       color="warning"
     >
-      <TargetIcon isLoading={isLoading} />
+      <TargetIcon
+        isLoading={isConnectingSignalR || !isHealthy}
+        simpleCircularProgressProps={{
+          spinnerColor: getSpinnerColor(isConnectingSignalR, isHealthy),
+        }}
+      />
     </Badge>
   );
 }

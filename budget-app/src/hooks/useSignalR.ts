@@ -7,7 +7,7 @@ import {
   LogLevel,
 } from "@microsoft/signalr";
 import invariant from "tiny-invariant";
-// import { useInterval } from "usehooks-ts";
+import { useInterval } from "usehooks-ts";
 
 export type OnMessageFunction = (message: string) => void;
 export type MessageName = string;
@@ -18,6 +18,7 @@ export interface UseSignalROptions {
 
 export const useSignalR = (options?: UseSignalROptions) => {
   const [connection, setConnection] = useState<HubConnection | null>(null);
+  const [retries, setRetries] = useState(0);
   const [state, setState] = useState<HubConnectionState>(
     HubConnectionState.Disconnected
   );
@@ -28,7 +29,7 @@ export const useSignalR = (options?: UseSignalROptions) => {
     new Map()
   );
 
-  useEffect(() => {
+  const handleSignalRConnection = () => {
     const apiBaseUrl = env("NEXT_PUBLIC_AZURE_FUNCTION_URL");
     invariant(apiBaseUrl, "NEXT_PUBLIC_AZURE_FUNCTION_URL is not defined");
 
@@ -56,16 +57,28 @@ export const useSignalR = (options?: UseSignalROptions) => {
 
     // Clean up on dismount
     return () => {
-      newConnection.stop().then(() => console.log("Connection stopped!"));
+      newConnection.stop().then(() => {
+        console.log("Connection stopped!");
+        setState(newConnection.state);
+      });
     };
-  }, []);
+  };
+
+  useEffect(() => handleSignalRConnection(), []);
+  useEffect(() => handleSignalRConnection(), [retries]);
+
+  useInterval(() => {
+    if(connection?.state === HubConnectionState.Connected) return;
+    console.log(`(${retries}) Retrying connection to SignalR...`);
+    setRetries((prev) => prev + 1);
+  }, 3000);
 
   useEffect(() => {
     if (connection) {
       Object.entries(options?.onMessages ?? {}).forEach(
         ([messageName, onMessage]) => {
           if (cachedMessages.has(messageName)) {
-            return console.log("Message already cached", cachedMessages )
+            return console.log("Message already cached", cachedMessages);
           }
           setCachedMessages(
             (prev) => new Map(prev.set(messageName, new Date()))
@@ -74,7 +87,6 @@ export const useSignalR = (options?: UseSignalROptions) => {
         }
       );
     }
-
   }, [connection]);
 
   // // Prevent duplicate messages
