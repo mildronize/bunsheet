@@ -2,88 +2,16 @@
 import * as React from "react";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import { alpha, styled } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import { useTheme } from "@mui/material/styles";
-import {
-  Box,
-  Divider,
-  LinearProgress,
-  linearProgressClasses,
-} from "@mui/material";
+import { Box, Divider } from "@mui/material";
 import useLongPress from "@/hooks/useLongPress";
-import { BudgetItem } from "./types";
-import { AvailableChip } from "./AvailableChip";
-import { AutoSelectTextField } from "./AutoSelectNumberTextField";
-import { ListTableColumn, ListTableRow } from "./layouts";
+import { BudgetItem } from "../types";
+import { AvailableChip } from "../AvailableChip";
+import { AutoSelectTextField } from "../AutoSelectNumberTextField";
+import { ListTableColumn, ListTableRow } from "../layouts";
 import numbro from "numbro";
-
-const SpendingLinearProgress = styled(LinearProgress)(({ theme }) => ({
-  marginTop: 5,
-  borderRadius: 5,
-  height: 5,
-  [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor: theme.palette.mode === "light" ? "#9ecd6f" : "#ccf2a5",
-  },
-  [`& .${linearProgressClasses.bar}`]: {
-    borderRadius: 5,
-    background: `repeating-linear-gradient(
-      45deg,
-      ${alpha("#d3e4c5", 0.6)}, 
-      ${alpha("#d3e4c5", 0.6)} 5px,
-      ${alpha("#f0ffe4", 0.6)} 5px, 
-      ${alpha("#f4ffeb", 0.6)} 10px, 
-      ${alpha("#d3e4c5", 0.6)} 10px
-    )`,
-  },
-}));
-
-const BudgetLinearProgress = styled(LinearProgress)(({ theme }) => ({
-  marginTop: 5,
-  borderRadius: 5,
-  height: 5,
-  [`&.${linearProgressClasses.colorPrimary}`]: {
-    backgroundColor:
-      theme.palette.grey[theme.palette.mode === "light" ? 200 : 800],
-  },
-  [`& .${linearProgressClasses.bar}`]: {
-    borderRadius: 5,
-    backgroundColor: theme.palette.mode === "light" ? "#9ecd6f" : "#ccf2a5",
-  },
-}));
-
-function BudgetProgress({
-  items,
-  value,
-}: {
-  value: number;
-  items: BudgetItem;
-}) {
-  const theme = useTheme();
-  if (
-    items.activity * -1 > 0 &&
-    items.activity * -1 <= items.available + items.activity * -1
-  ) {
-    return (
-      <Box>
-        <SpendingLinearProgress variant="determinate" value={value} />
-        <Box
-          sx={{
-            fontSize: "0.85rem",
-            color: theme.palette.text.secondary,
-            paddingTop: "10px",
-          }}
-        >
-          {Math.abs(items.activity * -1 - items.assigned) < 1 &&
-          items.activity * -1 > 0
-            ? "Fully Spent"
-            : `Spent ${numbro(items.activity * -1).format("0,0")} of 
-          ${numbro(items.available + items.activity * -1).format("0,0")}`}
-        </Box>
-      </Box>
-    );
-  }
-  return <BudgetLinearProgress variant="determinate" value={value} />;
-}
+import { BudgetProgress } from "./BudgetProgress";
 
 const ListContainer = styled(Box)(() => ({
   display: "flex",

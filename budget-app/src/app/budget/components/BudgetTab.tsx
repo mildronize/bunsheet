@@ -4,7 +4,7 @@ import List from "@mui/material/List";
 import Collapse from "@mui/material/Collapse";
 import { Box, Divider, ListSubheader, useTheme } from "@mui/material";
 import { BudgetGroupItem } from "./types";
-import { ListRow } from "./ListRow";
+import { ListRow } from "./ListRow/ListRow";
 import { StickyHeader } from "./StickerHeader";
 import { ListHeader } from "./ListHeader";
 import { CategoryGroupDropDownList } from "./CategoryGroupDropDownList";

@@ -31,7 +31,9 @@ export interface CountQueueBadgeProps {
 }
 
 export interface SimpleCircularProgressProps extends CircularProgressProps {
-  spinnerColor?: "blue" | "red" | "orange";
+  options?: {
+    spinnerColor?: "blue" | "red" | "orange";
+  };
 }
 
 /**
@@ -43,7 +45,9 @@ export interface SimpleCircularProgressProps extends CircularProgressProps {
 function SimpleCircularProgress(props: SimpleCircularProgressProps) {
   const size = 20;
   const thickness = 5;
-  const spinnerColor = props.spinnerColor ?? "blue";
+  const spinnerColor = props.options?.spinnerColor ?? "blue";
+
+  if (!props.options) delete props.options;
 
   const spinnerColorMap = {
     blue: {
@@ -138,6 +142,17 @@ export function SettingIconWithStatusBadge(props: CountQueueBadgeProps) {
     return "blue";
   };
 
+  const simpleCircularProgressProps = (
+    isConnectingRealtime: boolean,
+    isHealthy: boolean
+  ): SimpleCircularProgressProps => {
+    return {
+      options: {
+        spinnerColor: getSpinnerColor(isConnectingRealtime, isHealthy),
+      },
+    };
+  };
+
   useHealthCheck({
     interval: 5000,
     timeout: 1500,
@@ -200,9 +215,10 @@ export function SettingIconWithStatusBadge(props: CountQueueBadgeProps) {
     return (
       <TargetIcon
         isLoading={isConnectingSignalR || !isHealthy}
-        simpleCircularProgressProps={{
-          spinnerColor: getSpinnerColor(isConnectingSignalR, isHealthy),
-        }}
+        simpleCircularProgressProps={simpleCircularProgressProps(
+          isConnectingSignalR,
+          isHealthy
+        )}
       />
     );
   }
@@ -217,9 +233,10 @@ export function SettingIconWithStatusBadge(props: CountQueueBadgeProps) {
     >
       <TargetIcon
         isLoading={isConnectingSignalR || !isHealthy}
-        simpleCircularProgressProps={{
-          spinnerColor: getSpinnerColor(isConnectingSignalR, isHealthy),
-        }}
+        simpleCircularProgressProps={simpleCircularProgressProps(
+          isConnectingSignalR,
+          isHealthy
+        )}
       />
     </Badge>
   );
