@@ -43,7 +43,7 @@ export interface SimpleCircularProgressProps extends CircularProgressProps {
  * @returns
  */
 function SimpleCircularProgress(props: SimpleCircularProgressProps) {
-  const size = 20;
+  const size = 18;
   const thickness = 5;
   const spinnerColor = props.options?.spinnerColor ?? "blue";
 
