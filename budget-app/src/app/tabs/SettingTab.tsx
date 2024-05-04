@@ -11,6 +11,7 @@ import { LocalStorage } from "@/libs/local-storage";
 import { useState } from "react";
 import { useGlobalLoading } from "@/hooks/useGlobalLoading";
 import { useSignalR } from "@/hooks/useSignalR";
+import { useVersion } from "@/hooks/useVersion";
 
 export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
 
@@ -44,8 +45,7 @@ export function SettingTab() {
   };
 
   useGlobalLoading(isResettingCache);
-
-  const signalRConnection = useSignalR();
+  const version = useVersion();
 
   const reloadPage = () => {
     if (typeof window !== "undefined") window.location.reload();
@@ -54,6 +54,7 @@ export function SettingTab() {
   return (
     <Box sx={{ padding: "15px" }}>
       <Toaster closeButton richColors duration={2000} position="top-center" />
+
       <div className="form-input">
         <Button
           variant="contained"
@@ -78,10 +79,8 @@ export function SettingTab() {
       <Box sx={{ paddingTop: "25px" }}>
         <AlertActiveQueue />
       </Box>
-      <Box sx={{ paddingTop: "25px" }}>
-        <Typography variant="body1">
-          SignalR State: {signalRConnection.state}
-        </Typography>
+      <Box sx={{ padding: "20px", textAlign: "center" }}>
+        <Typography variant="body1">{version.value}</Typography>
       </Box>
     </Box>
   );
