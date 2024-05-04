@@ -59,7 +59,10 @@ function BudgetProgress({
   items: BudgetItem;
 }) {
   const theme = useTheme();
-  if (items.activity * -1 > 0 && items.activity * -1 <= items.available) {
+  if (
+    items.activity * -1 > 0 &&
+    items.activity * -1 <= items.available + items.activity * -1
+  ) {
     return (
       <Box>
         <SpendingLinearProgress variant="determinate" value={value} />
@@ -70,26 +73,11 @@ function BudgetProgress({
             paddingTop: "10px",
           }}
         >
-          Spent {numbro(items.activity * -1).format("0,0")} of{" "}
-          {numbro(items.available + items.activity * -1).format("0,0")}
-        </Box>
-      </Box>
-    );
-  } else if (
-    Math.abs(items.activity * -1 - items.assigned) < 1 &&
-    items.activity * -1 > 0
-  ) {
-    return (
-      <Box>
-        <SpendingLinearProgress variant="determinate" value={100} />
-        <Box
-          sx={{
-            fontSize: "0.85rem",
-            color: theme.palette.text.secondary,
-            paddingTop: "10px",
-          }}
-        >
-          Fully Spent
+          {Math.abs(items.activity * -1 - items.assigned) < 1 &&
+          items.activity * -1 > 0
+            ? "Fully Spent"
+            : `Spent ${numbro(items.activity * -1).format("0,0")} of 
+          ${numbro(items.available + items.activity * -1).format("0,0")}`}
         </Box>
       </Box>
     );
