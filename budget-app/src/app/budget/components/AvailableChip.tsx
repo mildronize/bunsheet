@@ -1,4 +1,5 @@
 "use client";
+import { formatNumberThousand } from "@/global/formatNumberThousand";
 import { Chip } from "@mui/material";
 import numbro from "numbro";
 
@@ -17,7 +18,7 @@ export function AvailableChip(props: AvailableChipProps) {
   }
   return (
     <Chip
-      label={numbro(props.available).format("0,0")}
+      label={formatNumberThousand(props.available)}
       size="small"
       sx={{
         "&.MuiChip-root": {

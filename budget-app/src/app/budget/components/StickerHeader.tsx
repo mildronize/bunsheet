@@ -2,6 +2,7 @@
 import { useTheme } from "@mui/material/styles";
 import { Box, Typography } from "@mui/material";
 import numbro from "numbro";
+import { formatNumberThousand } from "@/global/formatNumberThousand";
 
 export interface StickyHeaderProps {
   summary: {
@@ -53,7 +54,7 @@ export function StickyHeader({ summary, height }: StickyHeaderProps) {
           // textAlign: "right",
         }}
       >
-        {numbro(readyToAssign).format("0,0")}
+        {formatNumberThousand(readyToAssign)}
         <br />
         {errorMessage}
       </Box>

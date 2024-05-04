@@ -12,6 +12,7 @@ import { AutoSelectTextField } from "../AutoSelectNumberTextField";
 import { ListTableColumn, ListTableRow } from "../layouts";
 import numbro from "numbro";
 import { BudgetProgress } from "./BudgetProgress";
+import { formatNumberThousand } from "@/global/formatNumberThousand";
 
 const ListContainer = styled(Box)(() => ({
   display: "flex",
@@ -83,7 +84,7 @@ export function ListRow(props: ListRowProps) {
                     fontSize: theme.budget.amount.fontSize,
                   }}
                 >
-                  {numbro(items.assigned).format("0,0")}
+                  {formatNumberThousand(items.assigned)}
                 </Box>
               ) : null}
             </ListTableColumn>

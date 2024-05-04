@@ -12,6 +12,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { BudgetGroupItem } from "./types";
 import numbro from "numbro";
+import { formatNumberThousand } from "@/global/formatNumberThousand";
 
 export interface CategoryGroupDropDownListProps {
   onClick?: () => void;
@@ -63,7 +64,7 @@ export function CategoryGroupDropDownList(
             padding: 0,
           }}
         >
-          {numbro(props.header.totalAssigned).format("0,0")}
+          {formatNumberThousand(props.header.totalAssigned)}
         </ListTableColumn>
         <ListTableColumn
           ratio={20}
@@ -77,7 +78,7 @@ export function CategoryGroupDropDownList(
         >
           {props.header.countOverspent > 0 ? (
             <Chip
-              label={numbro(props.header.totalAvailable).format("0,0")}
+              label={formatNumberThousand(props.header.totalAvailable)}
               size="small"
               sx={{
                 "&.MuiChip-root": {
@@ -90,7 +91,7 @@ export function CategoryGroupDropDownList(
               }}
             />
           ) : (
-            numbro(props.header.totalAvailable).format("0,0")
+            formatNumberThousand(props.header.totalAvailable)
           )}
         </ListTableColumn>
       </ListTableRow>

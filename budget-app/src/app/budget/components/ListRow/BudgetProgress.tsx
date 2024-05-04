@@ -32,25 +32,4 @@ export function BudgetProgress({ items, value }: BudgetProgressProps) {
   } else {
     return <BudgetLinearProgress variant="determinate" value={value} />;
   }
-
-//   if (activity > 0 && activity <= available) {
-//     return (
-//       <Box>
-//         <SpendingLinearProgress variant="determinate" value={value} />
-//         <Box
-//           sx={{
-//             fontSize: "0.85rem",
-//             color: theme.palette.text.secondary,
-//             paddingTop: "10px",
-//           }}
-//         >
-//           {Math.abs(activity - available) < 1
-//             ? "Fully Spent"
-//             : `Spent ${numbro(activity).format("0,0")} of 
-//           ${numbro(available).format("0,0")}`}
-//         </Box>
-//       </Box>
-//     );
-//   }
-//   return <BudgetLinearProgress variant="determinate" value={value} />;
 }

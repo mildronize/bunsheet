@@ -1,3 +1,4 @@
+import { formatNumberThousand } from "@/global/formatNumberThousand";
 import { Box, styled, Typography, useTheme } from "@mui/material";
 import numbro from "numbro";
 
@@ -39,7 +40,7 @@ export function MoneyColumn(
         ...(props.sx ?? {}),
       }}
     >
-      {numbro(props.value).format("0,0")}
+      {formatNumberThousand(props.value)}
     </Box>
   );
 }
