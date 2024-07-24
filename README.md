@@ -1,4 +1,9 @@
 # Cloud-Native Personal Budget App (PWA on Mobile)
+
+"Bunsheet" is a cloud-native personal budget and finance frontend app, backed by Google Sheet and Azure, designed as a PWA for mobile with server costs of less than $1 per month. It uses Azure Container App for deploying Next.js, Azure Functions for managing queue messages, Google Sheet as the database, Azure Storage Queue to prevent Google Sheet API quota limits, and Azure Storage Table as a cache.
+
+The app features a Next.js App Router with authentication and authorization managed by Azure Container App Authentication, using Material UI components, React Query for local storage caching, and React Hook Form for form management. APIs connect to Azure Storage Queue and Table for transactions and data caching, with Azure Functions handling queue processing and cache updates. Deployed with GitHub Actions and GitHub Packages, the project is stable but may need further refactoring. This app aims to manage personal finances efficiently and cost-effectively.
+
 (Server Cost อยู่ที่ < 1$ ต่อเดือน)
 
 ## Cloud
