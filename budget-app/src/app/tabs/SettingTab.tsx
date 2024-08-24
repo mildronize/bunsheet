@@ -10,13 +10,12 @@ import axios from "axios";
 import { LocalStorage } from "@/libs/local-storage";
 import { useState } from "react";
 import { useGlobalLoading } from "@/hooks/useGlobalLoading";
-import { useSignalR } from "@/hooks/useSignalR";
 import { useVersion } from "@/hooks/useVersion";
 
 export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
 
 export function SettingTab() {
-  const [isResettingCache, setIsResettingCache] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const clearAppCache = () => {
     const caches = [
@@ -28,7 +27,7 @@ export function SettingTab() {
 
   const resetCache = async () => {
     try {
-      setIsResettingCache(true);
+      setIsLoading(true);
       clearAppCache();
       await axios.get("/api/cache/reset");
       /**
@@ -41,10 +40,22 @@ export function SettingTab() {
       toast.error("Failed to reset cache");
       return;
     }
-    setIsResettingCache(false);
+    setIsLoading(false);
   };
 
-  useGlobalLoading(isResettingCache);
+  const scaleUp = async () => {
+    setIsLoading(true);
+    try {
+      await axios.get("/api/scale");
+      toast.success("Sent request to scale up Azure Container App");
+    } catch (error) {
+      toast.error("Failed to scale up Azure Container App");
+      return;
+    }
+    setIsLoading(false);
+  }
+
+  useGlobalLoading(isLoading);
   const version = useVersion();
 
   const reloadPage = () => {
@@ -58,6 +69,8 @@ export function SettingTab() {
         <h3>Scale Settings</h3>
         <Button
           variant="contained"
+          disabled={isLoading}
+          onClick={scaleUp}
           sx={{ backgroundColor: "#dfdfdf", color: "#000000", marginRight: "20px" }}
         >
           Keep Standby Mode
@@ -67,7 +80,7 @@ export function SettingTab() {
       <h3>Cache Settings</h3>
         <Button
           variant="contained"
-          disabled={isResettingCache}
+          disabled={isLoading}
           fullWidth
           endIcon={<CleaningServicesRoundedIcon />}
           onClick={resetCache}

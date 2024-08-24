@@ -121,6 +121,10 @@ export const envSchema = z.object({
    * Azure Function URL
    */
   NEXT_PUBLIC_AZURE_FUNCTION_URL: z.string().default("http://localhost:7071"),
+  /**
+   * Github Token for Scaling Container App
+   */
+  GITHUB_TOKEN: z.string()
 });
 
 function printSecretFields(
