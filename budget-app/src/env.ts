@@ -124,7 +124,7 @@ export const envSchema = z.object({
   /**
    * Github Token for Scaling Container App
    */
-  GITHUB_TOKEN: z.string()
+  GITHUB_TOKEN: z.string().default(""),
 });
 
 function printSecretFields(
