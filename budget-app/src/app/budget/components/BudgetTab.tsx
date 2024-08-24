@@ -25,12 +25,13 @@ export type GroupState = Record<
 >;
 
 export interface BudgetTabProps {
-  summary: MonthlyBudgetSummaryCacheEntity;
+  summary: MonthlyBudgetSummaryCacheEntity | undefined;
   budgetGroup: BudgetGroupItem[];
 }
 
 export function BudgetTab(props: BudgetTabProps) {
   const theme = useTheme();
+
   let totalAssigned = 0;
   let totalAvailable = 0;
   for (const group of props.budgetGroup) {
@@ -71,6 +72,10 @@ export function BudgetTab(props: BudgetTabProps) {
     });
   };
 
+  if (!props.summary) {
+    return <>No summary Data</>;
+  }
+
   const isStickyHeaderVisible = Math.abs(props.summary.readyToAssign) > 1;
 
   const stickyHeaderHeight = 90;
@@ -100,23 +105,22 @@ export function BudgetTab(props: BudgetTabProps) {
             overflowY: "scroll",
             overflowX: "hidden",
             position: "relative",
-            height: `calc(100svh - ${
-              theme.global.appBar.height +
+            height: `calc(100svh - ${theme.global.appBar.height +
               theme.global.bottomNavigation.height +
               theme.global.bottomNavigation.paddingBottom +
               (isStickyHeaderVisible ? stickyHeaderHeight : 0) +
               stickerListHeaderHeight
               // (isShowAssigned ? stickerListHeaderHeight : 0)
-            }px)`,
+              }px)`,
             paddingTop: 0,
           }}
         >
 
-            <ListHeader
-              columns={["", totalAssigned, totalAvailable]}
-              height={stickerListHeaderHeight}
-            />
-    
+          <ListHeader
+            columns={["", totalAssigned, totalAvailable]}
+            height={stickerListHeaderHeight}
+          />
+
           {!isStickyHeaderVisible ? (
             <StickyHeader summary={props.summary} height={stickyHeaderHeight} />
           ) : null}

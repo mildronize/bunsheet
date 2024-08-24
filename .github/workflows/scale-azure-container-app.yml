@@ -1,0 +1,68 @@
+name: "Scale Container App"
+
+on:
+  workflow_dispatch:
+    inputs:
+      min_replicas:
+        description: "Container App Min Replicas"
+        required: true
+        default: "0"
+  schedule:
+    # ncrontab linux >> https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows#schedule
+    # Runs at 0 minutes past the hour, every 3 hours
+    - cron: "0 */3 * * *"
+
+env:
+  max_replicas: 1
+  scale_down_min_replicas: 0
+  name: my-budget-app
+  resource_group: rg-my-budget-app
+
+jobs:
+  scale:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIAL_AZURE_CONTAINER_APP }}
+
+      # Azure CLI 2.52.0 containerapp extension is in preview
+      # Required to install manually
+      - name: Deploy image to Azure Container App without Revision Suffix
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.52.0
+          inlineScript: |
+            az extension add --name containerapp
+            az containerapp update \
+              --name ${{ env.name }} \
+              --resource-group ${{ env.resource_group }} \
+              --max-replicas ${{ env.max_replicas }} \
+              --min-replicas ${{ inputs.min_replicas }} \
+              > ${{ env.name }}.log.txt
+
+  scale-scheduled:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIAL_AZURE_CONTAINER_APP }}
+
+      # Azure CLI 2.52.0 containerapp extension is in preview
+      # Required to install manually
+      - name: Deploy image to Azure Container App without Revision Suffix
+        uses: azure/CLI@v1
+        with:
+          azcliversion: 2.52.0
+          inlineScript: |
+            az extension add --name containerapp
+            az containerapp update \
+              --name ${{ env.name }} \
+              --resource-group ${{ env.resource_group }} \
+              --max-replicas ${{ env.max_replicas }} \
+              --min-replicas ${{ env.scale_down_min_replicas }} \
+              > ${{ env.name }}.log.txt
