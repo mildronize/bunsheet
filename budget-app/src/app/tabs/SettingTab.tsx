@@ -54,8 +54,17 @@ export function SettingTab() {
   return (
     <Box sx={{ padding: "15px" }}>
       <Toaster closeButton richColors duration={2000} position="top-center" />
-
       <div className="form-input">
+        <h3>Scale Settings</h3>
+        <Button
+          variant="contained"
+          sx={{ backgroundColor: "#dfdfdf", color: "#000000", marginRight: "20px" }}
+        >
+          Keep Standby Mode
+        </Button> 
+      </div>
+      <div className="form-input">
+      <h3>Cache Settings</h3>
         <Button
           variant="contained"
           disabled={isResettingCache}
@@ -76,6 +85,8 @@ export function SettingTab() {
           Reload App
         </Button>
       </div>
+
+
       <Box sx={{ paddingTop: "25px" }}>
         <AlertActiveQueue />
       </Box>
