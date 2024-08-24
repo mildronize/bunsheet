@@ -95,3 +95,11 @@ export const sheetDoc = new GoogleSpreadsheet(
   env.GSHEET_SPREADSHEET_ID,
   serviceAccountAuth
 );
+
+/**
+ * Github Service
+ */
+import { Octokit } from '@octokit/core';
+export const octokit = new Octokit({
+  auth: env.GITHUB_TOKEN,
+});

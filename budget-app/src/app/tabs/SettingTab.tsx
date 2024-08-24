@@ -1,6 +1,6 @@
 "use client";
 import { InferRouteResponse } from "@/types";
-import * as Transaction from "@/app/api/transaction/route";
+import * as ScaleApi from "@/app/api/scale/route";
 import { Box, Button, Typography } from "@mui/material";
 import { queryClient } from "../components/ReactQueryClientProvider";
 import CleaningServicesRoundedIcon from "@mui/icons-material/CleaningServicesRounded";
@@ -10,13 +10,12 @@ import axios from "axios";
 import { LocalStorage } from "@/libs/local-storage";
 import { useState } from "react";
 import { useGlobalLoading } from "@/hooks/useGlobalLoading";
-import { useSignalR } from "@/hooks/useSignalR";
 import { useVersion } from "@/hooks/useVersion";
 
-export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
+export type ScaleGetResponse = InferRouteResponse<typeof ScaleApi.GET>;
 
 export function SettingTab() {
-  const [isResettingCache, setIsResettingCache] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const clearAppCache = () => {
     const caches = [
@@ -28,7 +27,7 @@ export function SettingTab() {
 
   const resetCache = async () => {
     try {
-      setIsResettingCache(true);
+      setIsLoading(true);
       clearAppCache();
       await axios.get("/api/cache/reset");
       /**
@@ -41,10 +40,23 @@ export function SettingTab() {
       toast.error("Failed to reset cache");
       return;
     }
-    setIsResettingCache(false);
+    setIsLoading(false);
   };
 
-  useGlobalLoading(isResettingCache);
+  const scaleUp = async () => {
+    setIsLoading(true);
+    try {
+      const result = await axios.get<ScaleGetResponse>("/api/scale");
+      const { message } = result.data;
+      toast.success(message);
+    } catch (error) {
+      toast.error("Failed to scale up Azure Container App");
+      return;
+    }
+    setIsLoading(false);
+  }
+
+  useGlobalLoading(isLoading);
   const version = useVersion();
 
   const reloadPage = () => {
@@ -54,11 +66,22 @@ export function SettingTab() {
   return (
     <Box sx={{ padding: "15px" }}>
       <Toaster closeButton richColors duration={2000} position="top-center" />
-
       <div className="form-input">
+        <h3>Scale Settings</h3>
         <Button
           variant="contained"
-          disabled={isResettingCache}
+          disabled={isLoading}
+          onClick={scaleUp}
+          sx={{ backgroundColor: "#dfdfdf", color: "#000000", marginRight: "20px" }}
+        >
+          Keep Standby Mode
+        </Button> 
+      </div>
+      <div className="form-input">
+      <h3>Cache Settings</h3>
+        <Button
+          variant="contained"
+          disabled={isLoading}
           fullWidth
           endIcon={<CleaningServicesRoundedIcon />}
           onClick={resetCache}
@@ -76,6 +99,8 @@ export function SettingTab() {
           Reload App
         </Button>
       </div>
+
+
       <Box sx={{ paddingTop: "25px" }}>
         <AlertActiveQueue />
       </Box>
