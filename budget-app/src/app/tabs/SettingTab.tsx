@@ -1,6 +1,6 @@
 "use client";
 import { InferRouteResponse } from "@/types";
-import * as Transaction from "@/app/api/transaction/route";
+import * as ScaleApi from "@/app/api/scale/route";
 import { Box, Button, Typography } from "@mui/material";
 import { queryClient } from "../components/ReactQueryClientProvider";
 import CleaningServicesRoundedIcon from "@mui/icons-material/CleaningServicesRounded";
@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useGlobalLoading } from "@/hooks/useGlobalLoading";
 import { useVersion } from "@/hooks/useVersion";
 
-export type TransactionGetResponse = InferRouteResponse<typeof Transaction.GET>;
+export type ScaleGetResponse = InferRouteResponse<typeof ScaleApi.GET>;
 
 export function SettingTab() {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,8 +46,9 @@ export function SettingTab() {
   const scaleUp = async () => {
     setIsLoading(true);
     try {
-      await axios.get("/api/scale");
-      toast.success("Sent request to scale up Azure Container App");
+      const result = await axios.get<ScaleGetResponse>("/api/scale");
+      const { message } = result.data;
+      toast.success(message);
     } catch (error) {
       toast.error("Failed to scale up Azure Container App");
       return;

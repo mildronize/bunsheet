@@ -1,4 +1,5 @@
 import { octokit } from "@/bootstrap";
+import { env } from "@/env";
 import { scaleContainerApp } from "@/libs/github";
 import { NextResponse } from "next/server";
 
@@ -8,6 +9,14 @@ import { NextResponse } from "next/server";
  * @returns 
  */
 export async function GET(req: Request) {
+  // TODO: Hack for Next.js Build, prevent static optimization
+  if (env.GITHUB_TOKEN === "") {
+    return NextResponse.json({
+      message: "GITHUB_TOKEN is not set in .env",
+    }, {
+      status: 500,
+    });
+  }
   await scaleContainerApp(octokit, {
     owner: "mildronize",
     repo: "bunsheet",
