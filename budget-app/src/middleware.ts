@@ -38,6 +38,12 @@ export function middleware(request: NextRequest) {
 // See "Matching Paths" below to learn more
 export const config = {
   matcher: [
+    /*
+    https://github.com/Azure/static-web-apps/issues/1427
+   * Match all request paths except for the ones starting with:
+   * - .swa (Azure static web apps)
+   */
+    '/((?!.swa).*)',
     "/((?!public|_next|api/auth|api/auth/logout).*)", // match all paths not starting with 'public' or 'auth' or '_next' or 'api/auth'
   ],
 };
